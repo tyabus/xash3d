@@ -68,6 +68,7 @@ convar_t	*sv_allow_studio_attachment_angles;
 convar_t	*sv_allow_rotate_pushables;
 convar_t	*sv_allow_godmode;
 convar_t	*sv_allow_noclip;
+convar_t        *sv_allow_notarget;
 convar_t	*sv_allow_impulse;
 convar_t	*sv_enttools_enable;
 convar_t	*sv_enttools_maxfire;
@@ -941,6 +942,7 @@ void SV_Init( void )
 	sv_allow_rotate_pushables = Cvar_Get( "sv_allow_rotate_pushables", "0", CVAR_ARCHIVE, "let the pushers rotate pushables with included origin-brush" );
 	sv_allow_godmode = Cvar_Get( "sv_allow_godmode", "1", CVAR_LATCH, "allow players to be a god when sv_cheats is \"1\"" );
 	sv_allow_noclip = Cvar_Get( "sv_allow_noclip", "1", CVAR_LATCH, "allow players to use noclip when sv_cheats is \"1\"" );
+	sv_allow_notarget = Cvar_Get( "sv_allow_notarget", "1", CVAR_LATCH, "allow players to use notarget when sv_cheats is \"1\"" );
 	sv_enttools_enable = Cvar_Get( "sv_enttools_enable", "0", CVAR_ARCHIVE | CVAR_PROTECTED, "Enable powerful and dangerous entity tools" );
 	sv_enttools_maxfire = Cvar_Get( "sv_enttools_maxfire", "5", CVAR_ARCHIVE | CVAR_PROTECTED, "Limit ent_fire actions count to prevent flooding" );
 	sv_validate_changelevel = Cvar_Get( "sv_validate_changelevel", "1", CVAR_ARCHIVE, "test change level for level-designer errors" );

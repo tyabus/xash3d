@@ -2373,7 +2373,7 @@ static void SV_Notarget_f( sv_client_t *cl )
 {
 	edict_t	*pEntity = cl->edict;
 
-	if( !Cvar_VariableInteger( "sv_cheats" ) || sv.background )
+	if( !Cvar_VariableInteger( "sv_cheats" ) || sv.background || !sv_allow_notarget->value )
 		return;
 
 	pEntity->v.flags = pEntity->v.flags ^ FL_NOTARGET;

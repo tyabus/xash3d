@@ -443,6 +443,7 @@ extern	convar_t		*sv_allow_studio_attachment_angles;
 extern	convar_t		*sv_allow_rotate_pushables;
 extern	convar_t		*sv_allow_godmode;
 extern	convar_t		*sv_allow_noclip;
+extern  convar_t                *sv_allow_notarget;
 extern	convar_t		*sv_enttools_enable;
 extern	convar_t		*sv_enttools_maxfire;
 extern	convar_t		*sv_clienttrace;
