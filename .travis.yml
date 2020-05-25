@@ -27,7 +27,6 @@ jdk:
     - oraclejdk8
 os:
     - linux
-    - osx
   
 before_script:
     - sh scripts/travis_${TRAVIS_OS_NAME}_deps.sh
@@ -38,10 +37,7 @@ script:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/build_android_engine.sh; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/build_mingw_engine.sh; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/build_portable_linux_engine.sh; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then sh scripts/build_osx_engine.sh; fi
 after_script:
     - cd ${TRAVIS_BUILD_DIR}
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ccache --show-stats > ccache_stats.log; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/travis-deploy.sh travis xash3d-mingw.7z xash3d-linux.7z xash3d-generic.apk android-debug-symbols.txz ccache_stats.log; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/travis-upload.sh xash3d-mingw.7z xash3d-linux.7z xash3d-generic.apk; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then sh scripts/travis-deploy.sh z_apple xash3d-osx.tar.bz2; fi
