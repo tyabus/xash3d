@@ -115,7 +115,6 @@ convar_t	*sv_skyangle;
 convar_t	*sv_skyspeed;
 
 
-convar_t	*sv_allow_noinputdevices;
 convar_t	*sv_allow_touch;
 convar_t	*sv_allow_mouse;
 convar_t	*sv_allow_joystick;
@@ -824,7 +823,7 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 	char *input_devices_str = Info_ValueForKey( useragent, "d" );
 	char *id = Info_ValueForKey( useragent, "i" );
 
-	if( !sv_allow_noinputdevices->integer && ( !input_devices_str || !input_devices_str[0] ) )
+	if( !input_devices_str || !input_devices_str[0] )
 	{
 		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server does not allow\nconnect without input devices list.\nPlease update your engine.\n" );
 		return false;
@@ -997,7 +996,6 @@ void SV_Init( void )
 	sv_allow_mouse = Cvar_Get( "sv_allow_mouse", "1", CVAR_ARCHIVE, "allow connect with mouse" );
 	sv_allow_touch = Cvar_Get( "sv_allow_touch", "1", CVAR_ARCHIVE, "allow connect with touch controls" );
 	sv_allow_vr = Cvar_Get( "sv_allow_vr", "1", CVAR_ARCHIVE, "allow connect from vr version" );
-	sv_allow_noinputdevices = Cvar_Get( "sv_allow_noinputdevices", "1", CVAR_ARCHIVE, "allow connect from old versions without useragent" );
 
 	sv_password = Cvar_Get( "sv_password", "", CVAR_PROTECTED, "server password. Leave blank or set to \"none\" if none" );
 
