@@ -168,9 +168,7 @@ typedef enum
 #include "crtlib.h"
 #include "base_cmd.h"
 
-#define XASH_VERSION	"0.19.3"		// engine current version
-// since this fork have own version, this is just left for compatibility
-#define BASED_VERSION	0.98f
+#define XASH_VERSION	"0.19.4"		// engine current version
 
 // generic update page, see ShellExecute
 #define XASH_UPDATE_PAGE "https://github.com/FWGS/xash3d/releases/latest"
@@ -753,7 +751,6 @@ int Q_buildnum( void );
 const char *Q_buildos( void );
 const char *Q_buildarch( void );
 const char *Q_buildcommit( void );
-int Q_buildnum_compat( void );
 
 //
 // host.c
