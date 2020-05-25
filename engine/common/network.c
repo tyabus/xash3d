@@ -37,7 +37,7 @@ GNU General Public License for more details.
 
 #define PORT_ANY		-1
 #define MAX_LOOPBACK	4
-#define MASK_LOOPBACK	(MAX_LOOPBACK - 1)
+ #define MASK_LOOPBACK	(MAX_LOOPBACK - 1)
 
 #ifndef _WIN32 // it seems we need to use WS2 to support it
 #define HAVE_GETADDRINFO
@@ -210,6 +210,8 @@ extern convar_t *net_showpackets;
 static convar_t	*net_fakelag;
 static convar_t	*net_fakeloss;
 void NET_Restart_f( void );
+
+extern convar_t *host_ver;
 
 #ifdef _WIN32
 	static WSADATA winsockdata;
@@ -2471,7 +2473,7 @@ void HTTP_Init( void )
 	Cmd_AddCommand("http_clear", &HTTP_Clear_f, "Cancel all downloads");
 	Cmd_AddCommand("http_list", &HTTP_List_f, "List all queued downloads");
 	Cmd_AddCommand("http_addcustomserver", &HTTP_AddCustomServer_f, "Add custom fastdl server");
-	http_useragent = Cvar_Get( "http_useragent", "xash3d", CVAR_ARCHIVE, "User-Agent string" );
+	http_useragent = Cvar_Get( "http_useragent",  va( "%s %s", "Xash3D FWGS", host_ver->string ), CVAR_ARCHIVE, "User-Agent string" );
 	http_autoremove = Cvar_Get( "http_autoremove", "1", CVAR_ARCHIVE, "Remove broken files" );
 	http_timeout = Cvar_Get( "http_timeout", "45", CVAR_ARCHIVE, "Timeout for http downloader" );
 
