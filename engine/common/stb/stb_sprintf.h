@@ -183,17 +183,11 @@ STBSP__PUBLICDEF void STB_SPRINTF_DECORATE( set_separators )( char comma, char p
 
 #define stbsp__uint32 unsigned int
 #define stbsp__int32 signed int
-
-#ifdef _MSC_VER
-#define stbsp__uint64 unsigned __int64
-#define stbsp__int64 signed __int64
-#else
 #define stbsp__uint64 unsigned long long
 #define stbsp__int64 signed long long
-#endif
 #define stbsp__uint16 unsigned short
 
-#ifndef stbsp__uintptr 
+#ifndef stbsp__uintptr
 #if defined(__ppc64__) || defined(__aarch64__) || defined(_M_X64) || defined(__x86_64__) || defined(__x86_64)
 #define stbsp__uintptr stbsp__uint64
 #else
@@ -966,7 +960,7 @@ static double const stbsp__negtop[13]={1e-023,1e-046,1e-069,1e-092,1e-115,1e-138
 static double const stbsp__toperr[13]={8388608,6.8601809640529717e+028,-7.253143638152921e+052,-4.3377296974619174e+075,-1.5559416129466825e+098,-3.2841562489204913e+121,-3.7745893248228135e+144,-1.7356668416969134e+167,-3.8893577551088374e+190,-9.9566444326005119e+213,6.3641293062232429e+236,-5.2069140800249813e+259,-5.2504760255204387e+282};
 static double const stbsp__negtoperr[13]={3.9565301985100693e-040,-2.299904345391321e-063,3.6506201437945798e-086,1.1875228833981544e-109,-5.0644902316928607e-132,-6.7156837247865426e-155,-2.812077463003139e-178,-5.7778912386589953e-201,7.4997100559334532e-224,-4.6439668915134491e-247,-6.3691100762962136e-270,-9.436808465446358e-293,8.0970921678014997e-317};
 
-#if defined(_MSC_VER) && (_MSC_VER<=1200)                                                                                                                                                                                       
+#if defined(_MSC_VER)
 static stbsp__uint64 const stbsp__powten[20]={1,10,100,1000, 10000,100000,1000000,10000000, 100000000,1000000000,10000000000,100000000000,  1000000000000,10000000000000,100000000000000,1000000000000000,  10000000000000000,100000000000000000,1000000000000000000,10000000000000000000U };
 #define stbsp__tento19th ((stbsp__uint64)1000000000000000000)
 #else

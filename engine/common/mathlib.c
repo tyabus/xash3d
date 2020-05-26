@@ -176,26 +176,12 @@ SinCos
 */
 void SinCos( float radians, float *sine, float *cosine )
 {
-#if _MSC_VER == 1200
-	_asm
-	{
-		fld	dword ptr [radians]
-		fsincos
-
-		mov edx, dword ptr [cosine]
-		mov eax, dword ptr [sine]
-
-		fstp dword ptr [edx]
-		fstp dword ptr [eax]
-	}
-#else
 	// I think, better use math.h function, instead of ^
 #if defined (__linux__) && !defined (__ANDROID__)
 	sincosf(radians, sine, cosine);
 #else
 	*sine = sinf(radians);
 	*cosine = cosf(radians);
-#endif
 #endif
 }
 

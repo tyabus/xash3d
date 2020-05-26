@@ -66,7 +66,7 @@ static int (_stdcall *pGetSockName)( SOCKET s, struct sockaddr *name, int *namel
 static int (_stdcall *pSend)( SOCKET s, const char *buf, int len, int flags );
 static int (_stdcall *pRecv)( SOCKET s, char *buf, int len, int flags );
 static int (_stdcall *pGetHostName)( char *name, int namelen );
-#ifdef HAVE_GETADDRINFO // todo: add definitions for msvc6
+#ifdef HAVE_GETADDRINFO
 int (_stdcall *pGetAddrInfo)(const char *, const char *, const struct addrinfo *, struct addrinfo **);
 #endif
 static dword (_stdcall *pNtohl)( dword netlong );

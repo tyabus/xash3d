@@ -2,10 +2,6 @@
 
    Inspired by Intel Approximate Math library, and based on the
    corresponding algorithms of the cephes math library
-
-   The default is to use the SSE1 version. If you define USE_SSE2 the
-   the SSE2 intrinsics will be used in place of the MMX intrinsics. Do
-   not expect any significant performance improvement with SSE2.
 */
 
 /* Copyright (C) 2007  Julien Pommier
