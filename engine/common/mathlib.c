@@ -23,11 +23,11 @@ GNU General Public License for more details.
 
 #ifdef XASH_VECTORIZE_SINCOS
 // Test shown that this is not so effictively
-#if defined(__SSE__) || defined(_M_IX86_FP)
-#if defined(__SSE2__) || defined(_M_IX86_FP)
-  #define USE_SSE2
- #endif
-#include "sse_mathfun.h"
+#if !defined(__SSE2__) || defined(_M_IX86_FP)
+  #error "Your CPU does not support SSE2 instructions"
+#endif
+#if defined(_M_IX86_FP)
+  #include "sse_mathfun.h"
 #endif
 #if defined(__ARM_NEON__) || defined(__NEON__)
 	#include "neon_mathfun.h"
