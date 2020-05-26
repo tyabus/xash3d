@@ -68,7 +68,7 @@ convar_t	*sv_allow_studio_attachment_angles;
 convar_t	*sv_allow_rotate_pushables;
 convar_t	*sv_allow_godmode;
 convar_t	*sv_allow_noclip;
-convar_t        *sv_allow_notarget;
+convar_t	*sv_allow_notarget;
 convar_t	*sv_allow_impulse;
 convar_t	*sv_enttools_enable;
 convar_t	*sv_enttools_maxfire;
