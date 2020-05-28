@@ -22,7 +22,7 @@ sequenceCommandLine_s g_blockScopeDefaults;
 sequenceEntry_s      *g_sequenceList      = NULL;
 sentenceGroupEntry_s *g_sentenceGroupList = NULL;
 qboolean              g_sequenceParseFileIsGlobal;
-unsigned int          g_nonGlobalSentences = 0;
+uint32_t          g_nonGlobalSentences = 0;
 char  g_sequenceParseFileName[MAX_STRING];
 int   g_lineNum    = 1;
 char *g_scan     = NULL;
@@ -1086,11 +1086,11 @@ Sequence_GetSentenceByIndex
 
 =============
 */
-sentenceEntry_s *Sequence_GetSentenceByIndex( unsigned int index )
+sentenceEntry_s *Sequence_GetSentenceByIndex( uint32_t index )
 {
 	sentenceEntry_s *sentenceEntry;
 	sentenceGroupEntry_s *groupEntry;
-	unsigned int sentenceCount=0;
+	uint32_t sentenceCount=0;
 
 	for( groupEntry = g_sentenceGroupList; groupEntry; groupEntry = groupEntry->nextEntry )
 	{
@@ -1120,8 +1120,8 @@ sentenceEntry_s *Sequence_PickSentence( const char *groupName, int pickMethod, i
 {
 	sentenceEntry_s *sentenceEntry;
 	sentenceGroupEntry_s *groupEntry;
-	unsigned int pickedIdx;
-	unsigned int entryIdx;
+	uint32_t pickedIdx;
+	uint32_t entryIdx;
 
 	groupEntry = Sequence_FindSentenceGroup( groupName );
 

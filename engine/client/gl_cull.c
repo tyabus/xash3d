@@ -34,7 +34,7 @@ R_CullBox
 Returns true if the box is completely outside the frustum
 =================
 */
-qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint clipflags )
+qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint32_t clipflags )
 {
 	uint		i, bit;
 	const mplane_t	*p;
@@ -96,7 +96,7 @@ R_CullSphere
 Returns true if the sphere is completely outside the frustum
 =================
 */
-qboolean R_CullSphere( const vec3_t centre, const float radius, const uint clipflags )
+qboolean R_CullSphere( const vec3_t centre, const float radius, const uint32_t clipflags )
 {
 	uint	i, bit;
 	const mplane_t *p;
@@ -155,7 +155,7 @@ R_CullSurface
 cull invisible surfaces
 =================
 */
-qboolean R_CullSurface( msurface_t *surf, uint clipflags )
+qboolean R_CullSurface( msurface_t *surf, uint32_t clipflags )
 {
 	mextrasurf_t	*info;
 	cl_entity_t	*e = RI.currententity;

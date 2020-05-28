@@ -796,9 +796,9 @@ void CL_SendConnectPacket( void )
 {
 	netadr_t	adr;
 	int	port;
-	unsigned int extensions = 0;
+	uint32_t extensions = 0;
 	char useragent[MAX_INFO_STRING] = "";
-	unsigned int input_devices = 0;
+	uint32_t input_devices = 0;
 
 	if( !NET_StringToAdr( cls.servername, &adr ))
 	{
@@ -1512,7 +1512,7 @@ void CL_PrepVideo( void )
 
 	// let the render dll load the map
 	Q_strncpy( mapname, cl.model_precache[1], MAX_STRING );
-	Mod_LoadWorld( mapname, (uint *)&map_checksum, cl.maxclients > 1 );
+	Mod_LoadWorld( mapname, (uint32_t *)&map_checksum, cl.maxclients > 1 );
 	cl.worldmodel = Mod_Handle( 1 ); // get world pointer
 	Cvar_SetFloat( "scr_loading", 25.0f );
 
@@ -1651,7 +1651,7 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 	// server connection
 	if( !Q_strcmp( c, "client_connect" ))
 	{
-		unsigned int extensions;
+		uint32_t extensions;
 
 		if( !CL_IsFromConnectingServer( from ) )
 			return;

@@ -266,7 +266,7 @@ Sys_Sleep
 freeze application for some time
 ================
 */
-void Sys_Sleep( unsigned int msec )
+void Sys_Sleep( uint32_t msec )
 {
 	if( !msec )
 		return;

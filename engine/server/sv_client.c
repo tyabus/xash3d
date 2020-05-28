@@ -105,7 +105,7 @@ void SV_DirectConnect( netadr_t from )
 	int		qport, version;
 	int		count = 0;
 	int		challenge;
-	unsigned int requested_extensions, extensions = 0;
+	uint32_t requested_extensions, extensions = 0;
 	edict_t		*ent;
 	char *errorpacket = "print";
 
@@ -285,7 +285,7 @@ gotnewcl:
 
 	if( sv_allow_split->integer && ( requested_extensions & NET_EXT_SPLIT ) )
 	{
-		unsigned int maxpacket = Q_atoi( Info_ValueForKey( userinfo, "cl_maxpacket") );
+		uint32_t maxpacket = Q_atoi( Info_ValueForKey( userinfo, "cl_maxpacket") );
 		extensions |= NET_EXT_SPLIT;
 		newcl->netchan.split = true;
 		if( maxpacket < 100 || maxpacket >= NET_MAX_PAYLOAD / 2 )

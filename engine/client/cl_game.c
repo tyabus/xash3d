@@ -1172,7 +1172,7 @@ void CL_ClearEdicts( void )
 
 ===============================================================================
 */
-static qboolean CL_LoadHudSprite( const char *szSpriteName, model_t *m_pSprite, qboolean mapSprite, uint texFlags )
+static qboolean CL_LoadHudSprite( const char *szSpriteName, model_t *m_pSprite, qboolean mapSprite, uint32_t texFlags )
 {
 	byte	*buf;
 	fs_offset_t	size;
@@ -1205,7 +1205,7 @@ pfnSPR_LoadExt
 
 =========
 */
-HSPRITE pfnSPR_LoadExt( const char *szPicName, uint texFlags )
+HSPRITE pfnSPR_LoadExt( const char *szPicName, uint32_t texFlags )
 {
 	char	name[64];
 	int	i;
@@ -2797,7 +2797,7 @@ pfnVGUI2DrawCharacter
 
 =============
 */
-static int GAME_EXPORT pfnVGUI2DrawCharacter( int x, int y, int number, unsigned int font )
+static int GAME_EXPORT pfnVGUI2DrawCharacter( int x, int y, int number, uint32_t font )
 {
 	if( !cls.creditsFont.valid )
 		return 0;
@@ -2824,7 +2824,7 @@ pfnVGUI2DrawCharacterAdditive
 
 =============
 */
-static int GAME_EXPORT pfnVGUI2DrawCharacterAdditive( int x, int y, int ch, int r, int g, int b, unsigned int font )
+static int GAME_EXPORT pfnVGUI2DrawCharacterAdditive( int x, int y, int ch, int r, int g, int b, uint32_t font )
 {
 	if( !hud_utf8->integer )
 		ch = Con_UtfProcessChar( ch );

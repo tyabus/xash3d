@@ -116,11 +116,11 @@ GNU General Public License for more details.
 
 	typedef unsigned char	BYTE;
 	typedef short int	    WORD;
-	typedef unsigned int    DWORD;
+	typedef uint32_t    DWORD;
 	typedef int	    LONG;
-	typedef unsigned int   ULONG;
+	typedef uint32_t   ULONG;
 	typedef int			WPARAM;
-	typedef unsigned int    LPARAM;
+	typedef uint32_t    LPARAM;
 
 	typedef void* HANDLE;
 	typedef void* HMODULE;

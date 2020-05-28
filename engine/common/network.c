@@ -369,7 +369,7 @@ struct cs {
 	void* p1;
 	int   i1, i2;
 	void *p2, *p3;
-	uint  i4;
+	uint32_t  i4;
 };
 #define mutex_lock pEnterCriticalSection
 #define mutex_unlock pLeaveCriticalSection

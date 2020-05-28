@@ -331,7 +331,7 @@ qboolean CRC32_MapFile( dword *crcvalue, const char *filename, qboolean multipla
 	return 1;
 }
 
-void MD5Transform( uint buf[4], const uint in[16] );
+void MD5Transform( uint32_t buf[4], const uint32_t in[16] );
 
 /*
 ==================
@@ -358,7 +358,7 @@ MD5Update
 Update context to reflect the concatenation of another buffer full of bytes.
 ===================
 */
-void MD5Update( MD5Context_t *ctx, const byte *buf, uint len )
+void MD5Update( MD5Context_t *ctx, const byte *buf, uint32_t len )
 {
 	uint	t;
 
@@ -384,7 +384,7 @@ void MD5Update( MD5Context_t *ctx, const byte *buf, uint len )
 		}
 
 		Q_memcpy( p, buf, t );
-		MD5Transform( ctx->buf, (uint *)ctx->in );
+		MD5Transform( ctx->buf, (uint32_t *)ctx->in );
 		buf += t;
 		len -= t;
 	}
@@ -393,7 +393,7 @@ void MD5Update( MD5Context_t *ctx, const byte *buf, uint len )
 	while( len >= 64 )
 	{
 		Q_memcpy( ctx->in, buf, 64 );
-		MD5Transform( ctx->buf, (uint *)ctx->in );
+		MD5Transform( ctx->buf, (uint32_t *)ctx->in );
 		buf += 64;
 		len -= 64;
 	}
@@ -432,7 +432,7 @@ void MD5Final( byte digest[16], MD5Context_t *ctx )
 
 		// two lots of padding: pad the first block to 64 bytes
 		Q_memset( p, 0, count );
-		MD5Transform( ctx->buf, (uint *)ctx->in );
+		MD5Transform( ctx->buf, (uint32_t *)ctx->in );
 
 		// now fill the next block with 56 bytes
 		Q_memset( ctx->in, 0, 56 );
@@ -444,10 +444,10 @@ void MD5Final( byte digest[16], MD5Context_t *ctx )
 	}
 
 	// append length in bits and transform
-	((uint *)ctx->in)[14] = ctx->bits[0];
-	((uint *)ctx->in)[15] = ctx->bits[1];
+	((uint32_t *)ctx->in)[14] = ctx->bits[0];
+	((uint32_t *)ctx->in)[15] = ctx->bits[1];
 
-	MD5Transform( ctx->buf, (uint *)ctx->in );
+	MD5Transform( ctx->buf, (uint32_t *)ctx->in );
 	Q_memcpy( digest, ctx->buf, 16 );
 	Q_memset( ctx, 0, sizeof( *ctx ));	// in case it's sensitive
 }
@@ -470,7 +470,7 @@ reflect the addition of 16 longwords of new data.  MD5Update blocks
 the data and converts bytes into longwords for this routine.
 =================
 */
-void MD5Transform( uint buf[4], const uint in[16] )
+void MD5Transform( uint32_t buf[4], const uint32_t in[16] )
 {
 	register uint	a, b, c, d;
 
@@ -553,7 +553,7 @@ void MD5Transform( uint buf[4], const uint in[16] )
 	buf[3] += d;
 }
 
-qboolean MD5_HashFile( byte digest[16], const char *pszFileName, uint seed[4] )
+qboolean MD5_HashFile( byte digest[16], const char *pszFileName, uint32_t seed[4] )
 {
 	file_t		*file;
 	char		buffer[1024];
@@ -597,7 +597,7 @@ Com_HashKey
 returns hash key for string
 =================
 */
-uint Com_HashKey( const char *string, uint hashSize )
+uint32_t Com_HashKey( const char *string, uint32_t hashSize )
 {
 	uint	i, hashKey = 0;
 

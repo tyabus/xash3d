@@ -1226,7 +1226,7 @@ static void Mod_LoadDeluxemap( void )
 
 	ASSERT( in != NULL );
 
-	if( LittleLong(*(uint *)in) != IDDELUXEMAPHEADER || *((uint *)in + 1) != DELUXEMAP_VERSION )
+	if( LittleLong(*(uint32_t *)in) != IDDELUXEMAPHEADER || *((uint32_t *)in + 1) != DELUXEMAP_VERSION )
 	{
 		MsgDev( D_ERROR, "Mod_LoadDeluxemap: %s is not a deluxemap file\n", path );
 		world.deluxedata = NULL;
@@ -2664,7 +2664,7 @@ void Mod_CalcPHS( void )
 	scan = uncompressed_vis;
 	hcount = 0;
 
-	dest = (uint *)uncompressed_pas;
+	dest = (uint32_t *)uncompressed_pas;
 
 	for( i = 0; i < num; i++, dest += rowwords, scan += rowbytes )
 	{
@@ -2684,7 +2684,7 @@ void Mod_CalcPHS( void )
 				index = ((j<<3) + k + 1);
 				if( index >= num ) continue;
 
-				src = (uint *)uncompressed_vis + index * rowwords;
+				src = (uint32_t *)uncompressed_vis + index * rowwords;
 				for( l = 0; l < rowwords; l++ )
 					dest[l] |= src[l];
 			}
@@ -3044,7 +3044,7 @@ model_t *Mod_LoadModel( model_t *mod, qboolean crash )
 	loadmodel = mod;
 
 	// call the apropriate loader
-	switch( LittleLong(*(uint *)buf) )
+	switch( LittleLong(*(uint32_t *)buf) )
 	{
 	case IDSTUDIOHEADER:
 		Mod_LoadStudioModel( mod, buf, &loaded );
@@ -3108,7 +3108,7 @@ Mod_LoadWorld
 Loads in the map and all submodels
 ==================
 */
-void Mod_LoadWorld( const char *name, uint *checksum, qboolean multiplayer )
+void Mod_LoadWorld( const char *name, uint32_t *checksum, qboolean multiplayer )
 {
 	int	i;
 

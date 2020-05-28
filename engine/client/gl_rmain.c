@@ -1487,7 +1487,7 @@ static void R_GetExtraParmsForTexture( int texture, byte *red, byte *green, byte
 	if( density ) *density = glt->fogParams[3];
 }
 
-static void GL_TextureUpdateCache( unsigned int texture )
+static void GL_TextureUpdateCache( uint32_t texture )
 {
 	gltexture_t *glt = R_GetTexture( texture );
 	if( !glt || !glt->texnum ) return;
@@ -1584,12 +1584,12 @@ static void GL_SetWorldviewProjectionMatrix( const float *glmatrix )
 	Matrix4x4_FromArrayFloatGL( RI.worldviewProjectionMatrix, glmatrix );
 }
 
-static const char *GL_TextureName( unsigned int texnum )
+static const char *GL_TextureName( uint32_t texnum )
 {
 	return R_GetTexture( texnum )->name;	
 }
 
-const byte *GL_TextureData( unsigned int texnum )
+const byte *GL_TextureData( uint32_t texnum )
 {
 	rgbdata_t *pic = R_GetTexture( texnum )->original;
 

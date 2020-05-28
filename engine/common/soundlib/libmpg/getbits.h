@@ -51,7 +51,7 @@ GNU General Public License for more details.
 		num += 8; \
 		part2remain -= 8; }
 
-static uint getbits( mpg123_handle_t *fr, int number_of_bits )
+static uint32_t getbits( mpg123_handle_t *fr, int number_of_bits )
 {
 	ulong	rval;
 

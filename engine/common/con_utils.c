@@ -1063,7 +1063,7 @@ qboolean Cmd_CheckMapsList_R( qboolean fRefresh, qboolean onlyingamedir )
 
 			Q_memset( buf, 0, MAX_SYSPATH );
 			FS_Read( f, buf, MAX_SYSPATH );
-			ver = *(uint *)buf;
+			ver = *(uint32_t *)buf;
 
 			switch( ver )
 			{

@@ -21,7 +21,7 @@ GNU General Public License for more details.
 #define TRACK_MAX_FRAMES	(ULONG_MAX / 4 / 1152)
 #define FORGET_INTERVAL	1024	// used by callers to set forget flag each <n> bytes.
 
-// use 4 bytes from buf to construct 28bit uint value and return 1; return 0 if bytes are not synchsafe
+// use 4 bytes from buf to construct 28bit uint32_t value and return 1; return 0 if bytes are not synchsafe
 #define synchsafe_to_long( buf, res ) \
 	((((buf)[0]|(buf)[1]|(buf)[2]|(buf)[3]) & 0x80) ? \
 	0 : (res = (((ulong)(buf)[0]) << 21) | (((ulong)(buf)[1]) << 14)|(((ulong)(buf)[2]) << 7)|((ulong)(buf)[3]), 1 ))

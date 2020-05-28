@@ -354,7 +354,7 @@ void R_DrawMirrors( void )
 R_RecursiveMirrorNode
 ================
 */
-void R_RecursiveMirrorNode( mnode_t *node, uint clipflags )
+void R_RecursiveMirrorNode( mnode_t *node, uint32_t clipflags )
 {
 	mextrasurf_t	*extrasurf;
 	const mplane_t	*clipplane;

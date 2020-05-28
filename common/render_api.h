@@ -180,13 +180,13 @@ typedef struct render_api_s
 
 	// Texture tools
 	int		(*GL_FindTexture)( const char *name );
-	const char*	(*GL_TextureName)( unsigned int texnum );
-	const byte*	(*GL_TextureData)( unsigned int texnum ); // may be NULL
+	const char*	(*GL_TextureName)( uint32_t texnum );
+	const byte*	(*GL_TextureData)( uint32_t texnum ); // may be NULL
 	int		(*GL_LoadTexture)( const char *name, const byte *buf, size_t size, int flags );
 	int		(*GL_CreateTexture)( const char *name, int width, int height, const void *buffer, int flags ); 
-	void		(*GL_SetTextureType)( unsigned int texnum, unsigned int type );
-	void		(*GL_TextureCacheFrame)( unsigned int texnum );
-	void		(*GL_FreeTexture)( unsigned int texnum );
+	void		(*GL_SetTextureType)( uint32_t texnum, uint32_t type );
+	void		(*GL_TextureCacheFrame)( uint32_t texnum );
+	void		(*GL_FreeTexture)( uint32_t texnum );
 
 	// Decals manipulating (draw & remove)
 	void		(*DrawSingleDecal)( struct decal_s *pDecal, struct msurface_s *fa );
@@ -203,25 +203,25 @@ typedef struct render_api_s
 	int		(*AVI_IsActive)( void *Avi );
 
 	// glState related calls (must use this instead of normal gl-calls to prevent de-synchornize local states between engine and the client)
-	void		(*GL_Bind)( int tmu, unsigned int texnum );
+	void		(*GL_Bind)( int tmu, uint32_t texnum );
 	void		(*GL_SelectTexture)( int tmu );
 	void		(*GL_LoadTextureMatrix)( const float *glmatrix );
 	void		(*GL_TexMatrixIdentity)( void );
 	void		(*GL_CleanUpTextureUnits)( int last );	// pass 0 for clear all the texture units
-	void		(*GL_TexGen)( unsigned int coord, unsigned int mode );
-	void		(*GL_TextureTarget)( unsigned int target ); // change texture unit mode without bind texture
-	void		(*GL_TexCoordArrayMode)( unsigned int texmode );
+	void		(*GL_TexGen)( uint32_t coord, uint32_t mode );
+	void		(*GL_TextureTarget)( uint32_t target ); // change texture unit mode without bind texture
+	void		(*GL_TexCoordArrayMode)( uint32_t texmode );
 	void		(*GL_Reserved0)( void );	// for potential interface expansion without broken compatibility
 	void		(*GL_Reserved1)( void );
 	void		(*GL_Reserved2)( void );
 	void		(*GL_Reserved3)( void );
 		
 	// Misc renderer functions
-	void		(*GL_DrawParticles)( const float *vieworg, const float *fwd, const float *rt, const float *up, unsigned int clipFlags );
+	void		(*GL_DrawParticles)( const float *vieworg, const float *fwd, const float *rt, const float *up, uint32_t clipFlags );
 	void		(*EnvShot)( const float *vieworg, const char *name, qboolean skyshot, int shotsize ); // creates a cubemap or skybox into gfx\env folder
 	int		(*COM_CompareFileTime)( const char *filename1, const char *filename2, int *iCompare );
 	void		(*Host_Error)( const char *error, ... ); // cause Host Error
-	int		(*SPR_LoadExt)( const char *szPicName, unsigned int texFlags ); // extended version of SPR_Load
+	int		(*SPR_LoadExt)( const char *szPicName, uint32_t texFlags ); // extended version of SPR_Load
 	void		(*TessPolygon)( struct msurface_s *surf, struct model_s *mod, float tessSize );
 	struct mstudiotex_s *( *StudioGetTexture )( struct cl_entity_s *e );
 	const struct ref_overview_s *( *GetOverviewParms )( void );

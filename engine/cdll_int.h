@@ -281,8 +281,8 @@ typedef struct cl_enginefuncs_s
 	int		(*pfnDrawString)( int x, int y, const char *str, int r, int g, int b );
 	int		(*pfnDrawStringReverse)( int x, int y, const char *str, int r, int g, int b );
 	const char	*(*LocalPlayerInfo_ValueForKey)( const char* key );
-	int		(*pfnVGUI2DrawCharacter)( int x, int y, int ch, unsigned int font );
-	int		(*pfnVGUI2DrawCharacterAdditive)( int x, int y, int ch, int r, int g, int b, unsigned int font );
+	int		(*pfnVGUI2DrawCharacter)( int x, int y, int ch, uint32_t font );
+	int		(*pfnVGUI2DrawCharacterAdditive)( int x, int y, int ch, int r, int g, int b, uint32_t font );
 	unsigned int	(*pfnGetApproxWavePlayLen)( char *filename );
 	void*		(*GetCareerGameUI)( void );	// g-cont. !!!! potential crash-point!
 	void		(*Cvar_Set)( char *name, char *value );

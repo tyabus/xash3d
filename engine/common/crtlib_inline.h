@@ -31,9 +31,9 @@
 xash_force_inline NOASAN int Q_strlen( const char *string )
 {
 	register const char	*pchr = string;
-	register const unsigned int *plongword;
+	register const uint32_t *plongword;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( !string ) return 0;
 
@@ -44,12 +44,12 @@ xash_force_inline NOASAN int Q_strlen( const char *string )
 			return pchr - string;
 #endif
 
-	plongword = ( const unsigned int * ) pchr;
+	plongword = ( const uint32_t * ) pchr;
 
 	// plongword is aligned now, read by 4 bytes
 	while( true )
 	{
-		register unsigned int longword = *plongword++;
+		register uint32_t longword = *plongword++;
 
 		// if magic check failed,
 		if( HAS_NULL(longword) )
@@ -134,11 +134,11 @@ xash_force_inline size_t Q_strcpy_unaligned( char *dst, const char *src )
 xash_force_inline NOASAN size_t Q_strncpy( char *dst, const char *src, size_t size )
 {
 	register const char	*pchr = src;
-	register const unsigned int *plongword;
-	register unsigned int *pdst;
-	register unsigned int len;
+	register const uint32_t *plongword;
+	register uint32_t *pdst;
+	register uint32_t len;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( !dst || !src || !size )
 		return 0;
@@ -162,14 +162,14 @@ xash_force_inline NOASAN size_t Q_strncpy( char *dst, const char *src, size_t si
 			return len;
 	}
 #endif
-	plongword = ( const unsigned int * ) pchr;
-	pdst = ( unsigned int * ) dst;
+	plongword = ( const uint32_t * ) pchr;
+	pdst = ( uint32_t * ) dst;
 
 	// plongword is aligned now, copy by 4 bytes
 
 	while( true )
 	{
-		register unsigned int longword = *plongword++;
+		register uint32_t longword = *plongword++;
 
 		// if magic check failed
 		if( HAS_NULL(longword) || (size - len <= 4) )
@@ -202,11 +202,11 @@ xash_force_inline NOASAN size_t Q_strncpy( char *dst, const char *src, size_t si
 xash_force_inline NOASAN size_t Q_strncat( char *dst, const char *src, size_t size )
 {
 	register const char	*pchr = src;
-	register const unsigned int *plongword;
-	register unsigned int *pdst;
-	register unsigned int len;
+	register const uint32_t *plongword;
+	register uint32_t *pdst;
+	register uint32_t len;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( !dst || !src || !size )
 		return 0;
@@ -233,13 +233,13 @@ xash_force_inline NOASAN size_t Q_strncat( char *dst, const char *src, size_t si
 	}
 #endif
 
-	plongword = ( const unsigned int * ) pchr;
-	pdst = ( unsigned int * ) dst;
+	plongword = ( const uint32_t * ) pchr;
+	pdst = ( uint32_t * ) dst;
 	// plongword is aligned now, copy by 4 bytes
 
 	while( true )
 	{
-		register unsigned int longword = *plongword++;
+		register uint32_t longword = *plongword++;
 
 		// if magic check failed
 		if( HAS_NULL(longword) || (size - len < 4) )
@@ -302,11 +302,11 @@ xash_force_inline size_t Q_strncat( char *dst, const char *src, size_t size )
 xash_force_inline NOASAN size_t Q_strcpy( char *dst, const char *src )
 {
 	register const char	*pchr = src;
-	register const unsigned int *plongword;
-	register unsigned int *pdst;
-	register unsigned int len;
+	register const uint32_t *plongword;
+	register uint32_t *pdst;
+	register uint32_t len;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( !dst || !src )
 		return 0;
@@ -325,14 +325,14 @@ xash_force_inline NOASAN size_t Q_strcpy( char *dst, const char *src )
 			return len;
 	}
 #endif
-	plongword = ( const unsigned int * ) pchr;
-	pdst = ( unsigned int * ) dst;
+	plongword = ( const uint32_t * ) pchr;
+	pdst = ( uint32_t * ) dst;
 
 	// plongword is aligned now, copy by 4 bytes
 
 	while( true )
 	{
-		register unsigned int longword = *plongword++;
+		register uint32_t longword = *plongword++;
 
 		// if magic check failed
 		if( HAS_NULL(longword) )
@@ -361,11 +361,11 @@ xash_force_inline NOASAN size_t Q_strcpy( char *dst, const char *src )
 xash_force_inline NOASAN size_t Q_strcat( char *dst, const char *src )
 {
 	register const char	*pchr = src;
-	register const unsigned int *plongword;
-	register unsigned int *pdst;
-	register unsigned int len;
+	register const uint32_t *plongword;
+	register uint32_t *pdst;
+	register uint32_t len;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( !dst || !src )
 		return 0;
@@ -387,13 +387,13 @@ xash_force_inline NOASAN size_t Q_strcat( char *dst, const char *src )
 	}
 #endif
 
-	plongword = ( const unsigned int * ) pchr;
-	pdst = ( unsigned int * ) dst;
+	plongword = ( const uint32_t * ) pchr;
+	pdst = ( uint32_t * ) dst;
 	// plongword is aligned now, copy by 4 bytes
 
 	while( true )
 	{
-		register unsigned int longword = *plongword++;
+		register uint32_t longword = *plongword++;
 
 		// if magic check failed
 		if( HAS_NULL(longword) )
@@ -551,7 +551,7 @@ xash_force_inline char *Q_strrchr( const char *s, char c )
 //char *last1, *last2;
 xash_force_inline int Q_strncmp_unaligned( const char *s1, const char *s2, int n )
 {
-	register unsigned int c1, c2;
+	register uint32_t c1, c2;
 
 	do {
 		c1 = (unsigned int)(byte)*s1++;
@@ -570,7 +570,7 @@ xash_force_inline int Q_strncmp_unaligned( const char *s1, const char *s2, int n
 
 xash_force_inline int Q_strnicmp_unaligned( const char *s1, const char *s2, int n )
 {
-	register unsigned int c1, c2;
+	register uint32_t c1, c2;
 
 	do {
 		c1 = (unsigned int)(byte)*s1++;
@@ -592,7 +592,7 @@ xash_force_inline int Q_strnicmp_unaligned( const char *s1, const char *s2, int 
 
 xash_force_inline int Q_strcmp_unaligned( const char *s1, const char *s2 )
 {
-	register unsigned int c1, c2;
+	register uint32_t c1, c2;
 
 	do {
 		c1 = (unsigned int)(byte)*s1++;
@@ -609,7 +609,7 @@ xash_force_inline int Q_strcmp_unaligned( const char *s1, const char *s2 )
 
 xash_force_inline int Q_stricmp_unaligned( const char *s1, const char *s2 )
 {
-	register unsigned int c1, c2;
+	register uint32_t c1, c2;
 
 	do {
 		c1 = (unsigned int)(byte)*s1++;
@@ -629,10 +629,10 @@ xash_force_inline int Q_stricmp_unaligned( const char *s1, const char *s2 )
 
 xash_force_inline NOASAN int Q_strnicmp( const char *s1, const char *s2, int n )
 {
-	register const unsigned int *p1, *p2;
+	register const uint32_t *p1, *p2;
 	register int len;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( s1 == NULL )
 	{
@@ -653,7 +653,7 @@ xash_force_inline NOASAN int Q_strnicmp( const char *s1, const char *s2, int n )
 
 	// first, compare unaligned bytes
 	{
-		register unsigned int c1, c2;
+		register uint32_t c1, c2;
 
 		while( IS_UNALIGNED(s1) )
 		{
@@ -674,13 +674,13 @@ xash_force_inline NOASAN int Q_strnicmp( const char *s1, const char *s2, int n )
 	}
 #endif
 
-	p1 = ( const unsigned int * ) s1;
-	p2 = ( const unsigned int * ) s2;
+	p1 = ( const uint32_t * ) s1;
+	p2 = ( const uint32_t * ) s2;
 	// pointers is aligned now, compare by 4 bytes
 
 	while( true )
 	{
-		register unsigned int c1 = *p1, c2 = *p2;
+		register uint32_t c1 = *p1, c2 = *p2;
 
 		// if magic check failed
 		if( HAS_NULL(c1) || HAS_NULL(c2) || ( n - len < 4 ) || ( c1 != c2 ) )
@@ -698,10 +698,10 @@ xash_force_inline NOASAN int Q_strnicmp( const char *s1, const char *s2, int n )
 
 xash_force_inline NOASAN int Q_strncmp( const char *s1, const char *s2, int n )
 {
-	register const unsigned int *p1, *p2;
+	register const uint32_t *p1, *p2;
 	register int len;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( s1 == NULL )
 	{
@@ -721,7 +721,7 @@ xash_force_inline NOASAN int Q_strncmp( const char *s1, const char *s2, int n )
 
 	// first, compare unaligned bytes
 	{
-		register unsigned int c1, c2;
+		register uint32_t c1, c2;
 
 		while( IS_UNALIGNED(s1) )
 		{
@@ -736,13 +736,13 @@ xash_force_inline NOASAN int Q_strncmp( const char *s1, const char *s2, int n )
 		}
 	}
 #endif
-	p1 = ( const unsigned int * ) s1;
-	p2 = ( const unsigned int * ) s2;
+	p1 = ( const uint32_t * ) s1;
+	p2 = ( const uint32_t * ) s2;
 	// pointers is aligned now, compare by 4 bytes
 
 	while( true )
 	{
-		register unsigned int c1 = *p1, c2 = *p2;
+		register uint32_t c1 = *p1, c2 = *p2;
 
 		// if magic check failed
 		if( HAS_NULL(c1) || HAS_NULL(c2) || ( n - len < 4 ) || ( c1 != c2 ) )
@@ -760,9 +760,9 @@ xash_force_inline NOASAN int Q_strncmp( const char *s1, const char *s2, int n )
 
 xash_force_inline NOASAN int Q_stricmp( const char *s1, const char *s2 )
 {
-	register const unsigned int *p1, *p2;
+	register const uint32_t *p1, *p2;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( s1 == NULL )
 	{
@@ -781,7 +781,7 @@ xash_force_inline NOASAN int Q_stricmp( const char *s1, const char *s2 )
 
 	// first, compare unaligned bytes
 	{
-		register unsigned int c1, c2;
+		register uint32_t c1, c2;
 
 		while( IS_UNALIGNED(s1) )
 		{
@@ -800,13 +800,13 @@ xash_force_inline NOASAN int Q_stricmp( const char *s1, const char *s2 )
 	}
 #endif
 
-	p1 = ( const unsigned int * ) s1;
-	p2 = ( const unsigned int * ) s2;
+	p1 = ( const uint32_t * ) s1;
+	p2 = ( const uint32_t * ) s2;
 	// pointers is aligned now, compare by 4 bytes
 
 	while( true )
 	{
-		register unsigned int c1 = *p1, c2 = *p2;
+		register uint32_t c1 = *p1, c2 = *p2;
 
 		// if magic check failed
 		if( HAS_NULL(c1) || HAS_NULL(c2) || ( c1 != c2 ) )
@@ -823,9 +823,9 @@ xash_force_inline NOASAN int Q_stricmp( const char *s1, const char *s2 )
 
 xash_force_inline NOASAN int Q_strcmp( const char *s1, const char *s2 )
 {
-	register const unsigned int *p1, *p2;
+	register const uint32_t *p1, *p2;
 
-	const unsigned int himagic = 0x80808080, lomagic = 0x01010101;
+	const uint32_t himagic = 0x80808080, lomagic = 0x01010101;
 
 	if( s1 == NULL )
 	{
@@ -844,7 +844,7 @@ xash_force_inline NOASAN int Q_strcmp( const char *s1, const char *s2 )
 
 	// first, compare unaligned bytes
 	{
-		register unsigned int c1, c2;
+		register uint32_t c1, c2;
 
 		while( IS_UNALIGNED(s1) )
 		{
@@ -857,13 +857,13 @@ xash_force_inline NOASAN int Q_strcmp( const char *s1, const char *s2 )
 		}
 	}
 #endif
-	p1 = ( const unsigned int * ) s1;
-	p2 = ( const unsigned int * ) s2;
+	p1 = ( const uint32_t * ) s1;
+	p2 = ( const uint32_t * ) s2;
 	// pointers is aligned now, compare by 4 bytes
 
 	while( true )
 	{
-		register unsigned int c1 = *p1, c2 = *p2;
+		register uint32_t c1 = *p1, c2 = *p2;
 
 		// if magic check failed
 		if( HAS_NULL(c1) || HAS_NULL(c2) || ( c1 != c2 ) )

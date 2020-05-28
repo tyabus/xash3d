@@ -63,7 +63,7 @@ void SND_MoveMouth8( channel_t *ch, wavdata_t *pSource, int count )
 	mouth_t		*pMouth = NULL;
 	int		savg, data;
 	int		scount, pos = 0;
-	uint 		i;
+	uint32_t 		i;
 
 	clientEntity = CL_GetEntityByIndex( ch->entnum );
 	if( !clientEntity ) return;
@@ -111,7 +111,7 @@ void SND_MoveMouth16( channel_t *ch, wavdata_t *pSource, int count )
 	mouth_t		*pMouth = NULL;
 	int		savg, data;
 	int		scount, pos = 0;
-	uint 		i;
+	uint32_t 		i;
 
 	clientEntity = CL_GetEntityByIndex( ch->entnum );
 	if( !clientEntity ) return;

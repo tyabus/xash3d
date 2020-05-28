@@ -93,7 +93,7 @@ byte *Sound_Copy( size_t size )
 	return out; 
 }
 
-uint GAME_EXPORT Sound_GetApproxWavePlayLen( const char *filepath )
+uint32_t GAME_EXPORT Sound_GetApproxWavePlayLen( const char *filepath )
 {
 	file_t	*f;
 	wavehdr_t	wav;
@@ -252,7 +252,7 @@ qboolean Sound_ResampleInternal( wavdata_t *sc, int inrate, int inwidth, int out
 	return true;
 }
 
-qboolean Sound_Process( wavdata_t **wav, int rate, int width, uint flags )
+qboolean Sound_Process( wavdata_t **wav, int rate, int width, uint32_t flags )
 {
 	wavdata_t	*snd = *wav;
 	qboolean	result = true;

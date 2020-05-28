@@ -29,7 +29,7 @@ qboolean Image_CheckDXT3Alpha( dds_t *hdr, byte *fin )
 		{
 			alpha = fin;
 			fin += 8;
-			bitmask = ((uint *)fin)[1];
+			bitmask = ((uint32_t *)fin)[1];
 			fin += 8;
 
 			for( j = 0; j < 4; j++ )
@@ -69,7 +69,7 @@ qboolean Image_CheckDXT5Alpha( dds_t *hdr, byte *fin )
 			alphamask = fin + 2;
 			fin += 8;
 
-			bitmask = ((uint *)fin)[1];
+			bitmask = ((uint32_t *)fin)[1];
 			fin += 8;
 
 			// last three bytes
@@ -96,7 +96,7 @@ qboolean Image_CheckDXT5Alpha( dds_t *hdr, byte *fin )
 		
 void Image_DXTGetPixelFormat( dds_t *hdr )
 {
-	uint bits = hdr->dsPixelFormat.dwRGBBitCount;
+	uint32_t bits = hdr->dsPixelFormat.dwRGBBitCount;
 
 	// all volume textures I've seem so far didn't have the DDS_COMPLEX flag set,
 	// even though this is normally required. But because noone does set it,
@@ -187,7 +187,7 @@ size_t Image_DXTCalcMipmapSize( dds_t *hdr )
 	return buffsize;
 }
 
-uint Image_DXTCalcSize( const char *name, dds_t *hdr, size_t filesize ) 
+uint32_t Image_DXTCalcSize( const char *name, dds_t *hdr, size_t filesize ) 
 {
 	size_t buffsize = 0;
 	int w = image.width;
@@ -254,7 +254,7 @@ qboolean Image_LoadDDS( const char *name, const byte *buffer, size_t filesize )
 	if( header.dwIdent != DDSHEADER )
 		return false; // it's not a dds file, just skip it
 
-	if( header.dwSize != sizeof( dds_t ) - sizeof( uint )) // size of the structure (minus MagicNum)
+	if( header.dwSize != sizeof( dds_t ) - sizeof( uint32_t )) // size of the structure (minus MagicNum)
 	{
 		MsgDev( D_ERROR, "Image_LoadDDS: (%s) have corrupted header\n", name );
 		return false;

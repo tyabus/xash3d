@@ -22,8 +22,8 @@ typedef struct ipfilter_s
 	float time;
 	float endTime; // -1 for permanent ban
 	struct ipfilter_s *next;
-	uint mask;
-	uint ip;
+	uint32_t mask;
+	uint32_t ip;
 } ipfilter_t;
 
 ipfilter_t *ipfilter = NULL;
@@ -67,7 +67,7 @@ void SV_RemoveID( const char *id )
 	}
 }
 
-void SV_RemoveIP( uint ip, uint mask )
+void SV_RemoveIP( uint32_t ip, uint32_t mask )
 {
 	ipfilter_t *filter, *prevfilter = NULL;
 
@@ -124,7 +124,7 @@ qboolean SV_CheckID( const char *id )
 
 qboolean SV_CheckIP( netadr_t *addr )
 {
-	uint ip = addr->ip[0] << 24 | addr->ip[1] << 16 | addr->ip[2] << 8 | addr->ip[3];
+	uint32_t ip = addr->ip[0] << 24 | addr->ip[1] << 16 | addr->ip[2] << 8 | addr->ip[3];
 	qboolean ret = false;
 	ipfilter_t *filter;
 
@@ -132,8 +132,8 @@ qboolean SV_CheckIP( netadr_t *addr )
 	{
 		while( filter->endTime && host.realtime > filter->endTime )
 		{
-			uint rip = filter->ip;
-			uint rmask = filter->mask;
+			uint32_t rip = filter->ip;
+			uint32_t rmask = filter->mask;
 			SV_RemoveIP( rip, rmask );
 			filter = filter->next;
 			if( !filter )
@@ -285,7 +285,7 @@ void SV_WriteID_f( void )
 	FS_Close( f );
 }
 
-static qboolean StringToIP( const char *str, const char *maskstr, uint *outip, uint *outmask ) 
+static qboolean StringToIP( const char *str, const char *maskstr, uint32_t *outip, uint32_t *outmask ) 
 {
 	byte ip[4] = {0};
 	byte mask[4] = {0};
@@ -341,7 +341,7 @@ void SV_AddIP_f( void )
 	float time = Q_atof( Cmd_Argv( 1 ) );
 	char *ipstr = Cmd_Argv( 2 );
 	char *maskstr = Cmd_Argv( 3 );
-	uint ip, mask;
+	uint32_t ip, mask;
 	ipfilter_t *filter;
 
 	if( time )
@@ -384,7 +384,7 @@ void SV_ListIP_f( void )
 }
 void SV_RemoveIP_f( void )
 {
-	uint ip, mask;
+	uint32_t ip, mask;
 
 	if( !StringToIP( Cmd_Argv(1), Cmd_Argv(2), &ip, &mask ) )
 	{

@@ -30,6 +30,7 @@ typedef struct mpg123_handle_s	mpg123_handle_t;
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "fmt123.h"
 
 #ifndef FALSE

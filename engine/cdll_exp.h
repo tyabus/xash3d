@@ -47,7 +47,7 @@ typedef struct cldll_func_s
 	void	(*pfnDrawNormalTriangles)( void );
 	void	(*pfnDrawTransparentTriangles)( void );
 	void	(*pfnStudioEvent)( const struct mstudioevent_s *event, const cl_entity_t *entity );
-	void	(*pfnPostRunCmd)( struct local_state_s *from, struct local_state_s *to, usercmd_t *cmd, int runfuncs, double time, unsigned int random_seed );
+	void	(*pfnPostRunCmd)( struct local_state_s *from, struct local_state_s *to, usercmd_t *cmd, int runfuncs, double time, uint32_t random_seed );
 	void	(*pfnShutdown)( void );
 	void	(*pfnTxferLocalOverrides)( entity_state_t *state, const clientdata_t *client );
 	void	(*pfnProcessPlayerState)( entity_state_t *dst, const entity_state_t *src );

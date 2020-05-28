@@ -23,9 +23,9 @@ convar_t *gl_round_down;
 #define LERPBYTE( i )	r = resamplerow1[i]; out[i] = (byte)(((( resamplerow2[i] - r ) * lerp)>>16 ) + r )
 #define FILTER_SIZE		5
 
-uint d_8toQ1table[256];
-uint d_8toHLtable[256];
-uint d_8to24table[256];
+uint32_t d_8toQ1table[256];
+uint32_t d_8toHLtable[256];
+uint32_t d_8to24table[256];
 
 qboolean q1palette_init = false;
 qboolean hlpalette_init = false;
@@ -223,7 +223,7 @@ qboolean Image_CheckFlag( int bit )
 Image_SetForceFlags
 =================
 */
-void Image_SetForceFlags( uint flags )
+void Image_SetForceFlags( uint32_t flags )
 {
 	image.force_flags = flags;
 }
@@ -233,7 +233,7 @@ void Image_SetForceFlags( uint flags )
 Image_AddCmdFlags
 =================
 */
-void Image_AddCmdFlags( uint flags )
+void Image_AddCmdFlags( uint32_t flags )
 {
 	image.cmd_flags |= flags;
 }
@@ -286,7 +286,7 @@ int Image_ComparePalette( const byte *pal )
 	return PAL_CUSTOM;		
 }
 
-void Image_SetPalette( const byte *pal, uint *d_table )
+void Image_SetPalette( const byte *pal, uint32_t *d_table )
 {
 	int	i;
 	byte	rgba[4];
@@ -301,7 +301,7 @@ void Image_SetPalette( const byte *pal, uint *d_table )
 			rgba[1] = pal[766];
 			rgba[2] = pal[767];
 			rgba[3] = i;
-			d_table[i] = *(uint *)rgba;
+			d_table[i] = *(uint32_t *)rgba;
 		}
 		break;
 	case LUMP_TRANSPARENT:
@@ -311,7 +311,7 @@ void Image_SetPalette( const byte *pal, uint *d_table )
 			rgba[1] = pal[i*3+1];
 			rgba[2] = pal[i*3+2];
 			rgba[3] = pal[i] == 255 ? pal[i] : 0xFF;
-			d_table[i] = *(uint *)rgba;
+			d_table[i] = *(uint32_t *)rgba;
 		}
 		break;
 	case LUMP_QFONT:
@@ -321,7 +321,7 @@ void Image_SetPalette( const byte *pal, uint *d_table )
 			rgba[1] = pal[i*3+1];
 			rgba[2] = pal[i*3+2];
 			rgba[3] = 0xFF;
-			d_table[i] = *(uint *)rgba;
+			d_table[i] = *(uint32_t *)rgba;
 		}
 		break;
 	case LUMP_NORMAL:
@@ -331,7 +331,7 @@ void Image_SetPalette( const byte *pal, uint *d_table )
 			rgba[1] = pal[i*3+1];
 			rgba[2] = pal[i*3+2];
 			rgba[3] = 0xFF;
-			d_table[i] = *(uint *)rgba;
+			d_table[i] = *(uint32_t *)rgba;
 		}
 		break;
 	case LUMP_EXTENDED:
@@ -341,7 +341,7 @@ void Image_SetPalette( const byte *pal, uint *d_table )
 			rgba[1] = pal[i*4+1];
 			rgba[2] = pal[i*4+2];
 			rgba[3] = pal[i*4+3];
-			d_table[i] = *(uint *)rgba;
+			d_table[i] = *(uint32_t *)rgba;
 		}
 		break;	
 	}
@@ -1300,7 +1300,7 @@ qboolean Image_Decompress( const byte *data )
 		else Image_GetPaletteLMP( image.palette, LUMP_NORMAL );
 		// intentional falltrough
 	case PF_INDEXED_32:
-		if( !image.d_currentpal ) image.d_currentpal = (uint *)image.palette;
+		if( !image.d_currentpal ) image.d_currentpal = (uint32_t *)image.palette;
 		if( !Image_Copy8bitRGBA( fin, fout, image.width * image.height ))
 			return false;
 		break;
@@ -1447,8 +1447,8 @@ qboolean Image_ApplyFilter( rgbdata_t *pic, int filter, float factor, float bias
 
 	size = image.width * image.height * 4;
 	image.tempbuffer = Mem_Realloc( host.imagepool, image.tempbuffer, size );
-	fout = (uint *)image.tempbuffer;
-	fin = (uint *)pic->buffer;
+	fout = (uint32_t *)image.tempbuffer;
+	fin = (uint32_t *)pic->buffer;
 
 	for( x = 0; x < image.width; x++ ) 
 	{ 
@@ -1545,7 +1545,7 @@ qboolean Image_ApplyFilter( rgbdata_t *pic, int filter, float factor, float bias
 	return true;
 }
 
-qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uint flags, imgfilter_t *filter )
+qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uint32_t flags, imgfilter_t *filter )
 {
 	rgbdata_t	*pic = *pix;
 	qboolean	result = true;
@@ -1621,7 +1621,7 @@ qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uin
 
 		if( flags & IMAGE_ROUNDFILLER )
 	         		out = Image_FloodInternal( pic->buffer, pic->width, pic->height, w, h, pic->type, &resampled );
-		else out = Image_ResampleInternal((uint *)pic->buffer, pic->width, pic->height, w, h, pic->type, &resampled );
+		else out = Image_ResampleInternal((uint32_t *)pic->buffer, pic->width, pic->height, w, h, pic->type, &resampled );
 
 		if( resampled ) // resampled or filled
 		{

@@ -200,6 +200,6 @@ void Sequence_OnLevelLoad( const char* mapName );
 sentenceEntry_s* Sequence_PickSentence( const char *groupName, int pickMethod, int *picked );
 void Sequence_Init( void );
 void Sequence_PurgeEntries( qboolean purgeGlobals );
-sentenceEntry_s *Sequence_GetSentenceByIndex( unsigned int index );
+sentenceEntry_s *Sequence_GetSentenceByIndex( uint32_t index );
 
 #endif // _INCLUDE_SEQUENCE_H_

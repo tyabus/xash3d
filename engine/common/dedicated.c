@@ -283,7 +283,7 @@ void Con_NXPrintf( struct  con_nprint_s *info, char *fmt, ... )
 
 }
 
-const byte *GL_TextureData( unsigned int texnum )
+const byte *GL_TextureData( uint32_t texnum )
 {
 	return NULL;
 }
@@ -643,7 +643,7 @@ Mod_LoadSpriteModel
 load sprite model
 ====================
 */
-void Mod_LoadSpriteModel( model_t *mod, byte *buffer, qboolean *loaded, uint texFlags )
+void Mod_LoadSpriteModel( model_t *mod, byte *buffer, qboolean *loaded, uint32_t texFlags )
 {
 	dsprite_t		pin;
 	short		numi;

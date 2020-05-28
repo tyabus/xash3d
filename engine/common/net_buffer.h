@@ -71,9 +71,9 @@ void BF_Clear( sizebuf_t *bf );
 
 // Bit-write functions
 void BF_WriteOneBit( sizebuf_t *bf, int nValue );
-void BF_WriteUBitLongExt( sizebuf_t *bf, uint curData, int numbits, qboolean bCheckRange );
+void BF_WriteUBitLongExt( sizebuf_t *bf, uint32_t curData, int numbits, qboolean bCheckRange );
 void BF_WriteSBitLong( sizebuf_t *bf, int data, int numbits );
-void BF_WriteBitLong( sizebuf_t *bf, uint data, int numbits, qboolean bSigned );
+void BF_WriteBitLong( sizebuf_t *bf, uint32_t data, int numbits, qboolean bSigned );
 qboolean BF_WriteBits( sizebuf_t *bf, const void *pData, int nBits );
 void BF_WriteBitAngle( sizebuf_t *bf, float fAngle, int numbits );
 void BF_WriteBitFloat( sizebuf_t *bf, float val );
@@ -106,8 +106,8 @@ float BF_ReadBitFloat( sizebuf_t *bf );
 qboolean BF_ReadBits( sizebuf_t *bf, void *pOutData, int nBits );
 float BF_ReadBitAngle( sizebuf_t *bf, int numbits );
 int BF_ReadSBitLong( sizebuf_t *bf, int numbits );
-uint BF_ReadUBitLong( sizebuf_t *bf, int numbits );
-uint BF_ReadBitLong( sizebuf_t *bf, int numbits, qboolean bSigned );
+uint32_t BF_ReadUBitLong( sizebuf_t *bf, int numbits );
+uint32_t BF_ReadBitLong( sizebuf_t *bf, int numbits, qboolean bSigned );
 
 // Byte-read functions
 int BF_ReadChar( sizebuf_t *bf );

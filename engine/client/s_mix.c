@@ -293,7 +293,7 @@ void S_PaintStereoFrom16( portable_samplepair_t *pbuf, int *volume, short *pData
 	int	left, right;
 	int	i;
 
-	data = (uint *)pData;
+	data = (uint32_t *)pData;
 		
 	for( i = 0; i < outCount; i++, data++ )
 	{
@@ -308,7 +308,7 @@ void S_PaintStereoFrom16( portable_samplepair_t *pbuf, int *volume, short *pData
 	}
 }
 
-void S_Mix8Mono( portable_samplepair_t *pbuf, int *volume, byte *pData, int inputOffset, uint rateScale, int outCount )
+void S_Mix8Mono( portable_samplepair_t *pbuf, int *volume, byte *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
 	uint	sampleFrac = inputOffset;
@@ -334,7 +334,7 @@ void S_Mix8Mono( portable_samplepair_t *pbuf, int *volume, byte *pData, int inpu
 	}
 }
 
-void S_Mix8Stereo( portable_samplepair_t *pbuf, int *volume, byte *pData, int inputOffset, uint rateScale, int outCount )
+void S_Mix8Stereo( portable_samplepair_t *pbuf, int *volume, byte *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
 	uint	sampleFrac = inputOffset;
@@ -360,7 +360,7 @@ void S_Mix8Stereo( portable_samplepair_t *pbuf, int *volume, byte *pData, int in
 	}
 }
 
-void S_Mix16Mono( portable_samplepair_t *pbuf, int *volume, short *pData, int inputOffset, uint rateScale, int outCount )
+void S_Mix16Mono( portable_samplepair_t *pbuf, int *volume, short *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
 	uint	sampleFrac = inputOffset;
@@ -382,7 +382,7 @@ void S_Mix16Mono( portable_samplepair_t *pbuf, int *volume, short *pData, int in
 	}
 }
 
-void S_Mix16Stereo( portable_samplepair_t *pbuf, int *volume, short *pData, int inputOffset, uint rateScale, int outCount )
+void S_Mix16Stereo( portable_samplepair_t *pbuf, int *volume, short *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
 	uint	sampleFrac = inputOffset;
@@ -404,7 +404,7 @@ void S_Mix16Stereo( portable_samplepair_t *pbuf, int *volume, short *pData, int 
 	}
 }
 
-void S_MixChannel( channel_t *pChannel, void *pData, int outputOffset, int inputOffset, uint fracRate, int outCount )
+void S_MixChannel( channel_t *pChannel, void *pData, int outputOffset, int inputOffset, uint32_t fracRate, int outCount )
 {
 	int			pvol[CCHANVOLUMES];
 	paintbuffer_t		*ppaint = MIX_GetCurrentPaintbufferPtr();

@@ -16,7 +16,7 @@ GNU General Public License for more details.
 #include "mpg123.h"
 #include <math.h>
 
-static void *aligned_pointer( void *base, uint alignment )
+static void *aligned_pointer( void *base, uint32_t alignment )
 {
 	// work in unsigned integer realm, explicitly.
 	// tricking the compiler into integer operations like % by invoking base-NULL is dangerous:

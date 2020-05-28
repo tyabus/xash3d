@@ -643,7 +643,7 @@ void SV_WriteEntityPatch( const char *filename )
 
 	Q_memset( buf, 0, MAX_SYSPATH );
 	FS_Read( f, buf, MAX_SYSPATH );
-	ver = *(uint *)buf;
+	ver = *(uint32_t *)buf;
 
 	switch( ver )
 	{
@@ -711,7 +711,7 @@ char *SV_ReadEntityScript( const char *filename, int *flags )
 
 	Q_memset( buf, 0, MAX_SYSPATH );
 	FS_Read( f, buf, MAX_SYSPATH );
-	ver = LittleLong(*(uint *)buf);
+	ver = LittleLong(*(uint32_t *)buf);
 
 	switch( ver )
 	{
@@ -3193,7 +3193,7 @@ string_t GAME_EXPORT SV_AllocString( const char *szValue )
 
 	if( cmp )
 	{
-		uint len = Q_strlen( szValue );
+		uint32_t len = Q_strlen( szValue );
 
 		if( str64.plast - str64.poldstringbase + len + 2 > str64.maxstringarray )
 		{
@@ -3710,7 +3710,7 @@ pfnGetPlayerWONId
 
 =============
 */
-uint GAME_EXPORT pfnGetPlayerWONId( edict_t *e )
+uint32_t GAME_EXPORT pfnGetPlayerWONId( edict_t *e )
 {
 	sv_client_t	*cl;
 	int		i;

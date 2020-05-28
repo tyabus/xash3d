@@ -41,7 +41,7 @@ int ModuleName( HANDLE process, char *name, void *address, int len )
 {
 	DWORD_PTR   baseAddress = 0;
 	static HMODULE     *moduleArray;
-	static unsigned int moduleCount;
+	static uint32_t moduleCount;
 	LPBYTE      moduleArrayBytes;
 	DWORD       bytesRequired;
 	int i;

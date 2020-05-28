@@ -180,8 +180,8 @@ void Evdev_Autodetect_f( void )
 	{
 		int fd;
 		string path;
-		uint types[EV_MAX] = {0};
-		uint codes[( KEY_MAX - 1 ) / 32 + 1] = {0};
+		uint32_t types[EV_MAX] = {0};
+		uint32_t codes[( KEY_MAX - 1 ) / 32 + 1] = {0};
 		qboolean hasbtnmouse;
 
 		if( evdev.devices >= MAX_EVDEV_DEVICES )
@@ -301,7 +301,7 @@ Evdev_CloseDevice_f
 */
 void Evdev_CloseDevice_f ( void )
 {
-	uint i;
+	uint32_t i;
 	char *arg;
 
 	if( Cmd_Argc() < 2 )
@@ -775,7 +775,7 @@ Common function for engine joystick movement
 #define S (1U << 5)	// Side stop
 void IN_JoyAppendMove( usercmd_t *cmd, float forwardmove, float sidemove )
 {
-	static uint moveflags = T | S;
+	static uint32_t moveflags = T | S;
 		
 	if( forwardmove ) cmd->forwardmove  = forwardmove * cl_forwardspeed->value;
 	if( sidemove ) cmd->sidemove  = sidemove * cl_sidespeed->value;

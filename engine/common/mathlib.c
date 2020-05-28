@@ -48,7 +48,7 @@ float anglemod( const float a )
 
 word FloatToHalf( float v )
 {
-	unsigned int	i = *((unsigned int *)&v);
+	unsigned int	i = *((uint32_t *)&v);
 	unsigned int	e = (i >> 23) & 0x00ff;
 	unsigned int	m = i & 0x007fffff;
 	unsigned short	h;
@@ -73,11 +73,11 @@ float HalfToFloat( word h )
 	}
 	else
 	{
-		unsigned int m = em & 0x03ff;
+		uint32_t m = em & 0x03ff;
 
 		if( m != 0 )
 		{
-			unsigned int e = (em >> 10) & 0x1f;
+			uint32_t e = (em >> 10) & 0x1f;
 
 			while(( m & 0x0400 ) == 0 )
 			{

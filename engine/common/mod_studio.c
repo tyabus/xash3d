@@ -140,7 +140,7 @@ void Mod_AddToStudioCache( float frame, int sequence, vec3_t angles, vec3_t orig
 
 	Q_memcpy( &cache_hull[cache_current_hull], hull, numhitboxes * sizeof( hull_t ));
 	Q_memcpy( &cache_planes[cache_current_plane], studio_planes, numhitboxes * sizeof( mplane_t ) * 6 );
-	Q_memcpy( &cache_hull_hitgroup[cache_current_hull], studio_hull_hitgroup, numhitboxes * sizeof( uint ));
+	Q_memcpy( &cache_hull_hitgroup[cache_current_hull], studio_hull_hitgroup, numhitboxes * sizeof( uint32_t ));
 
 	cache_current_hull += numhitboxes;
 	cache_current_plane += numhitboxes * 6;
@@ -223,7 +223,7 @@ hull_t *Mod_HullForStudio( model_t *model, float frame, int sequence, vec3_t ang
 		if( bonecache != NULL )
 		{
 			Q_memcpy( studio_planes, &cache_planes[bonecache->current_plane], bonecache->numhitboxes * sizeof( mplane_t ) * 6 );
-			Q_memcpy( studio_hull_hitgroup, &cache_hull_hitgroup[bonecache->current_hull], bonecache->numhitboxes * sizeof( uint ));
+			Q_memcpy( studio_hull_hitgroup, &cache_hull_hitgroup[bonecache->current_hull], bonecache->numhitboxes * sizeof( uint32_t ));
 			Q_memcpy( studio_hull, &cache_hull[bonecache->current_hull], bonecache->numhitboxes * sizeof( hull_t ));
 
 			*numhitboxes = bonecache->numhitboxes;
@@ -698,7 +698,7 @@ void Mod_StudioBigEndian( model_t *model, byte *buffer )
 				buf = FS_LoadFile( filepath, &filesize, false );
 				if( !buf || !filesize )
 					Host_Error( "StudioGetAnim: can't load %s\n", filepath );
-				else if( IDSEQGRPHEADER != LittleLong(*(uint *)buf ))
+				else if( IDSEQGRPHEADER != LittleLong(*(uint32_t *)buf ))
 					Host_Error( "StudioGetAnim: %s is corrupted\n", filepath );
 
 				MsgDev( D_INFO, "loading: %s\n", filepath );
@@ -897,7 +897,7 @@ static mstudioanim_t *Mod_StudioGetAnim( model_t *m_pSubModel, mstudioseqdesc_t 
 		buf = FS_LoadFile( filepath, &filesize, false );
 		if( !buf || !filesize )
 			Host_Error( "StudioGetAnim: can't load %s\n", filepath );
-		else if( IDSEQGRPHEADER != LittleLong(*(uint *)buf) )
+		else if( IDSEQGRPHEADER != LittleLong(*(uint32_t *)buf) )
 			Host_Error( "StudioGetAnim: %s is corrupted\n", filepath );
 
 		MsgDev( D_INFO, "loading: %s\n", filepath );
@@ -1228,7 +1228,7 @@ qboolean Mod_GetStudioBounds( const char *name, vec3_t mins, vec3_t maxs )
 	f = FS_LoadFile( name, NULL, false );
 	if( !f ) return false;
 
-	if( LittleLong(*(uint *)f) == IDSTUDIOHEADER )
+	if( LittleLong(*(uint32_t *)f) == IDSTUDIOHEADER )
 	{
 		VectorClear( mins );
 		VectorClear( maxs );

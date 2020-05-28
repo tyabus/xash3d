@@ -275,7 +275,7 @@ void GL_LoadIdentityTexMatrix( void );
 void GL_DisableAllTexGens( void );
 void GL_SetRenderMode( int mode );
 void GL_FrontFace( GLenum front );
-void GL_TextureTarget( uint target );
+void GL_TextureTarget( uint32_t target );
 void GL_Cull( GLenum cull );
 void R_ShowTextures( void );
 
@@ -283,9 +283,9 @@ void R_ShowTextures( void );
 // gl_cull.c
 //
 int R_CullModel( cl_entity_t *e, vec3_t origin, vec3_t mins, vec3_t maxs, float radius );
-qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint clipflags );
-qboolean R_CullSphere( const vec3_t centre, const float radius, const uint clipflags );
-qboolean R_CullSurface( msurface_t *surf, uint clipflags );
+qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint32_t clipflags );
+qboolean R_CullSphere( const vec3_t centre, const float radius, const uint32_t clipflags );
+qboolean R_CullSurface( msurface_t *surf, uint32_t clipflags );
 
 //
 // gl_decals.c
@@ -413,7 +413,7 @@ void R_AddDecalVBO( decal_t *pdecal, msurface_t *surf );
 // gl_sprite.c
 //
 void R_SpriteInit( void );
-void Mod_LoadSpriteModel( model_t *mod, byte *buffer, qboolean *loaded, uint texFlags );
+void Mod_LoadSpriteModel( model_t *mod, byte *buffer, qboolean *loaded, uint32_t texFlags );
 mspriteframe_t *R_GetSpriteFrame( const model_t *pModel, int frame, float yaw );
 void R_DrawSpriteModel( cl_entity_t *e );
 
@@ -470,7 +470,7 @@ void VID_CheckChanges( void );
 int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, imgfilter_t *filter );
 void GL_FreeImage( const char *name );
 qboolean VID_ScreenShot( const char *filename, int shot_type );
-qboolean VID_CubemapShot( const char *base, uint size, const float *vieworg, qboolean skyshot );
+qboolean VID_CubemapShot( const char *base, uint32_t size, const float *vieworg, qboolean skyshot );
 void VID_RestoreGamma( void );
 void R_BeginFrame( qboolean clearScene );
 void R_RenderFrame( const ref_params_t *fd, qboolean drawWorld );
@@ -482,7 +482,7 @@ void R_DrawStretchRaw( float x, float y, float w, float h, int cols, int rows, c
 void R_DrawStretchPic( float x, float y, float w, float h, float s1, float t1, float s2, float t2, int texnum );
 qboolean R_SpeedsMessage( char *out, size_t size );
 void R_SetupSky( const char *skyboxname );
-qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint clipflags );
+qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint32_t clipflags );
 qboolean R_WorldToScreen( const vec3_t point, vec3_t screen );
 void R_ScreenToWorld( const vec3_t screen, vec3_t point );
 qboolean R_AddEntity( struct cl_entity_s *pRefEntity, int entityType );

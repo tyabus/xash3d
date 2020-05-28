@@ -135,9 +135,9 @@ typedef struct fragbufwaiting_s
 typedef struct netsplit_chain_packet_s
 {
 	// bool vector
-	unsigned int recieved_v[8];
+	uint32_t recieved_v[8];
 	// serial number
-	unsigned int id;
+	uint32_t id;
 	byte data[NET_MAX_PAYLOAD];
 	byte received;
 	byte count;
@@ -146,10 +146,10 @@ typedef struct netsplit_chain_packet_s
 // raw packet format
 typedef struct netsplit_packet_s
 {
-	unsigned int signature; // 0xFFFFFFFE
-	unsigned int length;
-	unsigned int part;
-	unsigned int id;
+	uint32_t signature; // 0xFFFFFFFE
+	uint32_t length;
+	uint32_t part;
+	uint32_t id;
 	// max 256 parts
 	byte count;
 	byte index;

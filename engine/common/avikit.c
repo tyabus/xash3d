@@ -30,7 +30,7 @@ GNU General Public License for more details.
 // msvfw32.dll exports
 static HDRAWDIB (_stdcall *pDrawDibOpen)( void );
 static BOOL (_stdcall *pDrawDibClose)( HDRAWDIB hdd );
-static BOOL (_stdcall *pDrawDibDraw)( HDRAWDIB, HDC, int, int, int, int, LPBITMAPINFOHEADER, void*, int, int, int, int, uint );
+static BOOL (_stdcall *pDrawDibDraw)( HDRAWDIB, HDC, int, int, int, int, LPBITMAPINFOHEADER, void*, int, int, int, int, uint32_t );
 
 static dllfunc_t msvfw_funcs[] =
 {

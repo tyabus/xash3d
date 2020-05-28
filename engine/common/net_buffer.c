@@ -144,7 +144,7 @@ void BF_WriteOneBit( sizebuf_t *bf, int nValue )
 	}
 }
 
-void BF_WriteUBitLongExt( sizebuf_t *bf, uint curData, int numbits, qboolean bCheckRange )
+void BF_WriteUBitLongExt( sizebuf_t *bf, uint32_t curData, int numbits, qboolean bCheckRange )
 {
 	//Assert( numbits >= 0 && numbits <= 32 );
 
@@ -219,7 +219,7 @@ void BF_WriteSBitLong( sizebuf_t *bf, int data, int numbits )
 	}
 }
 
-void BF_WriteBitLong( sizebuf_t *bf, uint data, int numbits, qboolean bSigned )
+void BF_WriteBitLong( sizebuf_t *bf, uint32_t data, int numbits, qboolean bSigned )
 {
 	if( bSigned )
 		BF_WriteSBitLong( bf, (int)data, numbits );
@@ -374,7 +374,7 @@ int BF_ReadOneBit( sizebuf_t *bf )
 	return 0;
 }
 
-uint BF_ReadUBitLong( sizebuf_t *bf, int numbits )
+uint32_t BF_ReadUBitLong( sizebuf_t *bf, int numbits )
 {
 	int	idword1;
 	uint	dword1, ret;
@@ -398,7 +398,7 @@ uint BF_ReadUBitLong( sizebuf_t *bf, int numbits )
 
 	// Read the current dword.
 	idword1 = bf->iCurBit >> 5;
-	dword1 = LittleLong(((uint *)bf->pData)[idword1]);
+	dword1 = LittleLong(((uint32_t *)bf->pData)[idword1]);
 	dword1 >>= ( bf->iCurBit & 31 );	// get the bits we're interested in.
 
 	bf->iCurBit += numbits;
@@ -413,7 +413,7 @@ uint BF_ReadUBitLong( sizebuf_t *bf, int numbits )
 	else
 	{
 		int	nExtraBits = bf->iCurBit & 31;
-		uint	dword2 = LittleLong(((uint *)bf->pData)[idword1+1]) & ExtraMasks[nExtraBits];
+		uint	dword2 = LittleLong(((uint32_t *)bf->pData)[idword1+1]) & ExtraMasks[nExtraBits];
 		
 		// no need to mask since we hit the end of the dword.
 		// shift the second dword's part into the high bits.
@@ -520,7 +520,7 @@ int BF_ReadSBitLong( sizebuf_t *bf, int numbits )
 	return r;
 }
 
-uint BF_ReadBitLong( sizebuf_t *bf, int numbits, qboolean bSigned )
+uint32_t BF_ReadBitLong( sizebuf_t *bf, int numbits, qboolean bSigned )
 {
 	if( bSigned )
 		return (uint)BF_ReadSBitLong( bf, numbits );

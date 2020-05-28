@@ -588,7 +588,7 @@ void CL_DrawParticles( void )
 	}
 }
 
-void CL_DrawParticlesExternal( const float *vieworg, const float *forward, const float *right, const float *up, uint clipFlags )
+void CL_DrawParticlesExternal( const float *vieworg, const float *forward, const float *right, const float *up, uint32_t clipFlags )
 {
 	if( vieworg ) VectorCopy( vieworg, RI.vieworg );
 	if( forward ) VectorCopy( forward, RI.vforward );

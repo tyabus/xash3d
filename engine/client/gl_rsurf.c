@@ -718,7 +718,7 @@ static void R_BuildLightMap( msurface_t *surf, byte *dest, int stride, qboolean 
 
 	lm = surf->samples;
 
-	Q_memset( r_blocklights, 0, sizeof( uint ) * size * 3 );
+	Q_memset( r_blocklights, 0, sizeof( uint32_t ) * size * 3 );
 
 	// add all the lightmaps
 	for( map = 0; map < MAXLIGHTMAPS && surf->styles[map] != 255 && lm; map++ )
@@ -759,7 +759,7 @@ static void R_BuildLightMap( msurface_t *surf, byte *dest, int stride, qboolean 
 static void R_BuildDeluxeMap( msurface_t *surf, byte *dest, int stride )
 {
 	int	smax, tmax, *bl;
-	unsigned int scale;
+	uint32_t scale;
 	int	i, map, size, s, t;
 	color24	*lm, *dm;
 
@@ -1806,18 +1806,18 @@ typedef struct vbovertex_s
 typedef struct vbotexture_s
 {
 	unsigned short *indexarray; // index array (generated instead of texture chains)
-	uint curindex; // counter for index array
-	uint len; // maximum index array length
+	uint32_t curindex; // counter for index array
+	uint32_t len; // maximum index array length
 	struct vbotexture_s *next; // if cannot fit into one array, allocate new one, as every array has own index space
 	msurface_t *dlightchain; // list of dlight surfaces
 	struct vboarray_s *vboarray; // debug
-	uint lightmaptexturenum;
+	uint32_t lightmaptexturenum;
 } vbotexture_t;
 
 // array list
 typedef struct vboarray_s
 {
-	uint glindex; // glGenBuffers
+	uint32_t glindex; // glGenBuffers
 	int array_len; // allocation length
 	vbovertex_t *array; // vertex attrib array
 	struct vboarray_s *next; // split by 65536 vertices
@@ -1827,8 +1827,8 @@ typedef struct vboarray_s
 typedef struct vbosurfdata_s
 {
 	vbotexture_t *vbotexture;
-	uint texturenum;
-	uint startindex;
+	uint32_t texturenum;
+	uint32_t startindex;
 } vbosurfdata_t;
 
 typedef struct vbodecal_s
@@ -1843,7 +1843,7 @@ typedef struct vbodecaldata_s
 {
 	vbodecal_t decals[MAX_RENDER_DECALS];
 	vbovertex_t decalarray[MAX_RENDER_DECALS * DECAL_VERTS_CUT];
-	uint decalvbo;
+	uint32_t decalvbo;
 	msurface_t **lm;
 } vbodecaldata_t;
 
@@ -1864,9 +1864,9 @@ struct vbo_static_s
 	// separate areay for dlights (build during draw)
 	unsigned short *dlight_index; // array
 	vec2_t *dlight_tc; // array
-	unsigned int dlight_vbo;
+	uint32_t dlight_vbo;
 	vbovertex_t decal_dlight[MAX_RENDER_DECALS * DECAL_VERTS_MAX];
-	unsigned int decal_dlight_vbo;
+	uint32_t decal_dlight_vbo;
 	int decal_numverts[MAX_RENDER_DECALS * DECAL_VERTS_MAX];
 
 	// prevent draining cpu on empty cycles
@@ -1895,7 +1895,7 @@ void R_GenerateVBO()
 	int numlightmaps = gl_lms.current_lightmap_texture;
 	int k, len = 0;
 	vboarray_t *vbo;
-	uint maxindex = 0;
+	uint32_t maxindex = 0;
 
 	R_ClearVBO();
 
@@ -2561,7 +2561,7 @@ static void R_DrawLightmappedVBO( vboarray_t *vbo, vbotexture_t *vbotex, texture
 	if( vbotex->dlightchain )
 	{
 		unsigned short *dlightarray = vbos.dlight_index; // preallocated array
-		unsigned int dlightindex = 0;
+		uint32_t dlightindex = 0;
 		msurface_t *surf, *newsurf;
 		int decalcount = 0;
 
@@ -2584,8 +2584,8 @@ static void R_DrawLightmappedVBO( vboarray_t *vbo, vbotexture_t *vbotex, texture
 		{
 			int	smax, tmax;
 			byte	*base;
-			uint indexbase = vbos.surfdata[((char*)surf - (char*)cl.worldmodel->surfaces) / sizeof( *surf )].startindex;
-			uint index;
+			uint32_t indexbase = vbos.surfdata[((char*)surf - (char*)cl.worldmodel->surfaces) / sizeof( *surf )].startindex;
+			uint32_t index;
 			mextrasurf_t *info; // this stores current dlight offset
 			decal_t *pdecal;
 
@@ -3305,8 +3305,8 @@ qboolean R_AddSurfToVBO( msurface_t *surf, qboolean buildlightmap )
 		}
 		else
 		{
-			uint indexbase = vbos.surfdata[idx].startindex;
-			uint index;
+			uint32_t indexbase = vbos.surfdata[idx].startindex;
+			uint32_t index;
 
 			// GL_TRIANGLE_FAN: 0 1 2 0 2 3 0 3 4 ...
 			for( index = indexbase + 2; index < indexbase + surf->polys->numverts; index++ )
@@ -3345,7 +3345,7 @@ qboolean R_AddSurfToVBO( msurface_t *surf, qboolean buildlightmap )
 R_RecursiveWorldNode
 ================
 */
-void R_RecursiveWorldNode( mnode_t *node, uint clipflags )
+void R_RecursiveWorldNode( mnode_t *node, uint32_t clipflags )
 {
 	const mplane_t	*clipplane;
 	int		i, clipped;
@@ -3458,7 +3458,7 @@ qboolean R_CullNodeTopView( mnode_t *node )
 R_DrawTopViewLeaf
 ================
 */
-static void R_DrawTopViewLeaf( mleaf_t *pleaf, uint clipflags )
+static void R_DrawTopViewLeaf( mleaf_t *pleaf, uint32_t clipflags )
 {
 	msurface_t	**mark, *surf;
 	int		i;
@@ -3495,7 +3495,7 @@ static void R_DrawTopViewLeaf( mleaf_t *pleaf, uint clipflags )
 R_DrawWorldTopView
 ================
 */
-void R_DrawWorldTopView( mnode_t *node, uint clipflags )
+void R_DrawWorldTopView( mnode_t *node, uint32_t clipflags )
 {
 	const mplane_t	*clipplane;
 	int		c, clipped;

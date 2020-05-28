@@ -1888,7 +1888,7 @@ void SV_DrawOrthoTriangles( void )
 	}
 }
 
-void SV_UpdateFogSettings( unsigned int packed_fog )
+void SV_UpdateFogSettings( uint32_t packed_fog )
 {
 	svgame.movevars.fog_settings = packed_fog;
 	physinfo->modified = true; // force to transmit

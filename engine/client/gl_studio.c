@@ -683,7 +683,7 @@ mstudioanim_t *R_StudioGetAnim( model_t *m_pSubModel, mstudioseqdesc_t *pseqdesc
 		buf = FS_LoadFile( filepath, &filesize, false );
 		if( !buf || !filesize )
 			Host_Error( "StudioGetAnim: can't load %s\n", filepath );
-		else if( IDSEQGRPHEADER != *(uint *)buf )
+		else if( IDSEQGRPHEADER != *(uint32_t *)buf )
 			Host_Error( "StudioGetAnim: %s is corrupted\n", filepath );
 
 		MsgDev( D_INFO, "loading: %s\n", filepath );
@@ -2207,8 +2207,8 @@ static void R_StudioDrawMesh( short *ptricmds, float s, float t, float a, float 
 	int i;
 	vec2_t uv;
 	float *av, *lv, *nv;
-	uint startArrayVerts = g_nNumArrayVerts;
-	uint startArrayElems = g_nNumArrayElems;
+	uint32_t startArrayVerts = g_nNumArrayVerts;
+	uint32_t startArrayElems = g_nNumArrayElems;
 
 	while( ( i = *( ptricmds++ ) ) )
 	{

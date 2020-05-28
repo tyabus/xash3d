@@ -524,7 +524,7 @@ void R_InitSky( mip_t *mt, byte *buf, texture_t *tx )
 		for( j = 0; j < r_sky->height; j++ )
 		{
 			p = r_sky->buffer[i * r_sky->width + j + r_sky->height];
-			rgba = (uint *)r_sky->palette + p;
+			rgba = (uint32_t *)r_sky->palette + p;
 			trans[(i * r_sky->height) + j] = *rgba;
 			r += ((byte *)rgba)[0];
 			g += ((byte *)rgba)[1];
@@ -561,7 +561,7 @@ void R_InitSky( mip_t *mt, byte *buf, texture_t *tx )
 			}
 			else
 			{         
-				rgba = (uint *)r_sky->palette + p;
+				rgba = (uint32_t *)r_sky->palette + p;
 				trans[(i * r_sky->height) + j] = *rgba;
 			}
 		}

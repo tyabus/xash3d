@@ -20,16 +20,16 @@ GNU General Public License for more details.
 #define APIENTRY
 #endif
 
-typedef uint GLenum;
+typedef uint32_t GLenum;
 typedef byte GLboolean;
-typedef uint GLbitfield;
+typedef uint32_t GLbitfield;
 typedef void GLvoid;
 typedef signed char GLbyte;
 typedef short GLshort;
 typedef int GLint;
 typedef byte GLubyte;
 typedef word GLushort;
-typedef uint GLuint;
+typedef uint32_t GLuint;
 typedef int GLsizei;
 typedef float GLfloat;
 typedef float GLclampf;
@@ -38,7 +38,7 @@ typedef double GLclampd;
 typedef int GLintptrARB;
 typedef int GLsizeiptrARB;
 typedef char GLcharARB;
-typedef uint GLhandleARB;
+typedef uint32_t GLhandleARB;
 typedef float GLmatrix[16];
 
 

@@ -20,6 +20,7 @@ GNU General Public License for more details.
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include "port.h"
 
 #include "backends.h"
@@ -667,15 +668,15 @@ typedef struct imgfilter_s
 //
 void Image_Init( void );
 void Image_Shutdown( void );
-void Image_AddCmdFlags( uint flags );
+void Image_AddCmdFlags( uint32_t flags );
 rgbdata_t *FS_LoadImage( const char *filename, const byte *buffer, size_t size );
 qboolean FS_SaveImage( const char *filename, rgbdata_t *pix );
 rgbdata_t *FS_CopyImage( rgbdata_t *in );
 void FS_FreeImage( rgbdata_t *pack );
 extern const bpc_desc_t PFDesc[];	// image get pixelformat
-qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uint flags, imgfilter_t *filter );
+qboolean Image_Process( rgbdata_t **pix, int width, int height, float gamma, uint32_t flags, imgfilter_t *filter );
 void Image_PaletteHueReplace( byte *palSrc, int newHue, int start, int end );
-void Image_SetForceFlags( uint flags );	// set image force flags on loading
+void Image_SetForceFlags( uint32_t flags );	// set image force flags on loading
 size_t Image_DXTGetLinearSize( int type, int width, int height, int depth );
 void Image_SetMDLPointer(byte *p);
 
@@ -741,8 +742,8 @@ int FS_ReadStream( stream_t *stream, int bytes, void *buffer );
 int FS_SetStreamPos( stream_t *stream, int newpos );
 int FS_GetStreamPos( stream_t *stream );
 void FS_FreeStream( stream_t *stream );
-qboolean Sound_Process( wavdata_t **wav, int rate, int width, uint flags );
-uint Sound_GetApproxWavePlayLen( const char *filepath );
+qboolean Sound_Process( wavdata_t **wav, int rate, int width, uint32_t flags );
+uint32_t Sound_GetApproxWavePlayLen( const char *filepath );
 
 //
 // build.c
@@ -867,10 +868,10 @@ void CRC32_Final( dword *pulCRC );
 qboolean CRC32_File( dword *crcvalue, const char *filename );
 qboolean CRC32_MapFile( dword *crcvalue, const char *filename, qboolean multiplayer );
 void MD5Init( MD5Context_t *ctx );
-void MD5Update( MD5Context_t *ctx, const byte *buf, uint len );
+void MD5Update( MD5Context_t *ctx, const byte *buf, uint32_t len );
 void MD5Final( byte digest[16], MD5Context_t *ctx );
-qboolean MD5_HashFile( byte digest[16], const char *pszFileName, uint seed[4] );
-uint Com_HashKey( const char *string, uint hashSize );
+qboolean MD5_HashFile( byte digest[16], const char *pszFileName, uint32_t seed[4] );
+uint32_t Com_HashKey( const char *string, uint32_t hashSize );
 
 //
 // hpak.c
@@ -1036,7 +1037,7 @@ void COM_SetRandomSeed( int lSeed );
 int Com_RandomLong( int lMin, int lMax );
 float Com_RandomFloat( float fMin, float fMax );
 void TrimSpace( const char *source, char *dest );\
-const byte *GL_TextureData( unsigned int texnum );
+const byte *GL_TextureData( uint32_t texnum );
 void GL_FreeImage( const char *name );
 void UI_SetActiveMenu( qboolean fActive );
 struct cmd_s *Cmd_GetFirstFunctionHandle( void );

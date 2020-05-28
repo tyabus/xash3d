@@ -277,7 +277,7 @@ void GL_MultiTexCoord2f( GLenum texture, GLfloat s, GLfloat t )
 GL_TextureTarget
 =================
 */
-void GL_TextureTarget( uint target )
+void GL_TextureTarget( uint32_t target )
 {
 	if( glState.activeTMU < 0 || glState.activeTMU >= GL_MaxTextureUnits( ))
 	{
@@ -476,7 +476,7 @@ const envmap_t r_envMapInfo[6] =
 VID_ImageAdjustGamma
 ================
 */
-void VID_ImageAdjustGamma( byte *in, uint width, uint height )
+void VID_ImageAdjustGamma( byte *in, uint32_t width, uint32_t height )
 {
 	int	i, c = width * height;
 	float	g = 1.0f / bound( 0.5f, vid_gamma->value, 2.3f );
@@ -574,7 +574,7 @@ qboolean VID_ScreenShot( const char *filename, int shot_type )
 VID_CubemapShot
 =================
 */
-qboolean VID_CubemapShot( const char *base, uint size, const float *vieworg, qboolean skyshot )
+qboolean VID_CubemapShot( const char *base, uint32_t size, const float *vieworg, qboolean skyshot )
 {
 	rgbdata_t		*r_shot, *r_side;
 	byte		*temp = NULL;

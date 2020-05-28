@@ -839,7 +839,7 @@ Assume input buffer is RGBA
 byte *GL_ResampleTexture( const byte *source, int inWidth, int inHeight, int outWidth, int outHeight, qboolean isNormalMap )
 {
 	uint		frac, fracStep;
-	uint		*in = (uint *)source;
+	uint		*in = (uint32_t *)source;
 	uint		p1[0x1000], p2[0x1000];
 	byte		*pix1, *pix2, *pix3, *pix4;
 	uint		*out, *inRow1, *inRow2;
@@ -850,7 +850,7 @@ byte *GL_ResampleTexture( const byte *source, int inWidth, int inHeight, int out
 
 	scaledImage = Mem_Realloc( r_temppool, scaledImage, outWidth * outHeight * 4 );
 	fracStep = inWidth * 0x10000 / outWidth;
-	out = (uint *)scaledImage;
+	out = (uint32_t *)scaledImage;
 
 	frac = fracStep >> 2;
 	for( i = 0; i < outWidth; i++ )
@@ -2405,8 +2405,8 @@ static rgbdata_t *R_SmoothNormals( rgbdata_t *in )
 
 	for( y = 0; y < height; y++ )
 	{
-		inRow1 = (uint *)in->buffer + width * (int)((float)y + 0.25f);
-		inRow2 = (uint *)in->buffer + width * (int)((float)y + 0.75f);
+		inRow1 = (uint32_t *)in->buffer + width * (int)((float)y + 0.25f);
+		inRow2 = (uint32_t *)in->buffer + width * (int)((float)y + 0.75f);
 
 		for( x = 0; x < width; x++ )
 		{
@@ -3867,8 +3867,8 @@ static rgbdata_t *R_InitDefaultTexture( texFlags_t *flags )
 		for( x = 0; x < 16; x++ )
 		{
 			if(( y < 8 ) ^ ( x < 8 ))
-				((uint *)&data2D)[y*16+x] = 0xFFFF00FF;
-			else ((uint *)&data2D)[y*16+x] = 0xFF000000;
+				((uint32_t *)&data2D)[y*16+x] = 0xFFFF00FF;
+			else ((uint32_t *)&data2D)[y*16+x] = 0xFF000000;
 		}
 	}
 	return &r_image;
@@ -3981,7 +3981,7 @@ static rgbdata_t *R_InitSkyTexture( texFlags_t *flags )
 
 	// skybox texture
 	for( i = 0; i < 256; i++ )
-		((uint *)&data2D)[i] = 0xFFFFDEB5;
+		((uint32_t *)&data2D)[i] = 0xFFFFDEB5;
 
 	*flags = TF_NOPICMIP|TF_UNCOMPRESSED;
 

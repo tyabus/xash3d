@@ -765,7 +765,7 @@ Master will validate challenge and this server to public list
 */
 void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 {
-	uint challenge;
+	uint32_t challenge;
 	char s[4096] = "0\n"; // skip 2 bytes of header
 	int clients = 0, bots = 0, index;
 	qboolean havePassword;
@@ -783,7 +783,7 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 		}
 	}
 
-	challenge = BF_ReadUBitLong( msg, sizeof( uint ) << 3 );
+	challenge = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
 	havePassword = sv_password->string[0] && Q_stricmp( sv_password->string, "none" );
 
 	Info_SetValueForKey(s, "protocol",  va( "%d", PROTOCOL_VERSION ), sizeof( s ) ); // protocol version

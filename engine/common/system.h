@@ -83,7 +83,7 @@ typedef struct dll_info_s
 	void		*link;	// hinstance of loading library
 } dll_info_t;
 
-void Sys_Sleep( unsigned int msec );
+void Sys_Sleep( uint32_t msec );
 double Sys_DoubleTime( void );
 char *Sys_GetClipboardData( void );
 char *Sys_GetCurrentUser( void );

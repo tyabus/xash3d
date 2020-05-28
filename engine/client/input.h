@@ -51,7 +51,7 @@ void IN_MouseEvent( int mstate );
 void IN_ActivateMouse( qboolean force );
 void IN_DeactivateMouse( void );
 void IN_ToggleClientMouse( int newstate, int oldstate );
-long IN_WndProc( void *hWnd, uint uMsg, uint wParam, long lParam );
+long IN_WndProc( void *hWnd, uint32_t uMsg, uint32_t wParam, long lParam );
 void IN_SetCursor( Xash_Cursor *hCursor );
 extern qboolean	in_mouseinitialized;
 

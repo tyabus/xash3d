@@ -60,7 +60,7 @@ bloomfilter_t BloomFilter_ProcessStr( const char *buffer )
 	return BloomFilter_Process( buffer, Q_strlen( buffer ) );
 }
 
-uint BloomFilter_Weight( bloomfilter_t value )
+uint32_t BloomFilter_Weight( bloomfilter_t value )
 {
 	int weight = 0;
 
@@ -113,7 +113,7 @@ void ID_BloomFilter_f( void )
 
 qboolean ID_VerifyHEX( const char *hex )
 {
-	uint chars = 0;
+	uint32_t chars = 0;
 	char prev = 0;
 	qboolean monotonic = true; // detect 11:22...
 	int weight = 0;
@@ -520,7 +520,7 @@ bloomfilter_t ID_GenerateRawId( void )
 	return value;
 }
 
-uint ID_CheckRawId( bloomfilter_t filter )
+uint32_t ID_CheckRawId( bloomfilter_t filter )
 {
 	bloomfilter_t value = 0;
 	int count = 0;
@@ -566,8 +566,8 @@ uint ID_CheckRawId( bloomfilter_t filter )
 
 void ID_Check()
 {
-	uint weight = BloomFilter_Weight( id );
-	uint mincount = weight >> 2;
+	uint32_t weight = BloomFilter_Weight( id );
+	uint32_t mincount = weight >> 2;
 
 	if( mincount < 1 )
 		mincount = 1;

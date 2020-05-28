@@ -986,7 +986,7 @@ CL_RunUsercmd
 Runs prediction code for user cmd
 =================
 */
-void CL_RunUsercmd( local_state_t *from, local_state_t *to, usercmd_t *u, qboolean runfuncs, double *time, unsigned int random_seed )
+void CL_RunUsercmd( local_state_t *from, local_state_t *to, usercmd_t *u, qboolean runfuncs, double *time, uint32_t random_seed )
 {
 	usercmd_t cmd;
 	local_state_t temp = { 0 };
@@ -1095,7 +1095,7 @@ CL_FakeUsercmd
 Runs client weapons prediction code
 =================
 */
-void CL_FakeUsercmd(local_state_t * from, local_state_t * to, usercmd_t * u, qboolean runfuncs, double * pfElapsed, unsigned int random_seed)
+void CL_FakeUsercmd(local_state_t * from, local_state_t * to, usercmd_t * u, qboolean runfuncs, double * pfElapsed, uint32_t random_seed)
 {
 	usercmd_t cmd;
 	local_state_t temp = { 0 };

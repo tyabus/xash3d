@@ -205,10 +205,10 @@ NetSplit_SendLong
 Send parts that are less or equal maxpacket
 ======================
 */
-void NetSplit_SendLong( netsrc_t sock, size_t length, void *data, netadr_t to, unsigned int maxpacket, unsigned int id, qboolean compress )
+void NetSplit_SendLong( netsrc_t sock, size_t length, void *data, netadr_t to, uint32_t maxpacket, uint32_t id, qboolean compress )
 {
 	netsplit_packet_t packet = {0};
-	unsigned int part = maxpacket - NETSPLIT_HEADER_SIZE;
+	uint32_t part = maxpacket - NETSPLIT_HEADER_SIZE;
 
 	if( compress )
 		Huff_CompressData( data, &length );
@@ -223,7 +223,7 @@ void NetSplit_SendLong( netsrc_t sock, size_t length, void *data, netadr_t to, u
 
 	while( packet.index < packet.count  )
 	{
-		unsigned int size = part;
+		uint32_t size = part;
 
 		if( size > length )
 			size = length;
@@ -1569,7 +1569,7 @@ void Netchan_TransmitBits( netchan_t *chan, int length, byte *data )
 	// send the datagram
 	if( !CL_IsPlaybackDemo( ))
 	{
-		unsigned int size = BF_GetNumBytesWritten( &send );
+		uint32_t size = BF_GetNumBytesWritten( &send );
 
 		if( chan->split && size > chan->maxpacket )
 			NetSplit_SendLong( chan->sock, size, BF_GetData( &send ), chan->remote_address, chan->maxpacket, chan->splitid++, chan->splitcompress );

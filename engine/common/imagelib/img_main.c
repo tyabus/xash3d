@@ -198,7 +198,7 @@ qboolean FS_AddSideToPack( const char *name, int adjust_flags )
 	if( flipped != image.rgba ) image.rgba = Image_Copy( image.size );
 
 	// resampling image if needed
-	out = Image_ResampleInternal((uint *)image.rgba, image.width, image.height, image.source_width, image.source_height, image.source_type, &resampled );
+	out = Image_ResampleInternal((uint32_t *)image.rgba, image.width, image.height, image.source_width, image.source_height, image.source_type, &resampled );
 	if( !out ) return false; // try to reasmple dxt?
 	if( resampled ) image.rgba = Image_Copy( image.size );
 

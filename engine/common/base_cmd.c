@@ -110,7 +110,7 @@ Add new typed base command to hashmap
 */
 void BaseCmd_Insert( base_command_type_e type, base_command_t *basecmd, const char *name )
 {
-	uint hash = Com_HashKey( name, HASH_SIZE );
+	uint32_t hash = Com_HashKey( name, HASH_SIZE );
 	base_command_hashmap_t *elem;
 
 	elem = Z_Malloc( sizeof( base_command_hashmap_t ) );
@@ -156,7 +156,7 @@ Remove base command from hashmap
 */
 void BaseCmd_Remove(base_command_type_e type, const char *name )
 {
-	uint hash = Com_HashKey( name, HASH_SIZE );
+	uint32_t hash = Com_HashKey( name, HASH_SIZE );
 	base_command_hashmap_t *i, *prev;
 
 	for( prev = NULL, i = hashed_cmds[hash]; i &&

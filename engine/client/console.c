@@ -769,7 +769,7 @@ int Con_DrawGenericString( int x, int y, const char *string, rgba_t setColor, qb
 
 	// draw the colored text
 	s = string;
-	*(uint *)color = *(uint *)setColor;
+	*(uint32_t *)color = *(uint32_t *)setColor;
 
 	while ( s && *s )
 	{
