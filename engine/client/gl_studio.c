@@ -3696,12 +3696,6 @@ void R_RunViewmodelEvents( void )
 	if( !Mod_Extradata( clgame.viewent.model ))
 		return;
 
-/*#ifndef _MSC_VER
-#warning "check this"
-#endif
-	if( cl_lw->value && cl.frame.client.viewmodel != cl.predicted.viewmodel )
-		return;*/
-
 	RI.currententity = &clgame.viewent;
 	RI.currentmodel = RI.currententity->model;
 	if( !RI.currentmodel ) return;
@@ -3735,11 +3729,6 @@ void R_DrawViewModel( void )
 
 	if( !Mod_Extradata( clgame.viewent.model ))
 		return;
-/*#ifndef _MSC_VER
-#warning "check this"
-#endif
-	if( cl_lw->value && cl.frame.client.viewmodel != cl.predicted.viewmodel )
-		return;*/
 
 	RI.currententity = &clgame.viewent;
 	RI.currentmodel = RI.currententity->model;

@@ -94,7 +94,7 @@ const char *Q_buildos( void )
 #else
 #error "Place your operating system name here! If this is a mistake, try to fix conditions above and report a bug"
 #endif
-	
+
 	return osname;
 }
 

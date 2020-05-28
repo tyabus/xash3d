@@ -69,9 +69,6 @@ uint32_t BloomFilter_Weight( bloomfilter_t value )
 		if( value & 1 )
 			weight++;
 		value = value >> 1;
-#if _MSC_VER == 1200
-		value &= 0x7FFFFFFFFFFFFFFF;
-#endif
 	}
 
 	return weight;

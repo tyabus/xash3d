@@ -10,13 +10,8 @@ sed -e 's/1\.5/1\.6/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
 wget http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin >/dev/null 2>/dev/null
 7z x ./android-ndk-r10e-linux-x86_64.bin > /dev/null
 mv android-ndk-r10e android-ndk
-
-# Disabled. Use deps autodownload
-# curl -s http://libsdl.org/release/SDL2-devel-2.0.7-mingw.tar.gz | tar xzf -
-# mv SDL2-2.0.7 sdl2-mingw
-
 curl -s http://libsdl.org/release/SDL2-2.0.7.tar.gz | tar xzf -
-git clone --depth 1 https://github.com/FWGS/xash3d-android-project
+git clone --depth 1 https://github.com/tyabus/xash3d-android-project
 cd $TRAVIS_BUILD_DIR/xash3d-android-project
 cp debug.keystore ~/.android/debug.keystore
 git submodule update --init jni/src/NanoGL/nanogl xash-extras
