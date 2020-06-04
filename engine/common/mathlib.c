@@ -23,9 +23,7 @@ GNU General Public License for more details.
 
 #ifdef XASH_VECTORIZE_SINCOS
 // Test shown that this is not so effictively
-#if !defined(__SSE2__) || defined(_M_IX86_FP)
-	#error "Your x86 CPU does not support SSE2 instructions"
-#else
+#if defined(_M_IX86_FP)
 	#include "sse_mathfun.h"
 #endif
 #if defined(__ARM_NEON__) || defined(__NEON__)
