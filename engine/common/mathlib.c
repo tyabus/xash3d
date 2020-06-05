@@ -25,6 +25,7 @@ GNU General Public License for more details.
 // Test shown that this is not so effictively
 #if defined(_M_IX86_FP)
 	#include "sse_mathfun.h"
+	typedef __m128 v4sf;  // vector of 4 float
 #endif
 #if defined(__ARM_NEON__) || defined(__NEON__)
 	#include "neon_mathfun.h"
@@ -187,8 +188,8 @@ void SinCosFastVector4(float r1, float r2, float r3, float r4,
 					  float *s0, float *s1, float *s2, float *s3,
 					  float *c0, float *c1, float *c2, float *c3)
 {
-	v4si rad_vector = {r1, r2, r3, r4};
-	v4si sin_vector, cos_vector;
+	v4sf rad_vector = {r1, r2, r3, r4};
+	v4sf sin_vector, cos_vector;
 
 	sincos_ps(rad_vector, &sin_vector, &cos_vector);
 
@@ -207,8 +208,8 @@ void SinCosFastVector3(float r1, float r2, float r3,
 					  float *s0, float *s1, float *s2,
 					  float *c0, float *c1, float *c2)
 {
-	v4si rad_vector = {r1, r2, r3, 0};
-	v4si sin_vector, cos_vector;
+	v4sf rad_vector = {r1, r2, r3, 0};
+	v4sf sin_vector, cos_vector;
 
 	sincos_ps(rad_vector, &sin_vector, &cos_vector);
 
@@ -225,8 +226,8 @@ void SinCosFastVector2(float r1, float r2,
 					  float *s0, float *s1,
 					  float *c0, float *c1)
 {
-	v4si rad_vector = {r1, r2, 0, 0};
-	v4si sin_vector, cos_vector;
+	v4sf rad_vector = {r1, r2, 0, 0};
+	v4sf sin_vector, cos_vector;
 
 	sincos_ps(rad_vector, &sin_vector, &cos_vector);
 
@@ -240,8 +241,8 @@ void SinCosFastVector2(float r1, float r2,
 void SinFastVector3(float r1, float r2, float r3,
 					  float *s0, float *s1, float *s2)
 {
-	v4si rad_vector = {r1, r2, r3, 0};
-	v4si sin_vector;
+	v4sf rad_vector = {r1, r2, r3, 0};
+	v4sf sin_vector;
 
 	sin_vector = sin_ps(rad_vector);
 
