@@ -51,7 +51,11 @@ typedef unsigned short	word;
 typedef unsigned long	ulong;
 typedef unsigned int	uint;
 typedef long		mpg_off_t;
+#ifdef _MSC_VER
+typedef long		mpg_ssize_t;
+#else
 typedef ssize_t		mpg_ssize_t;
+#endif
 
 typedef short		int16_t;
 typedef unsigned short	uint16_t;
