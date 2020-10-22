@@ -862,7 +862,7 @@ void pfnResetTutorMessageDecayData( void );
 //
 void CRC32_Init( dword *pulCRC );
 byte CRC32_BlockSequence( byte *base, int length, int sequence );
-void CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, int nBuffer );
+void CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, size_t nBuffer );
 void CRC32_ProcessByte( dword *pulCRC, byte ch );
 void CRC32_Final( dword *pulCRC );
 qboolean CRC32_File( dword *crcvalue, const char *filename );
