@@ -152,15 +152,13 @@ float Q_atof( const char *str )
 	while( str && *str == ' ' )
 		str++;
 
-	if( !str ) return 0.0f;
-	
 	if( *str == '-' )
 	{
 		sign = -1;
 		str++;
 	}
 	else sign = 1;
-		
+
 	// check for hex
 	if( str[0] == '0' && ( str[1] == 'x' || str[1] == 'X' ))
 	{
@@ -174,10 +172,10 @@ float Q_atof( const char *str )
 			else return val * sign;
 		}
 	}
-	
+
 	// check for character
 	if( str[0] == '\'' ) return sign * str[1];
-	
+
 	// assume decimal
 	decimal = -1;
 	total = 0;
@@ -205,7 +203,7 @@ float Q_atof( const char *str )
 		val /= 10;
 		total--;
 	}
-	
+
 	return val * sign;
 }
 #endif
