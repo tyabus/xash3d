@@ -355,7 +355,7 @@ void SV_ActivateServer( void )
 			Cvar_SetFloat( "clockwindow", 0.0f );
 		MsgDev( D_INFO, "Game started\n" );
 	}
-	Log_Printf( "Started map \"%s\" (CRC \"0\")\n", STRING( svgame.globals->mapname ) );
+	Log_Printf( "Started map \"%s\" (CRC \"%X\")\n", STRING( svgame.globals->mapname ), sv.checksum );
 
 	if( Host_IsDedicated() )
 	{
