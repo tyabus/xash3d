@@ -748,8 +748,11 @@ void SV_DirectoryExtract( file_t *pFile, int fileCount )
 		Q_snprintf( szName, sizeof( szName ), "save/%s", fileName );
 
 		pCopy = FS_Open( szName, "wb", true );
-		FS_FileCopy( pCopy, pFile, fileSize );
-		FS_Close( pCopy );
+		if( pCopy )
+		{
+			FS_FileCopy( pCopy, pFile, fileSize );
+			FS_Close( pCopy );
+		}
 	}
 }
 
@@ -757,6 +760,8 @@ void SV_SaveFinish( SAVERESTOREDATA *pSaveData )
 {
 	char 		**pTokens;
 	ENTITYTABLE	*pEntityTable;
+
+	if( !pSaveData ) Sys_Error("pSaveData == NULL");
 
 	pTokens = SaveRestore_DetachSymbolTable( pSaveData );
 	if( pTokens ) Mem_Free( pTokens );
