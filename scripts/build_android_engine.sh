@@ -5,6 +5,6 @@ sh android/gen-version.sh travis build
 sh android/gen-config.sh test
 python2 scripts/makepak.py xash-extras android/assets/extras.pak
 ndk-build -j2 APP_CFLAGS="-w" NDK_CCACHE=ccache
-ant debug -f $PWD/android-sdk-linux/tools/ant/build.xml  -Dtest.version=1
+ant debug -Dtest.version=1
 cp bin/xashdroid-debug.apk $TRAVIS_BUILD_DIR/xash3d-generic.apk
 tar cJf $TRAVIS_BUILD_DIR/android-debug-symbols.txz obj/local/*/*.so
