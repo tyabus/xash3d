@@ -217,8 +217,6 @@ void SV_ClearCustomizationList( customization_t *pHead )
 		Mem_Free( pCur );
 		pCur = pNext;
 	} while( pCur != NULL );
-
-	pCur->pNext = NULL;
 }
 
 qboolean SV_FileInConsistencyList( resource_t *resource, sv_consistency_t **out )
