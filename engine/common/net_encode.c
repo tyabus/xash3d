@@ -1794,8 +1794,11 @@ void MSG_WriteDeltaEntity( entity_state_t *from, entity_state_t *to, sizebuf_t *
 		dt = Delta_FindStruct( "custom_entity_state_t" );
 	}
 
-	ASSERT( dt && dt->bInitialized );
-		
+	if( !dt || !dt->bInitialized )
+	{
+		Host_Error( "MSG_WriteDeltaEntity: delta not initialized!\n" );
+	}
+
 	pField = dt->pFields;
 	ASSERT( pField );
 
