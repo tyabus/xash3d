@@ -819,7 +819,7 @@ void HPAK_RemoveLump( const char *name, resource_t *resource )
 
 	if( !HPAK_FindResource( &hpak_read, (char *)resource->rgucMD5_hash, NULL ))
 	{
-		MsgDev( D_ERROR, "HPAK_RemoveLump: Couldn't find the lump %s in hpak %s.n", resource->szFileName, read_path );
+		MsgDev( D_ERROR, "HPAK_RemoveLump: Couldn't find the lump %s in hpak %s.\n", resource->szFileName, read_path );
 		Mem_Free( hpak_read.dirs );
 		Mem_Free( hpak_save.dirs );
 		FS_Close( f1 );
