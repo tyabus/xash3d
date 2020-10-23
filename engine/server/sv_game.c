@@ -4232,7 +4232,7 @@ byte *GAME_EXPORT pfnSetFatPVS( const float *org )
 	if( !sv.worldmodel->visdata || sv_novis->integer || !org || CL_DisableVisibility( ))
 		return Mod_DecompressVis( NULL );
 
-	ASSERT( svs.currentPlayerNum >= 0 && svs.currentPlayerNum < MAX_CLIENTS );
+	ASSERT( svs.currentPlayerNum >= 0 && svs.currentPlayerNum <= MAX_CLIENTS );
 
 	fatbytes = (sv.worldmodel->numleafs+31)>>3;
 	bitvector = fatpvs;
