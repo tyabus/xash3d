@@ -287,6 +287,7 @@ void HPAK_AddLump( qboolean add_to_queue, const char *name, resource_t *DirEnt, 
 		MsgDev( D_ERROR, "HPAK_AddLump: %s does not have a valid header.\n", pakname2 );
 		FS_Close( f1 );
 		FS_Close( f2 );
+		return;
 	}
 
 	length = FS_FileLength( f1 );
