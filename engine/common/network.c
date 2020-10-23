@@ -2304,7 +2304,7 @@ httpserver_t *HTTP_ParseURL( const char *url )
 
 	while( *url && ( *url != '\r' ) && ( *url != '\n' ) )
 	{
-		if( i > sizeof( server->path ) )
+		if( i >= sizeof( server->path ) )
 			return NULL;
 
 		server->path[i++] = *url++;
