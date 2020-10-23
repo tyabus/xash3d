@@ -181,6 +181,7 @@ void SV_EmitPacketEntities( sv_client_t *cl, client_frame_t *to, sizebuf_t *msg 
 	int		oldnum, newnum;
 	int		from_num_entities;
 	client_frame_t	*from;
+	qboolean player = false;
 
 	// this is the frame that we are going to delta update from
 	if( cl->delta_sequence != -1 )
@@ -225,10 +226,12 @@ void SV_EmitPacketEntities( sv_client_t *cl, client_frame_t *to, sizebuf_t *msg 
 		if( newindex >= to->num_entities )
 		{
 			newnum = MAX_ENTNUMBER;
+			player = false;
 		}
 		else
 		{
 			newent = &svs.packet_entities[(to->first_entity+newindex)%svs.num_client_entities];
+			player = SV_IsPlayerIndex( newent->number );
 			newnum = newent->number;
 		}
 
@@ -247,7 +250,7 @@ void SV_EmitPacketEntities( sv_client_t *cl, client_frame_t *to, sizebuf_t *msg 
 			// delta update from old position
 			// because the force parm is false, this will not result
 			// in any bytes being emited if the entity has not changed at all
-			MSG_WriteDeltaEntity( oldent, newent, msg, false, SV_IsPlayerIndex( newent->number ), sv.time );
+			MSG_WriteDeltaEntity( oldent, newent, msg, false, player, sv.time );
 			oldindex++;
 			newindex++;
 			continue;
@@ -256,7 +259,7 @@ void SV_EmitPacketEntities( sv_client_t *cl, client_frame_t *to, sizebuf_t *msg 
 		if( newnum < oldnum )
 		{	
 			// this is a new entity, send it from the baseline
-			MSG_WriteDeltaEntity( &svs.baselines[newnum], newent, msg, true, SV_IsPlayerIndex( newent->number ), sv.time );
+			MSG_WriteDeltaEntity( &svs.baselines[newnum], newent, msg, true, player, sv.time );
 			newindex++;
 			continue;
 		}
