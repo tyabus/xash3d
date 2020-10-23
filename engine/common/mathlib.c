@@ -22,7 +22,7 @@ GNU General Public License for more details.
 #include "mathlib.h"
 
 #ifdef XASH_VECTORIZE_SINCOS
-#if defined(__i386__) || defined(__x86_64__)
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86_FP)
 	#include "sse_mathfun.h"
 	typedef __m128 v4sf;  // vector of 4 float
 #endif
