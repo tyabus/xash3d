@@ -1481,7 +1481,7 @@ void SV_ContinueLoading_f( sv_client_t *cl )
 
 void SV_AppendToResourceList( resourcelist_t *reslist, const resourcetype_t type, const char *file )
 {
-	if( reslist->rescount > MAX_RESOURCES )
+	if( reslist->rescount >= MAX_RESOURCES )
 	{
 		MsgDev( D_WARN, "Too big resource list! Skipping %s of type %i\n", file, type );
 		return;
