@@ -170,7 +170,10 @@ qboolean ID_ProcessCPUInfo( bloomfilter_t *value )
 		return false;
 
 	if( (ret = read( cpuinfofd, buffer, 1023 ) ) < 0 )
+	{
+		close( cpuinfofd );
 		return false;
+	}
 
 	close( cpuinfofd );
 
