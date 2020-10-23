@@ -3316,7 +3316,7 @@ qboolean Mod_RegisterModel( const char *name, int index )
 {
 	model_t	*mod;
 
-	if( index < 0 || index > MAX_MODELS )
+	if( index < 0 || index >= MAX_MODELS )
 		return false;
 
 	// this array used for acess to servermodels
