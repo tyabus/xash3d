@@ -18,7 +18,7 @@ FNAME=$1
 FILE_BASE=${FNAME%.*}
 FILE_EXT="${FNAME##*.}"
 OUTNAME=$PREFIX-$FILE_BASE-$POSTFIX.$FILE_EXT
-echo $FNAME: `curl -s --upload-file $FNAME https://transfer.sh/$OUTNAME 2>/dev/null`
+echo $FNAME: `curl --upload-file $FNAME https://transfer.sh/$OUTNAME`
 shift
 done
 exit 0
