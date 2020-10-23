@@ -470,7 +470,7 @@ qboolean SV_ClientConnect( edict_t *ent, char *userinfo )
 
 	MsgDev( D_NOTE, "SV_ClientConnect()\n" );
 	result = svgame.dllFuncs.pfnClientConnect( ent, pszName, pszAddress, szRejectReason );
-	if( szRejectReason[0] ) Info_SetValueForKey( userinfo, "rejmsg", szRejectReason, sizeof( userinfo ) );
+	if( szRejectReason[0] ) Info_SetValueForKey( userinfo, "rejmsg", szRejectReason, sizeof( szRejectReason ) );
 
 	return result;
 }
