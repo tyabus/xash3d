@@ -132,11 +132,11 @@ Sequence_WriteDefaults
 */
 void Sequence_WriteDefaults( sequenceCommandLine_s *source, sequenceCommandLine_s *destination )
 {
-	if( !destination )
+	if( !source || !destination )
+	{
 		MsgDev( D_ERROR, "Attempt to bake defaults into a non-existant command." );
-
-	if( !source )
-		MsgDev( D_ERROR, "Attempt to bake defaults from a non-existant command." );
+		return;
+	}
 
 	if( source->modifierBitField & SEQUENCE_MODIFIER_EFFECT_BIT )
 	{
@@ -213,11 +213,11 @@ void Sequence_BakeDefaults( sequenceCommandLine_s *destination, sequenceCommandL
 {
 	char *saveName, *saveMessage;
 
-	if( !destination )
+	if( !source || !destination )
+	{
 		MsgDev( D_ERROR, "Attempt to bake defaults into a non-existant command." );
-
-	if( !source )
-		MsgDev( D_ERROR, "Attempt to bake defaults from a non-existant command." );
+		return;
+	}
 
 	saveName= destination->clientMessage.pName;
 	saveMessage = destination->clientMessage.pMessage;
