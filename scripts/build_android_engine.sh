@@ -8,5 +8,5 @@ ndk-build -j2 APP_CFLAGS="-w" NDK_CCACHE=ccache
 cd ./android/
 ant debug -Dtest.version=1
 cd ../
-cp bin/xashdroid-debug.apk $TRAVIS_BUILD_DIR/xash3d-generic.apk
+cp bin/xash3d-debug.apk $TRAVIS_BUILD_DIR/xash3d-generic.apk
 tar cJf $TRAVIS_BUILD_DIR/android-debug-symbols.txz obj/local/*/*.so
