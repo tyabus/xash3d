@@ -851,8 +851,8 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 	}
 	else
 	{
-	        Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server does not allow\nconnect without input devices list.\nPlease update your engine.\n" );
-                return false;
+		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server does not allow\nconnect without input devices list.\nPlease update your engine.\n" );
+		return false;
 	}
 
 	if( id )

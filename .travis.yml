@@ -30,14 +30,13 @@ os:
   
 before_script:
     - sh scripts/travis_${TRAVIS_OS_NAME}_deps.sh
-    #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export ANDROID_HOME=$PWD/android-sdk-linux; fi
-    #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export PATH=${PATH}:$PWD/apache-ant-1.10.6/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export ANDROID_HOME=$PWD/android-sdk-linux; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export PATH=${PATH}:$PWD/apache-ant-1.10.6/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk; fi
 script:
-   # - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/build_android_engine.sh; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/build_android_engine.sh; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/build_mingw_engine.sh; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/build_portable_linux_engine.sh; fi
 after_script:
     - cd ${TRAVIS_BUILD_DIR}
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ccache --show-stats > ccache_stats.log; fi
-    #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/travis-upload.sh xash3d-mingw.7z xash3d-linux.7z xash3d-generic.apk; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/travis-upload.sh xash3d-mingw.7z xash3d-linux.7z; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/travis-upload.sh xash3d-mingw.7z xash3d-linux.7z xash3d-generic.apk; fi
