@@ -824,12 +824,6 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 	char *input_devices_str = Info_ValueForKey( useragent, "d" );
 	char *id = Info_ValueForKey( useragent, "i" );
 
-	if( !input_devices_str || !input_devices_str[0] )
-	{
-		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server does not allow\nconnect without input devices list.\nPlease update your engine.\n" );
-		return false;
-	}
-
 	if( input_devices_str )
 	{
 		int input_devices = Q_atoi( input_devices_str );
@@ -855,6 +849,11 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 			return false;
 		}
 	}
+	else
+	{
+	        Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server does not allow\nconnect without input devices list.\nPlease update your engine.\n" );
+                return false;
+	}
 
 	if( id )
 	{
@@ -865,6 +864,11 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYou are banned!\n" );
 			return false;
 		}
+	}
+	else
+	{
+		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow\nconnect without ID.\n" );
+		return false;
 	}
 
 	return true;
