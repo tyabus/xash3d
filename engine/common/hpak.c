@@ -311,8 +311,10 @@ void HPAK_AddLump( qboolean add_to_queue, const char *name, resource_t *DirEnt, 
 
 	if( HPAK_FindResource( &hpak1, (char *)DirEnt->rgucMD5_hash, NULL ))
 	{
+		MsgDev( D_ERROR, "HPAK_AddLump: Couldn't add the lump %s: already exist.\n", DirEnt->szFileName, name );
 		Mem_Free( hpak1.dirs );
 		FS_Close( f2 );
+		return;
 	}
 
 	// make a new container
