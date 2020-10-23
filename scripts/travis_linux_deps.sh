@@ -1,7 +1,8 @@
 #!/bin/sh
 
-jdk_switcher use oraclejdk8
+echo "Installing android-sdk"
 curl -s http://dl.google.com/android/android-sdk_r22.0.4-linux.tgz | tar xzf -
+echo "Installing apache-ant"
 curl http://mirror.linux-ia64.org/apache//ant/binaries/apache-ant-1.10.6-bin.tar.xz | tar xJ
 export ANDROID_HOME=$PWD/android-sdk-linux
 export PATH=${PATH}:$PWD/apache-ant-1.10.6/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk
