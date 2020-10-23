@@ -575,14 +575,14 @@ int SV_FlyMove( edict_t *ent, float time, trace_t *steptrace )
 		allFraction += trace.fraction;
 
 		if( trace.allsolid )
-		{	
+		{
 			// entity is trapped in another solid
 			VectorClear( ent->v.velocity );
 			return 4;
 		}
 
 		if( trace.fraction > 0.0f )
-		{	
+		{
 			// actually covered some distance
 			VectorCopy( trace.endpos, ent->v.origin );
 			VectorCopy( ent->v.velocity, original_velocity );
@@ -593,7 +593,10 @@ int SV_FlyMove( edict_t *ent, float time, trace_t *steptrace )
 			 break; // moved the entire distance
 
 		if( !trace.ent )
+		{
 			MsgDev( D_ERROR, "SV_FlyMove: trace.ent == NULL\n" );
+			break;
+		}
 
 		if( trace.plane.normal[2] > 0.7f )
 		{
