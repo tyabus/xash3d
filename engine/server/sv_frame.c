@@ -266,12 +266,11 @@ void SV_EmitPacketEntities( sv_client_t *cl, client_frame_t *to, sizebuf_t *msg 
 
 		if( newnum > oldnum )
 		{	
-			edict_t *ed = EDICT_NUM( oldent->number );
-			qboolean	force = false;
+			qboolean	force;
 
-			// check if entity completely removed from server
-			if( ed->free || FBitSet( ed->v.flags, FL_KILLME ) )
-				force = true;
+			if( EDICT_NUM( oldent->number )->free )
+				force = true;	// entity completely removed from server
+			else force = false;		// just removed from delta-message 
 
 			// remove from message
 			MSG_WriteDeltaEntity( oldent, NULL, msg, force, false, sv.time );
