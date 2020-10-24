@@ -649,7 +649,13 @@ pack_t *FS_LoadPackPAK( const char *packfile, int *error )
 		return NULL;
 	}
 
-	read( packhandle, (void *)&header, sizeof( header ));
+	if( read( packhandle, (void *)&header, sizeof( header )) != sizeof( header ) )
+	{
+		MsgDev( D_NOTE, "%s: file less then header size\n", packfile );
+		if( error ) *error = PAK_LOAD_CORRUPTED;
+		close( packhandle );
+		return NULL;
+	}
 
 	LittleLongSW(header.ident);
 	LittleLongSW(header.dirlen);
