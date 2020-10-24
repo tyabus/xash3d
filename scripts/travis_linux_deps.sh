@@ -1,8 +1,7 @@
 #!/bin/sh
 
-jdk_switcher use oraclejdk8
 curl -s http://dl.google.com/android/android-sdk_r22.0.4-linux.tgz | tar xzf -
-curl http://mirror.linux-ia64.org/apache//ant/binaries/apache-ant-1.10.6-bin.tar.xz | tar xJ
+curl https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.6-bin.tar.xz | tar xJ
 export ANDROID_HOME=$PWD/android-sdk-linux
 export PATH=${PATH}:$PWD/apache-ant-1.10.6/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk
 sleep 3s; echo y | android update sdk -u --filter platform-tools,build-tools-19.0.0,android-19 --force --all > /dev/null
