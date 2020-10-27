@@ -159,6 +159,7 @@ static byte *R_SpriteLoadGroup( model_t *mod, byte *pin, mspriteframe_t **ppfram
 		pin = R_SpriteLoadFrame( mod, pin, &pspritegroup->frames[i], framenum * 10 + i );
 	}
 
+	Mem_Free( pspritegroup );
 	return pin;
 }
 
