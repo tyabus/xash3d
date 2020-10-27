@@ -2102,6 +2102,7 @@ static file_t* FS_SysOpen( const char* filepath, const char* mode )
 	if( file->real_length == -1 )
 	{
 		MsgDev( D_ERROR, "FS_SysOpen: Cannot lseek file: %s\n", strerror(errno));
+		Mem_Free( file );
 		return NULL;
 	}
 
