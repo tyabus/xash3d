@@ -22,6 +22,7 @@ GNU General Public License for more details.
 
 sentence_t	g_Sentences[MAX_SENTENCES];
 static uint	g_numSentences;
+static char	*g_SentenceFile = NULL;
 static char	*rgpparseword[CVOXWORDMAX];	// array of pointers to parsed words
 static char	voxperiod[] = "_period";	// vocal pause
 static char	voxcomma[] = "_comma";	// vocal pause
@@ -623,20 +624,20 @@ void VOX_ParseLineCommands( char *pSentenceData, int sentenceIndex )
 // sentence name so we can search later.
 void VOX_ReadSentenceFile( const char *psentenceFileName )
 {
-	char	c, *pch, *pFileData;
+	char	c, *pch;
 	char	*pchlast, *pSentenceData;
 	fs_offset_t	fileSize;
 
 	// load file
-	pFileData = (char *)FS_LoadFile( psentenceFileName, &fileSize, false );
+	g_SentenceFile = (char *)FS_LoadFile( psentenceFileName, &fileSize, false );
 
-	if( !pFileData )
+	if( !g_SentenceFile )
 	{
 		MsgDev( D_WARN, "couldn't load %s\n", psentenceFileName );
 		return;
 	} 
 
-	pch = pFileData;
+	pch = g_SentenceFile;
 	pchlast = pch + fileSize;
 
 	while( pch < pchlast )
@@ -702,5 +703,8 @@ void VOX_Init( void )
 void VOX_Shutdown( void )
 {
 	g_numSentences = 0;
+
+	if( g_SentenceFile )
+		Mem_Free( g_SentenceFile );
 }
 #endif // XASH_DEDICATED
