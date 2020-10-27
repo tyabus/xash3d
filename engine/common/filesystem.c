@@ -3704,6 +3704,7 @@ static qboolean W_ReadLumpTable( wfile_t *wad )
 	{
 		MsgDev( D_ERROR, "W_ReadLumpTable: %s has corrupted lump allocation table\n", wad->filename );
 		W_Close( wad );
+		Mem_Free( srclumps );
 		return false;
 	}
 
