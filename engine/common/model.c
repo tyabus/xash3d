@@ -3275,10 +3275,10 @@ Mod_LoadCacheFile
 */
 void GAME_EXPORT Mod_LoadCacheFile( const char *filename, cache_user_t *cu )
 {
-	byte	*buf;
 	string	name;
 	size_t	i, j;
 	fs_offset_t size;
+	file_t *file;
 
 	ASSERT( cu != NULL );
 
@@ -3294,15 +3294,19 @@ void GAME_EXPORT Mod_LoadCacheFile( const char *filename, cache_user_t *cu )
 	}
 	name[j] = '\0';
 
-	buf = FS_LoadFile( name, &size, false );
-	if( !buf || !size )
+	file = FS_OpenFile( name, &size, false );
+
+	if( !file || !size )
 	{
+		if( file )
+			FS_Close( file );
+
 		Host_MapDesignError( "LoadCacheFile: ^1can't load %s^7\n", filename );
 		return;
 	}
 	cu->data = Mem_Alloc( com_studiocache, size );
-	Q_memcpy( cu->data, buf, size );
-	Mem_Free( buf );
+	FS_Read( file, cu->data, size );
+	FS_Close( file );
 }
 
 /*
