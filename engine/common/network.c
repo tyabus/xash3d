@@ -2283,7 +2283,10 @@ httpserver_t *HTTP_ParseURL( const char *url )
 	while( *url && ( *url != ':' ) && ( *url != '/' ) && ( *url != '\r' ) && ( *url != '\n' ) )
 	{
 		if( i > sizeof( server->host ) )
+		{
+			Mem_Free( server );
 			return NULL;
+		}
 
 		server->host[i++] = *url++;
 	}
@@ -2305,7 +2308,10 @@ httpserver_t *HTTP_ParseURL( const char *url )
 	while( *url && ( *url != '\r' ) && ( *url != '\n' ) )
 	{
 		if( i >= sizeof( server->path ) )
+		{
+			Mem_Free( server );
 			return NULL;
+		}
 
 		server->path[i++] = *url++;
 	}
