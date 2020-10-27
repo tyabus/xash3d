@@ -673,6 +673,7 @@ void ID_Init( void )
 			sscanf( buf, "%016llX", &id );
 			id ^= GAME_XOR_MASK;
 			ID_Check();
+			Mem_Free( (void*)buf );
 		}
 	}
 	if( !id )
