@@ -2282,7 +2282,7 @@ httpserver_t *HTTP_ParseURL( const char *url )
 
 	while( *url && ( *url != ':' ) && ( *url != '/' ) && ( *url != '\r' ) && ( *url != '\n' ) )
 	{
-		if( i > sizeof( server->host ) )
+		if( i >= sizeof( server->host ) )
 		{
 			Mem_Free( server );
 			return NULL;
