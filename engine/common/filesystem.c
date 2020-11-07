@@ -3735,7 +3735,7 @@ static qboolean W_ReadLumpTable( wfile_t *wad )
 byte *W_ReadLump( wfile_t *wad, dlumpinfo_t *lump, fs_offset_t *lumpsizeptr )
 {
 	byte	*buf;
-	size_t	size = 0;
+	int	size = 0;
 
 	// assume error
 	if( lumpsizeptr ) *lumpsizeptr = 0;
