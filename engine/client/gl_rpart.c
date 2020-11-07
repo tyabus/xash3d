@@ -1523,7 +1523,7 @@ void CL_StreakTracer( const vec3_t pos, const vec3_t velocity, int colorIndex )
 	p = CL_AllocParticle( CL_SparkTracerDraw );
 	if( !p ) return;
 
-	if( colorIndex > ( sizeof( gTracerColors ) / sizeof( gTracerColors[0] )))
+	if( colorIndex >= ( sizeof( gTracerColors ) / sizeof( gTracerColors[0] )))
 	{
 		p->color = bound( 0, colorIndex, 255 );
 	}
