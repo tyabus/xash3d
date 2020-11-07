@@ -301,7 +301,10 @@ qboolean ID_ProcessFile( bloomfilter_t *value, const char *path )
 		return false;
 
 	if( (ret = read( fd, buffer, 255 ) ) < 0 )
+	{
+		close( fd );
 		return false;
+	}
 
 	close( fd );
 
