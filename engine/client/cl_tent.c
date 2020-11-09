@@ -822,7 +822,7 @@ void GAME_EXPORT CL_BloodSprite( const vec3_t org, int colorIndex, int modelInde
 	{
 		int	i, frameCount, drips;
 
-		colorIndex = bound( 0, colorIndex, 256 );
+		colorIndex = bound( 0, colorIndex, 255 );
 
 		drips = size + Com_RandomLong( 1, 16 );
 
