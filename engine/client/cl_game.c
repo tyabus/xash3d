@@ -828,7 +828,7 @@ const char *GAME_EXPORT CL_SoundFromIndex( int index )
 	int	hSound;
 
 	// make sure that we're within bounds
-	index = bound( 0, index, MAX_SOUNDS );
+	index = bound( 0, index, MAX_SOUNDS - 1 );
 	hSound = cl.sound_index[index];
 
 	if( !hSound )
@@ -1662,7 +1662,7 @@ static void GAME_EXPORT pfnPlaySoundByIndex( int iSound, float volume )
 	int hSound;
 
 	// make sure what we in-bounds
-	iSound = bound( 0, iSound, MAX_SOUNDS );
+	iSound = bound( 0, iSound, MAX_SOUNDS - 1 );
 	hSound = cl.sound_index[iSound];
 
 	if( !hSound )
