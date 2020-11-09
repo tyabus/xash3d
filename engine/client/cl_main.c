@@ -1453,7 +1453,7 @@ void CL_PrepSound( void )
 	int	i, sndcount, step;
 
 	MsgDev( D_NOTE, "CL_PrepSound: %s\n", clgame.mapname );
-	for( i = 0, sndcount = 0; i < MAX_SOUNDS && cl.sound_precache[i+1][0]; i++ )
+	for( i = 0, sndcount = 0; i < MAX_SOUNDS - 1 && cl.sound_precache[i+1][0]; i++ )
 		sndcount++; // total num sounds
 	step = sndcount/10;
 
