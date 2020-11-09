@@ -1522,7 +1522,7 @@ void CL_PrepVideo( void )
 	if( !cls.demoplayback && map_checksum != cl.checksum )
 		Host_Error( "Local map version differs from server: %i != '%i'\n", map_checksum, cl.checksum );
 
-	for( i = 0, mdlcount = 0; i < MAX_MODELS && cl.model_precache[i+1][0]; i++ )
+	for( i = 0, mdlcount = 0; i < MAX_MODELS - 1 && cl.model_precache[i+1][0]; i++ )
 		mdlcount++; // total num models
 	step = mdlcount/10;
 
