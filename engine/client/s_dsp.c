@@ -879,7 +879,7 @@ void CheckNewDspPresets( void )
 	if( idsp_room == room_typeprev && idsp_room == 0 )
 		return;
 
-	if( idsp_room > MAX_ROOM_TYPES )
+	if( idsp_room >= MAX_ROOM_TYPES )
 		return;
 
 	if( idsp_room != room_typeprev )
