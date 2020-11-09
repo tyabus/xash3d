@@ -1591,7 +1591,7 @@ void GAME_EXPORT CL_UserTracerParticle( float *org, float *vel, float life, int 
 	p = CL_AllocParticle( CL_BulletTracerDraw );
 	if( !p ) return;
 
-	if( colorIndex > ( sizeof( gTracerColors ) / sizeof( gTracerColors[0] )))
+	if( colorIndex >= ( sizeof( gTracerColors ) / sizeof( gTracerColors[0] )))
 	{
 		p->color = bound( 0, colorIndex, 255 );
 	}
