@@ -703,7 +703,7 @@ char *SV_ReadEntityScript( const char *filename, int *flags )
 
 	*flags = 0;
 
-	Q_strncpy( bspfilename, va( "maps/%s.bsp", filename ), sizeof( entfilename ));			
+	Q_snprintf( bspfilename, sizeof( bspfilename ), "maps/%s.bsp", filename );
 	f = FS_Open( bspfilename, "rb", false );
 	if( !f ) return NULL;
 
@@ -744,7 +744,7 @@ char *SV_ReadEntityScript( const char *filename, int *flags )
 	}
 
 	// check for entfile too
-	Q_strncpy( entfilename, va( "maps/%s.ent", filename ), sizeof( entfilename ));
+	Q_snprintf( entfilename, sizeof( entfilename ), "maps/%s.ent", filename );
 
 	// make sure what entity patch is never than bsp
 	ft1 = FS_FileTime( bspfilename, false );
