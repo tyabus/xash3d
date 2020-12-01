@@ -1500,7 +1500,6 @@ Call before entering a new level, or after changing dlls
 */
 void CL_PrepVideo( void )
 {
-	string	mdlname, mapname;
 	int	i, mdlcount, step;
 	int	map_checksum; // dummy
 
@@ -1511,8 +1510,7 @@ void CL_PrepVideo( void )
 	MsgDev( D_NOTE, "CL_PrepVideo: %s\n", clgame.mapname );
 
 	// let the render dll load the map
-	Q_strncpy( mapname, cl.model_precache[1], MAX_STRING );
-	Mod_LoadWorld( mapname, (uint32_t *)&map_checksum, cl.maxclients > 1 );
+	Mod_LoadWorld( cl.model_precache[1], (uint32_t *)&map_checksum, cl.maxclients > 1 );
 	cl.worldmodel = Mod_Handle( 1 ); // get world pointer
 	Cvar_SetFloat( "scr_loading", 25.0f );
 
@@ -1528,8 +1526,7 @@ void CL_PrepVideo( void )
 
 	for( i = 0; i < MAX_MODELS - 1 && cl.model_precache[i+1][0]; i++ )
 	{
-		Q_strncpy( mdlname, cl.model_precache[i+1], MAX_STRING );
-		Mod_RegisterModel( mdlname, i+1 );
+		Mod_RegisterModel( cl.model_precache[i+1], i+1 );
 		Cvar_SetFloat( "scr_loading", scr_loading->value + 75.0f / mdlcount );
 		if( step && !( i % step ) && ( cl_allow_levelshots->integer || cl.background ) )
 			SCR_UpdateScreen();
