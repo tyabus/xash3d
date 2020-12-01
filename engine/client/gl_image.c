@@ -201,7 +201,7 @@ void GL_TexFilter( gltexture_t *tex, qboolean update )
 		{
 			if( r_textureMagFilter == GL_NEAREST && allowNearest )
 			{
-				pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMagFilter );
+				pglTexParameteri( tex->target, GL_TEXTURE_MIN_FILTER, r_textureMinFilter );
 				pglTexParameteri( tex->target, GL_TEXTURE_MAG_FILTER, r_textureMagFilter );
 			}
 			else
