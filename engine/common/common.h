@@ -180,7 +180,7 @@ typedef enum
 #define XASH_VERSION	"0.19.4"		// engine current version
 
 // generic update page, see ShellExecute
-#define XASH_UPDATE_PAGE "https://github.com/FWGS/xash3d/releases/latest"
+#define XASH_UPDATE_PAGE "https://github.com/tyabus/xash3d/releases/latest"
 
 // PERFORMANCE INFO
 #define MIN_FPS         	15.0		// host minimum fps value for maxfps.
