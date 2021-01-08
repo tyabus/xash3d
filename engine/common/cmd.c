@@ -1364,8 +1364,8 @@ void Cmd_Init( void )
 	Cmd_AddCommand( "apropos", Cmd_Apropos_f, "lists all console variables/commands/aliases containing the specified string in the name or description" );
 	Cmd_AddCommand( "stuffcmds", Cmd_StuffCmds_f, va( "execute commandline parameters (must be present in %s.rc script)", SI.ModuleName ));
 	Cmd_AddCommand( "cmd", Cmd_ForwardToServer, "send a console commandline to the server" );
-	Cmd_AddCommand( "alias", Cmd_Alias_f, "create a script function, without arguments show the list of all aliases" );
-	Cmd_AddCommand( "unalias", Cmd_UnAlias_f, "remove a script function" );
+	Cmd_AddRestrictedCommand( "alias", Cmd_Alias_f, "create a script function, without arguments show the list of all aliases" );
+	Cmd_AddRestrictedCommand( "unalias", Cmd_UnAlias_f, "remove a script function" );
 	Cmd_AddCommand( "if", Cmd_If_f, "compare and set condition bits" );
 	Cmd_AddCommand( "else", Cmd_Else_f, "invert condition bit" );
 	Cmd_AddCommand( "testfilter", Cmd_Test_f, "" );

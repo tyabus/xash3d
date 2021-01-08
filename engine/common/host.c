@@ -1187,14 +1187,14 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	Cmd_Init();
 	Cvar_Init();
 
-	Cmd_AddCommand( "clear", Host_Clear_f, "clear console history" );
+	Cmd_AddRestrictedCommand( "clear", Host_Clear_f, "clear console history" );
 
 	// share developer level across all dlls
 	Q_snprintf( dev_level, sizeof( dev_level ), "%i", host.developer );
 	Cvar_Get( "developer", dev_level, CVAR_INIT, "current developer level" );
-	Cmd_AddCommand( "exec", Host_Exec_f, "execute a script file" );
+	Cmd_AddRestrictedCommand( "exec", Host_Exec_f, "execute a script file" );
 	Cmd_AddCommand( "memlist", Host_MemStats_f, "prints memory pool information" );
-	Cmd_AddCommand( "userconfigd", Host_Userconfigd_f, "execute all scripts from userconfig.d" );
+	Cmd_AddRestrictedCommand( "userconfigd", Host_Userconfigd_f, "execute all scripts from userconfig.d" );
 	cmd_scripting = Cvar_Get( "cmd_scripting", "0", CVAR_ARCHIVE, "enable simple condition checking and variable operations" );
 	
 	FS_Init();
@@ -1246,10 +1246,10 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	// init commands and vars
 	if( host.developer >= 3 )
 	{
-		Cmd_AddCommand ( "sys_error", Sys_Error_f, "just throw a fatal error to test shutdown procedures");
-		Cmd_AddCommand ( "host_error", Host_Error_f, "just throw a host error to test shutdown procedures");
-		Cmd_AddCommand ( "crash", Host_Crash_f, "a way to force a bus error for development reasons");
-		Cmd_AddCommand ( "net_error", Net_Error_f, "send network bad message from random place");
+		Cmd_AddRestrictedCommand ( "sys_error", Sys_Error_f, "just throw a fatal error to test shutdown procedures");
+		Cmd_AddRestrictedCommand ( "host_error", Host_Error_f, "just throw a host error to test shutdown procedures");
+		Cmd_AddRestrictedCommand ( "crash", Host_Crash_f, "a way to force a bus error for development reasons");
+		Cmd_AddRestrictedCommand ( "net_error", Net_Error_f, "send network bad message from random place");
 	}
 
 	host_cheats = Cvar_Get( "sv_cheats", "0", CVAR_LATCH, "allow usage of cheat commands and variables" );
@@ -1349,14 +1349,14 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	}
 	else
 	{
-		Cmd_AddCommand( "minimize", Host_Minimize_f, "minimize main window to taskbar" );
+		Cmd_AddRestrictedCommand( "minimize", Host_Minimize_f, "minimize main window to taskbar" );
 		Cbuf_AddText( "exec config.cfg\n" );
 		// listenserver/multiplayer config.
 		// need load it to update menu options.
 		if( FS_FileExists( "game.cfg", true ) )
 			Cbuf_AddText( "exec game.cfg\n" );
 		Cbuf_AddText( "exec gamesettings.cfg\n" );
-		Cmd_AddCommand( "host_writeconfig", Host_WriteConfig, "force save configs. use with care" );
+		Cmd_AddRestrictedCommand( "host_writeconfig", Host_WriteConfig, "force save configs. use with care" );
 	}
 
 	host.errorframe = 0;

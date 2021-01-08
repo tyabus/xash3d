@@ -2181,7 +2181,7 @@ void CL_InitLocal( void )
 
 	Cmd_AddCommand ("userinfo", CL_Userinfo_f, "print current client userinfo" );
 	Cmd_AddCommand ("physinfo", CL_Physinfo_f, "print current client physinfo" );
-	Cmd_AddCommand ("disconnect", CL_Disconnect_f, "disconnect from server" );
+	Cmd_AddRestrictedCommand ("disconnect", CL_Disconnect_f, "disconnect from server" );
 	Cmd_AddCommand ("record", CL_Record_f, "record a demo" );
 	Cmd_AddCommand ("playdemo", CL_PlayDemo_f, "play a demo" );
 	Cmd_AddCommand ("killdemo", CL_DeleteDemo_f, "delete a specified demo file and demoshot" );
@@ -2194,8 +2194,8 @@ void CL_InitLocal( void )
 	Cmd_AddCommand ("pointfile", CL_ReadPointFile_f, "show leaks on a map (if present of course)" );
 	Cmd_AddCommand ("linefile", CL_ReadLineFile_f, "show leaks on a map (if present of course)" );
 
-	Cmd_AddCommand ("quit", CL_Quit_f, "quit from game" );
-	Cmd_AddCommand ("exit", CL_Quit_f, "quit from game" );
+	Cmd_AddRestrictedCommand ("quit", CL_Quit_f, "quit from game" );
+	Cmd_AddRestrictedCommand ("exit", CL_Quit_f, "quit from game" );
 
 	Cmd_AddCommand ("screenshot", CL_ScreenShot_f, "takes a screenshot of the next rendered frame" );
 	Cmd_AddCommand ("snapshot", CL_SnapShot_f, "takes a snapshot of the next rendered frame" );
@@ -2205,10 +2205,10 @@ void CL_InitLocal( void )
 	Cmd_AddCommand ("saveshot", CL_SaveShot_f, "used to create save previews with LoadGame menu" );
 	Cmd_AddCommand ("demoshot", CL_DemoShot_f, "used to create demo previews with PlayDemo menu" );
 
-	Cmd_AddCommand ("connect", CL_Connect_f, "connect to a server by hostname" );
-	Cmd_AddCommand ("reconnect", CL_Reconnect_f, "reconnect to current level" );
+	Cmd_AddRestrictedCommand ("connect", CL_Connect_f, "connect to a server by hostname" );
+	Cmd_AddRestrictedCommand ("reconnect", CL_Reconnect_f, "reconnect to current level" );
 
-	Cmd_AddCommand ("rcon", CL_Rcon_f, "sends a command to the server console (rcon_password and rcon_address required)" );
+	Cmd_AddRestrictedCommand ("rcon", CL_Rcon_f, "sends a command to the server console (rcon_password and rcon_address required)" );
 
 	// this is dangerous to leave in
 // 	Cmd_AddCommand ("packet", CL_Packet_f, "send a packet with custom contents" );
