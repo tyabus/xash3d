@@ -1337,7 +1337,7 @@ static qboolean FS_WriteGameInfo( const char *filepath, gameinfo_t *GameInfo )
 	if( GameInfo->max_tents > 0 )
 		FS_Printf( f, "max_tempents\t%i\n", GameInfo->max_tents );
 	if( GameInfo->max_beams > 0 )
-		FS_Printf( f, "max_beams\t\t%i\n", GameInfo->max_beams );
+		FS_Printf( f, "max_beams\t%i\n", GameInfo->max_beams );
 	if( GameInfo->max_particles > 0 )
 		FS_Printf( f, "max_particles\t%i\n", GameInfo->max_particles );
 
