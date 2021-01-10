@@ -1352,6 +1352,12 @@ void CL_ParseCvarValue( sizebuf_t *msg )
 
 	// build the answer
 	BF_WriteByte( &cls.netchan.message, clc_requestcvarvalue );
+	if( cvar && cvar->flags & CVAR_PROTECTED )
+	{
+		BF_WriteString( &cls.netchan.message, "Protected Cvar" );
+		return;
+	}
+
 	BF_WriteString( &cls.netchan.message, cvar ? cvar->string : "Not Found" );
 }
 
@@ -1373,6 +1379,12 @@ void CL_ParseCvarValue2( sizebuf_t *msg )
 	BF_WriteByte( &cls.netchan.message, clc_requestcvarvalue2 );
 	BF_WriteLong( &cls.netchan.message, requestID );
 	BF_WriteString( &cls.netchan.message, cvarName );
+	if( cvar && cvar->flags & CVAR_PROTECTED )
+	{
+		BF_WriteString( &cls.netchan.message, "Protected Cvar" );
+		return;
+	}
+
 	BF_WriteString( &cls.netchan.message, cvar ? cvar->string : "Not Found" );
 }
 
