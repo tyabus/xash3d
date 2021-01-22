@@ -69,19 +69,6 @@ SETUP BACKENDS DEFINITIONS
 
 #endif // XASH_DEDICATED
 
-// select crashhandler based on defines
-#ifndef XASH_CRASHHANDLER
-	#ifdef _WIN32
-		#ifdef DBGHELP
-			#define XASH_CRASHHANDLER CRASHHANDLER_DBGHELP
-		#endif
-	#elif defined CRASHHANDLER
-		#define XASH_CRASHHANDLER CRASHHANDLER_UCONTEXT
-	#else
-		#define XASH_CRASHHANDLER CRASHHANDLER_NULL
-	#endif
-#endif
-
 // no timer - no xash
 #ifndef XASH_TIMER
 	#ifdef _WIN32

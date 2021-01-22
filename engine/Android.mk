@@ -127,7 +127,6 @@ LOCAL_SRC_FILES := \
            common/titles.c \
            common/world.c \
            common/zone.c \
-           common/crashhandler.c \
            server/sv_client.c \
            server/sv_cmds.c \
            server/sv_custom.c \
