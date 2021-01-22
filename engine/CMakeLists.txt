@@ -28,16 +28,20 @@ fwgs_fix_default_msvc_settings()
 file(GLOB_RECURSE XASH_ENGINE_SOURCES         common/*.c server/*.c ) # Minimal sources
 file(GLOB_RECURSE XASH_ENGINE_WIN32_SOURCES   platform/win32/*.c) # Win32 only sources
 file(GLOB_RECURSE XASH_ENGINE_SDL_SOURCES     platform/sdl/*.c) # SDL version sources
+file(GLOB_RECURSE XASH_ENGINE_POSIX_SOURCES     platform/posix/*.c) # Posix sources
+file(GLOB_RECURSE XASH_ENGINE_STUB_SOURCES     platform/sdl/*.c) # Stub sources
 file(GLOB_RECURSE XASH_ENGINE_ANDROID_SOURCES platform/android/*.c) # Android sources
 file(GLOB_RECURSE XASH_ENGINE_CLIENT_SOURCES  client/*.c) # Client sources
 
 cond_list_append(WIN32        XASH_ENGINE_SOURCES XASH_ENGINE_WIN32_SOURCES)
+cond_list_append(UNIX        XASH_ENGINE_SOURCES XASH_ENGINE_POSIX_SOURCES)
+cond_list_append("NOT UNIX"        XASH_ENGINE_SOURCES XASH_ENGINE_STUB_SOURCES)
 cond_list_append(XASH_SDL     XASH_ENGINE_SOURCES XASH_ENGINE_SDL_SOURCES)
 cond_list_append(ANDROID      XASH_ENGINE_SOURCES XASH_ENGINE_ANDROID_SOURCES)
 cond_list_append("NOT XASH_DEDICATED" XASH_ENGINE_SOURCES XASH_ENGINE_CLIENT_SOURCES)
 
-
 include_directories(
+        ${CMAKE_CURRENT_BINARY_DIR}
 	.
 	common/
 	common/imagelib/
@@ -67,6 +71,10 @@ elseif(XASH_WES)
 
 	include_directories(${XASH_NANOGL_SRC}/ ${XASH_NANOGL_SRC}/GL/ ${XASH_WES_SRC}/src/)
 	add_definitions(-DXASH_WES)
+endif()
+
+if(UNIX)
+    add_definitions(-DXASH_DYNAMIC_DLADDR)
 endif()
 
 add_definitions(-DXASH_FORCEINLINE)

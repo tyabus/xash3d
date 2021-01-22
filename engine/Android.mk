@@ -11,7 +11,7 @@ APP_PLATFORM := android-12
 
 include $(XASH3D_CONFIG)
 
-LOCAL_CFLAGS += -D__MULTITEXTURE_SUPPORT__ -DXASH_GLES -DXASH_NANOGL -DUSE_EVDEV -DXASH_DYNAMIC_DLADDR -DCRASHHANDLER -DXASH_OPENSL -DXASH_SKIPCRTLIB -DXASH_FORCEINLINE -DXASH_FASTSTR
+LOCAL_CFLAGS += -D__MULTITEXTURE_SUPPORT__ -DXASH_GLES -DXASH_NANOGL -DUSE_EVDEV -DXASH_DYNAMIC_DLADDR -DXASH_OPENSL -DXASH_SKIPCRTLIB -DXASH_FORCEINLINE -DXASH_FASTSTR
 
 XASH_COMMIT := $(firstword $(shell cd $(LOCAL_PATH)&&git rev-parse --short=6 HEAD) unknown)
 
@@ -29,6 +29,7 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/server			    \
 	$(LOCAL_PATH)/common/imagelib		    \
 	$(LOCAL_PATH)/platform/android		    \
+	$(LOCAL_PATH)/platform/posix		    \
 	$(LOCAL_PATH)/common/soundlib		    \
 	$(LOCAL_PATH)/common/soundlib/libmpg        \
 	$(LOCAL_PATH)/../common		            \
@@ -167,7 +168,8 @@ LOCAL_SRC_FILES := \
 	   common/soundlib/libmpg/tabinit.c \
 	   common/Sequence.c \
            platform/android/vid_android.c \
-           platform/android/android_nosdl.c
+           platform/android/android_nosdl.c \
+           platform/posix/crashhandler.c
 
 LOCAL_STATIC_LIBRARIES := NanoGL
 

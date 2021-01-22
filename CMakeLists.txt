@@ -37,7 +37,7 @@ include(CPack)
 # USER DEFINES \
 ################\
 
-set (XASH3D_VERSION 0.19.2)
+set (XASH3D_VERSION 0.19.4)
 
 option(XASH_DEDICATED "Enable dedicated build. Servers must choose this." OFF) # Servers must choose this
 
