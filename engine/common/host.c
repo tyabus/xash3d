@@ -30,10 +30,6 @@ GNU General Public License for more details.
 #include <fcntl.h>
 #endif
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten/emscripten.h>
-#endif
-
 #include "netchan.h"
 #include "server.h"
 #include "protocol.h"
@@ -277,28 +273,15 @@ void Host_RunFrame()
 	Host_Frame( newtime - oldtime );
 
 	oldtime = newtime;
-#ifdef __EMSCRIPTEN__
-#ifdef EMSCRIPTEN_ASYNC
-	emscripten_sleep(1);
-#else
-	if( host.crashed || host.shutdown_issued )
-		emscripten_cancel_main_loop();
-#endif
-#endif
 }
 
 void Host_FrameLoop()
 {
-#if defined __EMSCRIPTEN__ && !defined EMSCRIPTEN_ASYNC
-	emscripten_cancel_main_loop();
-	emscripten_set_main_loop( Host_RunFrame, 0, 0 );
-#else
 	// main window message loop
 	while( !host.crashed && !host.shutdown_issued )
 	{
 		Host_RunFrame();
 	}
-#endif
 }
 
 void EXPORT Host_AbortCurrentFrame( void )
@@ -311,11 +294,7 @@ void EXPORT Host_AbortCurrentFrame( void )
 #else // sj/lj not supported, so re-run main loop with shifted stack
 	Host_FrameLoop();
 #endif
-#ifdef __EMSCRIPTEN__
-	EM_ASM(throw 'SimulateInfiniteLoop');
-#else
 	exit(127);
-#endif
 }
 
 /*
@@ -1143,7 +1122,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 		host.type = HOST_DEDICATED;
 	}
 	SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
-#if defined XASH_GLES && !defined __EMSCRIPTEN__ && !TARGET_OS_IOS && defined SDL_HINT_OPENGL_ES_DRIVER
+#if defined XASH_GLES && !TARGET_OS_IOS && defined SDL_HINT_OPENGL_ES_DRIVER
 	SDL_SetHint( SDL_HINT_OPENGL_ES_DRIVER, "1" );
 #endif
 #endif

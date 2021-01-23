@@ -40,7 +40,6 @@ But if you want your patch to be accepted, we can give you few guidelines.
 | OS X/iOS | `defined(__APPLE__)` and TargetConditionals macros |
 | Windows | `defined(_WIN32)` |
 | Android | `defined(__ANDROID__)` |
-| Emscripten | `defined(__EMSCRIPTEN__)` |
 
 ### Licensing
 

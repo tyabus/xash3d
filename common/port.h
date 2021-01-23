@@ -57,11 +57,6 @@ GNU General Public License for more details.
 		#define OPEN_COMMAND "xdg-open"
 	#endif
 
-
-	#ifdef __EMSCRIPTEN__
-	#include <emscripten.h>
-	#endif
-
 	#if defined(__ANDROID__)
 		#if defined(LOAD_HARDFP)
 			#define POSTFIX "_hardfp"

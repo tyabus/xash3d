@@ -159,16 +159,6 @@ void NET_FreeWinSock( void )
 #define SOCKET int
 #endif
 
-#ifdef __EMSCRIPTEN__
-/* All socket operations are non-blocking already */
-static int ioctl_stub( int d, unsigned long r, ...)
-{
-	return 0;
-}
-#undef pIoctlSocket
-#define pIoctlSocket ioctl_stub
-#endif
-
 typedef struct
 {
 	byte	data[NET_MAX_PAYLOAD];
@@ -342,7 +332,7 @@ static void NET_SockadrToNetadr( struct sockaddr *s, netadr_t *a )
 #endif
 }
 
-#if !defined XASH_NO_ASYNC_NS_RESOLVE && ( defined _WIN32 || !defined __EMSCRIPTEN__ )
+#if !defined XASH_NO_ASYNC_NS_RESOLVE
 #define CAN_ASYNC_NS_RESOLVE
 #endif
 
@@ -1965,7 +1955,7 @@ void HTTP_Run( void )
 		// Now set non-blocking mode
 		// You may skip this if not supported by system,
 		// but download will lock engine, maybe you will need to add manual returns
-#if defined(_WIN32) || defined(__APPLE__) || defined(__FreeBSD__) || defined __EMSCRIPTEN__
+#if defined(_WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
 		mode = 1;
 		pIoctlSocket( curfile->socket, FIONBIO, &mode );
 #else
@@ -2001,7 +1991,7 @@ void HTTP_Run( void )
 		{
 #ifdef _WIN32
 			if( pWSAGetLastError() == WSAEINPROGRESS || pWSAGetLastError() == WSAEWOULDBLOCK )
-#elif defined(__APPLE__) || defined(__FreeBSD__) || defined __EMSCRIPTEN__
+#elif defined(__APPLE__) || defined(__FreeBSD__)
 			if( errno == EINPROGRESS || errno == EWOULDBLOCK )
 #else
 			if( errno == EINPROGRESS ) // Should give EWOOLDBLOCK if try recv too soon
@@ -2041,7 +2031,7 @@ void HTTP_Run( void )
 			{
 #ifdef _WIN32
 				if( pWSAGetLastError() != WSAEWOULDBLOCK && pWSAGetLastError() != WSAENOTCONN )
-#elif defined(__APPLE__) || defined(__FreeBSD__) || defined __EMSCRIPTEN__
+#elif defined(__APPLE__) || defined(__FreeBSD__)
 				if( errno != EWOULDBLOCK && errno != ENOTCONN )
 #else
 				if( errno != EWOULDBLOCK )

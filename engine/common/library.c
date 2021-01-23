@@ -164,25 +164,6 @@ void *Com_LoadLibrary( const char *dllname, int build_ordinals_table )
 	{
 		return IOS_LoadLibrary( dllname );
 	}
-#elif defined( __EMSCRIPTEN__ )
-	{
-#ifdef EMSCRIPTEN_LIB_FS
-		char path[MAX_SYSPATH];
-		string prefix;
-		Q_strcpy(prefix, getenv( "LIBRARY_PREFIX" ) );
-		Q_snprintf( path, MAX_SYSPATH, "%s%s%s",  prefix, dllname, getenv( "LIBRARY_SUFFIX" ) );
-		pHandle = dlopen( path, RTLD_NOW );
-		if( !pHandle )
-		{
-			Com_PushLibraryError( va("Loading %s:\n", path ) );
-			Com_PushLibraryError( dlerror() );
-		}
-		return pHandle;
-#else
-		// get handle of preloaded library outside fs
-		return EM_ASM_INT( return DLFCN.loadedLibNames[Pointer_stringify($0)], (int)dllname );
-#endif
-	}
 #elif defined( __ANDROID__ )
 	{
 		char path[MAX_SYSPATH];
@@ -320,7 +301,6 @@ void *Com_LoadLibrary( const char *dllname, int build_ordinals_table )
 
 void Com_FreeLibrary( void *hInstance )
 {
-#if !defined __EMSCRIPTEN__ || defined EMSCRIPTEN_LIB_FS
 #ifdef DLL_LOADER
 	void *wm;
 	if( host.enabledll && (wm = Loader_GetDllHandle( hInstance )) )
@@ -328,7 +308,6 @@ void Com_FreeLibrary( void *hInstance )
 	else
 #endif
 		dlclose( hInstance );
-#endif
 }
 
 void *Com_GetProcAddress( void *hInstance, const char *name )
