@@ -3,16 +3,6 @@ cache: ccache
 compiler: gcc
 dist: xenial
 
-env:
-  global:
-   - COVERITY_SCAN_PROJECT_NAME="tyabus-xash3d"
-   - COVERITY_SCAN_NOTIFICATION_EMAIL="mr.maks0443@gmail.com"
-   - COVERITY_SCAN_BRANCH_PATTERN="master"
-   - COVERITY_SCAN_BUILD_COMMAND="make -j2 VERBOSE=1"
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   # via the "travis encrypt" command using the project repo's public key
-   - secure: "YYk8zg1OxUB7vO8bqrLceAwzRE5ibYO0T8MA6B1N6oaBe9ufzPqyM8ivrFWpa7i3NOt7sCRH9OTSqo8qlW6D+GxK2pOI8XImggqX7jCHRXco4eibk7bOVwjqNM3NfM/1KsQLwr98Dkw4HfWmF50UqG7PBGBSHRQeYnrtk0P2Qc+Fvsp4DoilErB4N7FRPwS35/Iu4xQZTLVbtcHGSt4cnbpElJD/MxR/Bv+YBGvOB93Lrxu8uYS38+kprnHoDimOUIsv5SVyMXBO5I41ZUhyfWWhdK8DrnPnePH3krACCKNCd/1pY0YCY0UAmQgbQfx0pkjtj+aC9tfeFTO8Md1XfAq8rHYF6s5PBGqTWQrJCC1bK3MJ4lQDsJwF6fyPxsRArnAngGdqrBjgNoMUsdej2WCdZYgVnVNIxGA2Gxg2urQo9Glvhv/eSJQ0jXdElsBqvAGBDUewZjp9jOm5YJXLz/XAoJUWVSllKrIo6coTSX/8KQTNC+29vnK1da9oxYk+i8JalCAyxfynaRARDiul7fugR0sDFIGAhViHg5EQCcHjCEkn+W7H9V2XZu1IuksMLp6On3od8nNUt9sezr2S5PL7clfLcdIIUhtkpnDVq9F/HNjOwhEGrvgahtIjw27RTNZPBKnkRVYXGc9DF9hdwCf3Sxej57qt39f39biZxkQ="
-
 addons:
   apt:
     packages:
