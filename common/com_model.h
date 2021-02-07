@@ -338,7 +338,7 @@ typedef struct auxvert_s
 	float		fv[3];		// viewspace x, y
 } auxvert_t;
 
-#define MAX_SCOREBOARDNAME	32
+#define MAX_SCOREBOARDNAME 32
 #define MAX_INFO_STRING	256
 
 #include "custom.h"

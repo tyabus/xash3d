@@ -840,7 +840,7 @@ Responds with long info for local and broadcast requests
 */
 void SV_BuildNetAnswer( netadr_t from )
 {
-	char	string[MAX_INFO_STRING], answer[512];
+	char	string[MAX_INFO_STRING], answer[1024];
 	int	version, context, type;
 	int	i, count = 0;
 
