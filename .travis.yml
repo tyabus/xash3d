@@ -46,6 +46,6 @@ script:
 after_script:
     - cd ${TRAVIS_BUILD_DIR}
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ccache --show-stats > ccache_stats.log; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/travis_upload.sh xash3d-mingw.7z xash3d-linux.7z xash3d-generic.apk | grep -s '\[Direct IP download]'\; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh scripts/travis_upload.sh xash3d-mingw.7z xash3d-linux.7z xash3d-generic.apk; fi
 before_install:
     - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-

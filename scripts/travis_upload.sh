@@ -19,7 +19,7 @@ FILE_BASE=${FNAME%.*}
 FILE_EXT="${FNAME##*.}"
 OUTNAME=$PREFIX-$FILE_BASE-$POSTFIX.$FILE_EXT
 #echo $FNAME: `curl --upload-file $FNAME https://transfer.sh/$OUTNAME`
-echo $FNAME: `curl --upload-file $FNAME https://oshi.at/$OUTNAME/2160`
+echo $FNAME: $(curl -s --upload-file $FNAME https://oshi.at/$OUTNAME/2160 | grep Direct)
 shift
 done
 exit 0
