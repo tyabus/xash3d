@@ -1018,6 +1018,8 @@ void SV_ConSay_f( void )
 
 		SV_ClientPrintf( client, PRINT_CHAT, "%s\n", text );
 	}
+
+	Msg( "%s\n", text );
 }
 
 /*
