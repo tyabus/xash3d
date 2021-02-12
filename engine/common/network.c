@@ -70,10 +70,6 @@ static int (_stdcall *pGetHostName)( char *name, int namelen );
 int (_stdcall *pGetAddrInfo)(const char *, const char *, const struct addrinfo *, struct addrinfo **);
 #endif
 static dword (_stdcall *pNtohl)( dword netlong );
-static void (_stdcall *pInitializeCriticalSection)( void* );
-static void (_stdcall *pEnterCriticalSection)( void* );
-static void (_stdcall *pLeaveCriticalSection)( void* );
-static void (_stdcall *pDeleteCriticalSection)( void* );
 static dllfunc_t winsock_funcs[] =
 {
 { "bind", (void **) &pBind },
@@ -106,25 +102,9 @@ static dllfunc_t winsock_funcs[] =
 
 dll_info_t winsock_dll = { "wsock32.dll", winsock_funcs, false };
 
-static dllfunc_t kernel32_funcs[] =
-{
-	{ "InitializeCriticalSection", (void **) &pInitializeCriticalSection },
-	{ "EnterCriticalSection", (void **) &pEnterCriticalSection },
-	{ "LeaveCriticalSection", (void **) &pLeaveCriticalSection },
-	{ "DeleteCriticalSection", (void **) &pDeleteCriticalSection },
-	{ NULL, NULL }
-};
-
-dll_info_t kernel32_dll = { "kernel32.dll", kernel32_funcs, false };
-
-
-static void NET_InitializeCriticalSections( void );
-
 qboolean NET_OpenWinSock( void )
 {
-	if( Sys_LoadLibrary( &kernel32_dll ) )
-		NET_InitializeCriticalSections();
-
+	NET_InitializeCriticalSections();
 	// initialize the Winsock function vectors (we do this instead of statically linking
 	// so we can run on Win 3.1, where there isn't necessarily Winsock)
 	return Sys_LoadLibrary( &winsock_dll );
@@ -361,8 +341,8 @@ struct cs {
 	void *p2, *p3;
 	uint32_t  i4;
 };
-#define mutex_lock pEnterCriticalSection
-#define mutex_unlock pLeaveCriticalSection
+#define mutex_lock EnterCriticalSection
+#define mutex_unlock LeaveCriticalSection
 #define detach_thread( x ) CloseHandle(x)
 #define create_thread( pfn ) nsthread.thread = CreateThread( NULL, 0, pfn, NULL, 0, NULL )
 #define mutex_t  struct cs
@@ -398,8 +378,8 @@ static struct nsthread_s
 #ifdef _WIN32
 static void NET_InitializeCriticalSections( void )
 {
-	pInitializeCriticalSection( &nsthread.mutexns );
-	pInitializeCriticalSection( &nsthread.mutexres );
+	InitializeCriticalSection( &nsthread.mutexns );
+	InitializeCriticalSection( &nsthread.mutexres );
 }
 #endif
 
@@ -417,8 +397,10 @@ void NET_ResolveThread( void )
 	hints.ai_family = AF_INET;
 	if( !pGetAddrInfo( nsthread.hostname, NULL, &hints, &ai ) )
 	{
-		for( cur = ai; cur; cur = cur->ai_next ) {
-			if( cur->ai_family == AF_INET ) {
+		for( cur = ai; cur; cur = cur->ai_next )
+		{
+			if( cur->ai_family == AF_INET )
+			{
 				sin_addr = *((int*)&((struct sockaddr_in *)cur->ai_addr)->sin_addr);
 				freeaddrinfo( ai );
 				ai = NULL;
@@ -546,81 +528,78 @@ static int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean 
 		{
 #ifdef CAN_ASYNC_NS_RESOLVE
 			qboolean asyncfailed = false;
-#ifdef _WIN32
-			if( pInitializeCriticalSection )
-#endif // _WIN32
+			if( !nonblocking )
 			{
-				if( !nonblocking )
-				{
 #ifdef HAVE_GETADDRINFO
-					struct addrinfo *ai = NULL, *cur;
-					struct addrinfo hints;
+				struct addrinfo *ai = NULL, *cur;
+				struct addrinfo hints;
 
-					memset( &hints, 0, sizeof( hints ) );
-					hints.ai_family = AF_INET;
-					if( !pGetAddrInfo( copy, NULL, &hints, &ai ) )
+				memset( &hints, 0, sizeof( hints ) );
+				hints.ai_family = AF_INET;
+				if( !pGetAddrInfo( copy, NULL, &hints, &ai ) )
+				{
+					for( cur = ai; cur; cur = cur->ai_next )
 					{
-						for( cur = ai; cur; cur = cur->ai_next ) {
-							if( cur->ai_family == AF_INET ) {
-								ip = *((int*)&((struct sockaddr_in *)cur->ai_addr)->sin_addr);
-								freeaddrinfo(ai);
-								ai = NULL;
-								break;
-							}
-						}
-
-						if( ai )
+						if( cur->ai_family == AF_INET )
+						{
+							ip = *((int*)&((struct sockaddr_in *)cur->ai_addr)->sin_addr);
 							freeaddrinfo(ai);
+							ai = NULL;
+							break;
+						}
 					}
+
+					if( ai )
+						freeaddrinfo(ai);
+				}
 #else
-					struct hostent *h;
+				struct hostent *h;
 
-					mutex_lock( &nsthread.mutexns );
-					h = pGetHostByName( copy );
-					if( !h )
-					{
-						mutex_unlock( &nsthread.mutexns );
-						return 0;
-					}
-
-					ip = *(int *)h->h_addr_list[0];
+				mutex_lock( &nsthread.mutexns );
+				h = pGetHostByName( copy );
+				if( !h )
+				{
 					mutex_unlock( &nsthread.mutexns );
+					return 0;
+				}
+
+				ip = *(int *)h->h_addr_list[0];
+				mutex_unlock( &nsthread.mutexns );
 #endif
+			}
+			else
+			{
+				mutex_lock( &nsthread.mutexres );
+
+				if( nsthread.busy )
+				{
+					mutex_unlock( &nsthread.mutexres );
+					return 2;
+				}
+
+				if( !Q_strcmp( copy, nsthread.hostname ) )
+				{
+					ip = nsthread.result;
+					nsthread.hostname[0] = 0;
+					detach_thread( nsthread.thread );
 				}
 				else
 				{
-					mutex_lock( &nsthread.mutexres );
-
-					if( nsthread.busy )
-					{
-						mutex_unlock( &nsthread.mutexres );
-						return 2;
-					}
-
-					if( !Q_strcmp( copy, nsthread.hostname ) )
-					{
-						ip = nsthread.result;
-						nsthread.hostname[0] = 0;
-						detach_thread( nsthread.thread );
-					}
-					else
-					{
-						Q_strncpy( nsthread.hostname, copy, MAX_STRING );
-						nsthread.busy = true;
-						mutex_unlock( &nsthread.mutexres );
-
-						if( create_thread( Net_ThreadStart ) )
-							return 2;
-						else // failed to create thread
-						{
-							MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread!\n");
-							nsthread.busy = false;
-							asyncfailed = true;
-						}
-					}
-
+					Q_strncpy( nsthread.hostname, copy, MAX_STRING );
+					nsthread.busy = true;
 					mutex_unlock( &nsthread.mutexres );
+
+					if( create_thread( Net_ThreadStart ) )
+						return 2;
+					else // failed to create thread
+					{
+						MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread!\n");
+						nsthread.busy = false;
+						asyncfailed = true;
+					}
 				}
+
+				mutex_unlock( &nsthread.mutexres );
 			}
 #ifdef _WIN32
 			else
@@ -638,8 +617,10 @@ static int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean 
 				hints.ai_family = AF_INET;
 				if( !pGetAddrInfo( copy, NULL, &hints, &ai ) )
 				{
-					for( cur = ai; cur; cur = cur->ai_next ) {
-						if( cur->ai_family == AF_INET ) {
+					for( cur = ai; cur; cur = cur->ai_next )
+					{
+						if( cur->ai_family == AF_INET )
+						{
 							ip = *((int*)&((struct sockaddr_in *)cur->ai_addr)->sin_addr);
 							freeaddrinfo(ai);
 							ai = NULL;
