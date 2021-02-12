@@ -45,6 +45,7 @@ option(XASH_DEDICATED "Enable dedicated build. Servers must choose this." OFF) #
 option(XASH_64BIT "Enable experimental 64-bit build. Note that you must also provide 64-bit game binaries" OFF)
 
 # Windows only. Enable it by default for Windows.
+option(XASH_IPX "Enable IPX support for networking. Windows only. Deprecated." OFF)
 cmake_dependent_option(XASH_NONSTANDARD_LOAD "Enable own DLL loader in Windows." ON "WIN32" OFF)
 
 # POSIX only. Disable it by default for Windows
