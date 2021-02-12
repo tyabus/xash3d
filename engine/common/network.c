@@ -102,6 +102,8 @@ static dllfunc_t winsock_funcs[] =
 
 dll_info_t winsock_dll = { "wsock32.dll", winsock_funcs, false };
 
+static void NET_InitializeCriticalSections( void );
+
 qboolean NET_OpenWinSock( void )
 {
 	NET_InitializeCriticalSections();
@@ -601,12 +603,8 @@ static int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean 
 
 				mutex_unlock( &nsthread.mutexres );
 			}
-#ifdef _WIN32
-			else
-				asyncfailed = true;
-#else
+
 			if( asyncfailed )
-#endif // _WIN32
 #endif // CAN_ASYNC_NS_RESOLVE
 			{
 #ifdef HAVE_GETADDRINFO
