@@ -850,13 +850,13 @@ void GL_InitCommands( void )
 	renderinfo = Cvar_Get( "@renderinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
 	r_speeds = Cvar_Get( "r_speeds", "0", CVAR_ARCHIVE, "shows renderer speeds" );
 	r_fullbright = Cvar_Get( "r_fullbright", "0", CVAR_CHEAT, "disable lightmaps, get fullbright for entities" );
-	r_norefresh = Cvar_Get( "r_norefresh", "0", 0, "disable 3D rendering (use with caution)" );
+	r_norefresh = Cvar_Get( "r_norefresh", "0", CVAR_LOCALONLY, "disable 3D rendering (use with caution)" );
 	r_lighting_extended = Cvar_Get( "r_lighting_extended", "1", CVAR_ARCHIVE, "allow to get lighting from world and bmodels" );
 	r_lighting_modulate = Cvar_Get( "r_lighting_modulate", "0.6", CVAR_ARCHIVE, "lightstyles modulate scale" );
 	r_lighting_ambient = Cvar_Get( "r_lighting_ambient", "0.3", CVAR_ARCHIVE, "map ambient lighting scale" );
 	r_adjust_fov = Cvar_Get( "r_adjust_fov", "1", CVAR_ARCHIVE, "making FOV adjustment for wide-screens" );
 	r_novis = Cvar_Get( "r_novis", "0", 0, "ignore vis information (perfomance test)" );
-	r_nocull = Cvar_Get( "r_nocull", "0", 0, "ignore frustrum culling (perfomance test)" );
+	r_nocull = Cvar_Get( "r_nocull", "0", CVAR_LOCALONLY, "ignore frustrum culling (perfomance test)" );
 	r_faceplanecull = Cvar_Get( "r_faceplanecull", "1", 0, "ignore face plane culling (perfomance test)" );
 	r_detailtextures = Cvar_Get( "r_detailtextures", "1", CVAR_ARCHIVE, "enable detail textures support, use \"2\" for auto-generate mapname_detail.txt" );
 	r_lockpvs = Cvar_Get( "r_lockpvs", "0", CVAR_CHEAT, "lockpvs area at current point (pvs test)" );
@@ -909,8 +909,8 @@ void GL_InitCommands( void )
 	// make sure r_swapinterval is checked after vid_restart
 	gl_swapInterval->modified = true;
 
-	vid_gamma = Cvar_Get( "gamma", "1.0", CVAR_ARCHIVE, "gamma amount" );
-	vid_texgamma = Cvar_Get( "texgamma", "2.2", 0, "texgamma amount (default Half-Life artwork gamma)" );
+	vid_gamma = Cvar_Get( "gamma", "1.0", CVAR_ARCHIVE|CVAR_LOCALONLY, "gamma amount" );
+	vid_texgamma = Cvar_Get( "texgamma", "2.2", CVAR_LOCALONLY, "texgamma amount (default Half-Life artwork gamma)" );
 	vid_mode = Cvar_Get( "vid_mode", VID_AUTOMODE, CVAR_RENDERINFO, "display resolution mode" );
 	vid_fullscreen = Cvar_Get( "fullscreen", "0", CVAR_RENDERINFO, "set in 1 to enable fullscreen mode" );
 	vid_displayfrequency = Cvar_Get ( "vid_displayfrequency", "0", CVAR_RENDERINFO, "fullscreen refresh rate" );

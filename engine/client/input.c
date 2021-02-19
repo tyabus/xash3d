@@ -750,9 +750,9 @@ void IN_Init( void )
 		Joy_Init(); // common joystick support init
 
 #ifdef USE_EVDEV
-	Cmd_AddCommand ("evdev_open", Evdev_OpenDevice_f, "Open event device");
-	Cmd_AddCommand ("evdev_close", Evdev_CloseDevice_f, "Close event device");
-	Cmd_AddCommand ("evdev_autodetect", Evdev_Autodetect_f, "Automaticly open mouses and keyboards");
+	Cmd_AddCommand( "evdev_open", Evdev_OpenDevice_f, "Open event device" );
+	Cmd_AddCommand( "evdev_close", Evdev_CloseDevice_f, "Close event device" );
+	Cmd_AddCommand( "evdev_autodetect", Evdev_Autodetect_f, "Automaticly open mouses and keyboards" );
 #endif
 }
 
