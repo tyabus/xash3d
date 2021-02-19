@@ -124,24 +124,24 @@ void SV_CheckVelocity( edict_t *ent )
 	{
 		if( IS_NAN( ent->v.velocity[i] ))
 		{
-			MsgDev( D_INFO, "Got a NaN velocity on %s\n", STRING( ent->v.classname ));
+			MsgDev( D_INFO, "Got a NaN velocity on %s (%i)\n", STRING( ent->v.classname ), NUM_FOR_EDICT( ent ) );
 			ent->v.velocity[i] = 0.0f;
 		}
 
 		if( IS_NAN( ent->v.origin[i] ))
 		{
-			MsgDev( D_INFO, "Got a NaN origin on %s\n", STRING( ent->v.classname ));
+			MsgDev( D_INFO, "Got a NaN origin on %s (%i)\n", STRING( ent->v.classname ), NUM_FOR_EDICT( ent ) );
 			ent->v.origin[i] = 0.0f;
 		}
 
 		if( ent->v.velocity[i] > sv_maxvelocity->value )
 		{
-			MsgDev( D_INFO, "Got a velocity too high on %s\n", STRING( ent->v.classname ));
+			MsgDev( D_INFO, "Got a velocity too high on %s (%i)\n", STRING( ent->v.classname ), NUM_FOR_EDICT( ent ) );
 			ent->v.velocity[i] = sv_maxvelocity->value;
 		}
 		else if( ent->v.velocity[i] < -sv_maxvelocity->value )
 		{
-			MsgDev( D_INFO, "Got a velocity too low on %s\n", STRING( ent->v.classname ));
+			MsgDev( D_INFO, "Got a velocity too low on %s (%i)\n", STRING( ent->v.classname ), NUM_FOR_EDICT( ent ) );
 			ent->v.velocity[i] = -sv_maxvelocity->value;
 		}
 	}
