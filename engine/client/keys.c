@@ -507,8 +507,8 @@ void Key_Init( void )
 	// register our functions
 	Cmd_AddCommand( "bind", Key_Bind_f, "binds a command to the specified key in bindmap" );
 	Cmd_AddCommand( "unbind", Key_Unbind_f, "removes a command on the specified key in bindmap" );
-	Cmd_AddCommand( "unbindall", Key_Unbindall_f, "removes all commands from all keys in bindmap" );
-	Cmd_AddCommand( "resetkeys", Key_Reset_f, "reset all keys to their default values" );
+	Cmd_AddRestrictedCommand( "unbindall", Key_Unbindall_f, "removes all commands from all keys in bindmap" );
+	Cmd_AddRestrictedCommand( "resetkeys", Key_Reset_f, "reset all keys to their default values" );
 	Cmd_AddCommand( "bindlist", Key_Bindlist_f, "display current key bindings" );
 	Cmd_AddCommand( "makehelp", Key_EnumCmds_f, "write help.txt that contains all console cvars and cmds" );
 	Q_memset( keys, 0, sizeof( keys ) );
