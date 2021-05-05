@@ -2353,6 +2353,23 @@ void SV_Kill_f( sv_client_t *cl )
 
 /*
 ==================
+SV_Fullupdate_f
+==================
+*/
+void SV_Fullupdate_f( sv_client_t *cl )
+{
+	// resend the ambient sounds for demo recording
+	Host_RestartAmbientSounds();
+	// resend all the decals for demo recording
+	Host_RestartDecals();
+	// resend all the static ents for demo recording
+	SV_RestartStaticEnts();
+	// resend userinfo
+	SV_RefreshUserinfo();
+}
+
+/*
+==================
 SV_Godmode_f
 ==================
 */
@@ -3183,6 +3200,7 @@ ucmd_t ucmds[] =
 { "getresourcelist", SV_SendResourceList_f },
 { "continueloading", SV_ContinueLoading_f },
 { "kill", SV_Kill_f },
+{ "fullupdate", SV_Fullupdate_f },
 { "_sv_build_info", SV_SendBuildInfo_f },
 { NULL, NULL }
 };
@@ -3240,21 +3258,8 @@ void SV_ExecuteClientCommand( sv_client_t *cl, char *s )
 
 	if( !u->name && sv.state == ss_active )
 	{
-		qboolean isFullUpdate = !Q_strcmp( Cmd_Argv( 0 ), "fullupdate");
 		// custom client commands
 		svgame.dllFuncs.pfnClientCommand( cl->edict );
-
-		if( isFullUpdate )
-		{
-			// resend the ambient sounds for demo recording
-			Host_RestartAmbientSounds();
-			// resend all the decals for demo recording
-			Host_RestartDecals();
-			// resend all the static ents for demo recording
-			SV_RestartStaticEnts();
-			// resend userinfo
-			SV_RefreshUserinfo();
-		}
 	}
 }
 
