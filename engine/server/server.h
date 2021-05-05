@@ -271,6 +271,7 @@ typedef struct sv_client_s
 	char	useragent[MAX_INFO_STRING];
 	char	auth_id[64];
 
+	float	fullupdate_next_calltime;
 	float	userinfo_next_changetime;
 	float	userinfo_penalty;
 	int		userinfo_change_attempts;
@@ -479,6 +480,8 @@ extern  convar_t		*sv_userinfo_enable_penalty;
 extern  convar_t		*sv_userinfo_penalty_time;
 extern  convar_t		*sv_userinfo_penalty_multiplier;
 extern  convar_t		*sv_userinfo_penalty_attempts;
+extern  convar_t		*sv_fullupdate_penalty_multiplier;
+extern  convar_t		*sv_fullupdate_penalty_time;
 
 //===========================================================
 //

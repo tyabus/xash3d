@@ -99,6 +99,8 @@ convar_t	*sv_userinfo_enable_penalty;
 convar_t	*sv_userinfo_penalty_time;
 convar_t	*sv_userinfo_penalty_multiplier;
 convar_t	*sv_userinfo_penalty_attempts;
+convar_t	*sv_fullupdate_penalty_multiplier;
+convar_t	*sv_fullupdate_penalty_time;
 
 // sky variables
 convar_t	*sv_skycolor_r;
@@ -1009,6 +1011,9 @@ void SV_Init( void )
 	sv_userinfo_penalty_time = Cvar_Get( "sv_userinfo_penalty_time", "0.3", CVAR_ARCHIVE, "initial penalty time" );
 	sv_userinfo_penalty_multiplier = Cvar_Get( "sv_userinfo_penalty_multiplier", "2", CVAR_ARCHIVE, "penalty time multiplier" );
 	sv_userinfo_penalty_attempts = Cvar_Get( "sv_userinfo_penalty_attempts", "4", CVAR_ARCHIVE, "if max attempts count was exceeded, penalty time will be increased" );
+
+	sv_fullupdate_penalty_multiplier = Cvar_Get( "sv_fullupdate_penalty_multiplier", "2", CVAR_ARCHIVE, "penalty time multiplier" );
+	sv_fullupdate_penalty_time = Cvar_Get( "sv_fullupdate_penalty_time", "1", CVAR_ARCHIVE, "inital penalty time" );
 
 	Cmd_AddCommand( "download_resources", SV_DownloadResources_f, "try to download missing resources to server");
 

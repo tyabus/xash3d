@@ -2358,6 +2358,13 @@ SV_Fullupdate_f
 */
 void SV_Fullupdate_f( sv_client_t *cl )
 {
+	if( host.realtime < cl->fullupdate_next_calltime )
+	{
+		MsgDev( D_INFO, "SV_Fullupdate_f: ignore call from %s due delay\n", cl->name );
+		cl->fullupdate_next_calltime = cl->fullupdate_next_calltime * sv_fullupdate_penalty_multiplier->value;
+		return;
+	}
+
 	// resend the ambient sounds for demo recording
 	Host_RestartAmbientSounds();
 	// resend all the decals for demo recording
@@ -2366,6 +2373,8 @@ void SV_Fullupdate_f( sv_client_t *cl )
 	SV_RestartStaticEnts();
 	// resend userinfo
 	SV_RefreshUserinfo();
+
+	cl->fullupdate_next_calltime = host.realtime + sv_fullupdate_penalty_time->value;
 }
 
 /*
