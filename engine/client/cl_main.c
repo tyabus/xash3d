@@ -1187,7 +1187,23 @@ void CL_Disconnect( void )
 
 void CL_Disconnect_f( void )
 {
-	Host_Error( "Disconnected from server\n" );
+	if( cls.state >= ca_connected && cls.state != ca_cinematic )
+	{
+		CL_Disconnect();
+
+		if( Host_ServerState() )
+		{
+			// if running a local server, kill it
+			Q_strncpy( host.finalmsg, "Server quit", MAX_STRING );
+			SV_Shutdown( false );
+		}
+
+		Msg( "Disconnected from server\n" );
+	}
+	else
+	{
+		Msg( "Connect to a server first\n" );
+	}
 }
 
 void CL_Crashed( void )
