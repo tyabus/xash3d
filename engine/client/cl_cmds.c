@@ -133,7 +133,7 @@ void CL_PlayCDTrack_f( void )
 
 /*
 ===============
-CL_PlayCDTrack_f
+CL_MP3Command_f
 
 Handle "mp3" console command
 ===============
@@ -148,31 +148,32 @@ void CL_MP3Command_f ( void )
 	pszCommand = Cmd_Argv (1);
 	pszTrack = Cmd_Argv (2);
 
-	if (Q_stricmp(pszCommand, "play") == 0)
+	if ( !Q_stricmp( pszCommand, "play" ) )
 	{
 		S_StartBackgroundTrack( pszTrack, NULL, 0 );
 		return;
 	}
-	else if (Q_stricmp(pszCommand, "playfile") == 0)
+	else if ( !Q_stricmp( pszCommand, "playfile" ) )
 	{
 		S_StartBackgroundTrack( pszTrack, NULL, 0 );
 		return;
 	}
-	else if (Q_stricmp(pszCommand, "loop") == 0)
+	else if ( !Q_stricmp( pszCommand, "loop" ) )
 	{
 		S_StartBackgroundTrack( pszTrack, pszTrack, 0 );
 		return;
 	}
-	else if (Q_stricmp(pszCommand, "loopfile") == 0)
+	else if ( !Q_stricmp( pszCommand, "loopfile" ) )
 	{
 		S_StartBackgroundTrack( pszTrack, pszTrack, 0 );
 		return;
 	}
-	else if (Q_stricmp(pszCommand, "stop") == 0)
+	else if ( !Q_stricmp( pszCommand, "stop" ) )
 	{
 		S_StopBackgroundTrack();
 		return;
 	}
+	else Msg( "mp3: unknown command %s\n", pszCommand );
 }
 
 
