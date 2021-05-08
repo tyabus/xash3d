@@ -129,7 +129,7 @@ GNU General Public License for more details.
 		int x, y;
 	} POINT;
 #else // WIN32
-	#ifdef __MINGW32__
+	#if defined(__MINGW32__) && !defined(_inline)
 		#define _inline static inline
 	#endif
 
