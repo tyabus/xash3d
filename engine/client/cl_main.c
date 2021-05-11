@@ -838,14 +838,6 @@ void CL_SendConnectPacket( void )
 		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags | CVAR_READ_ONLY );
 		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags | CVAR_READ_ONLY );
 		Cvar_FullSet( "joy_enable", va( "%s", Cvar_VariableString( "joy_enable" ) ), CVAR_ARCHIVE | CVAR_READ_ONLY );
-
-
-		Info_SetValueForKey( useragent, "d", va( "%d", input_devices ), sizeof( useragent ) );
-		Info_SetValueForKey( useragent, "v", XASH_VERSION, sizeof( useragent ) );
-		Info_SetValueForKey( useragent, "b", va( "%d", Q_buildnum() ), sizeof( useragent ) );
-		Info_SetValueForKey( useragent, "o", Q_buildos(), sizeof( useragent ) );
-		Info_SetValueForKey( useragent, "a", Q_buildarch(), sizeof( useragent ) );
-		Info_SetValueForKey( useragent, "i", ID_GetMD5(), sizeof( useragent ) );
 	}
 	else
 	{
@@ -854,6 +846,15 @@ void CL_SendConnectPacket( void )
 		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags & ~CVAR_READ_ONLY );
 		Cvar_FullSet( "joy_enable", va( "%s", Cvar_VariableString( "joy_enable" ) ), CVAR_ARCHIVE );
 	}
+
+	Info_SetValueForKey( useragent, "d", va( "%d", input_devices ), sizeof( useragent ) );
+	Info_SetValueForKey( useragent, "v", XASH_VERSION, sizeof( useragent ) );
+	Info_SetValueForKey( useragent, "b", va( "%d", Q_buildnum() ), sizeof( useragent ) );
+	Info_SetValueForKey( useragent, "o", Q_buildos(), sizeof( useragent ) );
+	Info_SetValueForKey( useragent, "a", Q_buildarch(), sizeof( useragent ) );
+
+	if( adr.type != NA_LOOPBACK )
+		Info_SetValueForKey( useragent, "i", ID_GetMD5(), sizeof( useragent ) );
 
 	Netchan_OutOfBandPrint( NS_CLIENT, adr, "connect %i %i %i \"%s\" %d %s\n", PROTOCOL_VERSION, port, cls.challenge, Cvar_Userinfo( ), extensions, useragent );
 }
