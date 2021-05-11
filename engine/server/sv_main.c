@@ -124,6 +124,7 @@ convar_t	*sv_allow_joystick;
 convar_t	*sv_allow_vr;
 
 void Master_Shutdown( void );
+qboolean ID_VerifyHEX( const char *hex );
 
 char localinfo[MAX_LOCALINFO];
 
@@ -859,9 +860,13 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 
 	if( id )
 	{
-		qboolean banned = SV_CheckID( id );
+		if( !ID_VerifyHEX( id ) && from.type != NA_LOOPBACK )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYour ID is bad!\n" );
+			return false;
+		}
 
-		if( banned )
+		if( SV_CheckID( id ) )
 		{
 			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYou are banned!\n" );
 			return false;
