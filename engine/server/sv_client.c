@@ -44,6 +44,8 @@ static int	g_userid = 1;
 
 static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo );
 
+extern convar_t	*sv_nat;
+
 /*
 =================
 SV_GetChallenge
@@ -3409,10 +3411,13 @@ void SV_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 	else if( !Q_strcmp( c, "T" "Source" ) ) SV_TSourceEngineQuery( from );
 	else if( !Q_strcmp( c, "c" ) )
 	{
-		netadr_t to;
+		if( sv_nat->value )
+		{
+			netadr_t to;
 
-		if( NET_StringToAdr( Cmd_Argv( 1 ), &to ) )
-			SV_Info( to, PROTOCOL_VERSION );
+			if( NET_StringToAdr( Cmd_Argv( 1 ), &to ) )
+				SV_Info( to, PROTOCOL_VERSION );
+		}
 	}
 	else if( !Q_strcmp( c, "i" ) )
 	{
