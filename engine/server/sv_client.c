@@ -133,16 +133,9 @@ void SV_DirectConnect( netadr_t from )
 		return;
 	}
 
-	if( !SV_ProcessUserAgent( from, Cmd_Argv( 6 ) ) )
-	{
-		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
-		return;
-	}
-
 	qport = Q_atoi( Cmd_Argv( 2 ));
 	challenge = Q_atoi( Cmd_Argv( 3 ));
 	Q_strncpy( userinfo, Cmd_Argv( 4 ), sizeof( userinfo ));
-
 	requested_extensions = Q_atoi( Cmd_Argv( 5 ) );
 
 	// quick reject
@@ -161,6 +154,20 @@ void SV_DirectConnect( netadr_t from )
 			}
 			break;
 		}
+	}
+
+
+	if( (Q_strlen( Cmd_Argv( 6 ) ) >= MAX_INFO_STRING) )
+	{
+		MsgDev( D_INFO, "%s:connect rejected : info string out of bounds\n", NET_AdrToString( from ));
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
+	}
+
+	if( !SV_ProcessUserAgent( from, Cmd_Argv( 6 ) ) )
+	{
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
 	}
 
 	// see if the challenge is valid (LAN clients don't need to challenge)
