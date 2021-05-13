@@ -124,7 +124,7 @@ qboolean SV_CheckID( const char *id )
 
 qboolean SV_CheckIP( netadr_t *addr )
 {
-	uint32_t ip = addr->ip[0] << 24 | addr->ip[1] << 16 | addr->ip[2] << 8 | addr->ip[3];
+	uint32_t ip = addr->ip.u32;
 	qboolean ret = false;
 	ipfilter_t *filter;
 

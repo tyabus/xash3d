@@ -28,7 +28,10 @@ typedef enum {NA_LOOPBACK = 1, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} ne
 typedef struct netadr_s
 {
 	netadrtype_t	type;
-	unsigned char	ip[4];
+	union {
+		unsigned int u32;
+		unsigned char u8[4];
+	} ip;
 	unsigned char	ipx[10];
 	unsigned short	port;
 } netadr_t;

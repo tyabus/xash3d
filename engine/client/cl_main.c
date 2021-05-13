@@ -1825,7 +1825,7 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 		{
 			servadr.type = NA_IP;
 			// 4 bytes for IP
-			BF_ReadBytes( msg, servadr.ip, sizeof( servadr.ip ));
+			BF_ReadBytes( msg, servadr.ip.u8, sizeof( servadr.ip ));
 			// 2 bytes for Port
 			servadr.port = BF_ReadShort( msg );
 
