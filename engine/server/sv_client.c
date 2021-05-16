@@ -164,6 +164,13 @@ void SV_DirectConnect( netadr_t from )
 		return;
 	}
 
+	if( !Info_IsValid( userinfo ) )
+	{
+		MsgDev( D_INFO, "%s:connect rejected : invalid userinfo\n", NET_AdrToString( from ));
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
+	}
+
 	if( !SV_ProcessUserAgent( from, Cmd_Argv( 6 ) ) )
 	{
 		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );

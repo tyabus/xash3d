@@ -1034,7 +1034,7 @@ void Info_RemovePrefixedKeys( char *start, char prefix );
 qboolean Info_RemoveKey( char *s, const char *key );
 qboolean Info_SetValueForKey( char *s, const char *key, const char *value, size_t maxsize );
 qboolean Info_SetValueForStarKey( char *s, const char *key, const char *value, int maxsize );
-qboolean Info_Validate( const char *s );
+qboolean Info_IsValid( const char *s );
 void Info_Print( const char *s );
 char *Cvar_Userinfo( void );
 char *Cvar_Serverinfo( void );

@@ -17,6 +17,7 @@ GNU General Public License for more details.
 
 #define MAX_INFO_KEY	64
 #define MAX_INFO_VALUE	64
+#define MAX_KV_SIZE	MAX_INFO_KEY + MAX_INFO_VALUE
 
 static char		infostring[MAX_INFO_STRING*4];
 
@@ -201,17 +202,51 @@ void Info_RemovePrefixedKeys( char *start, char prefix )
 }
 
 /*
-==================
-Info_Validate
+==============
+Info_IsValid
 
-Some characters are illegal in info strings because they
-can mess up the server's parsing
-==================
+Check infostring for potential problems
+==============
 */
-qboolean Info_Validate( const char *s )
+qboolean Info_IsValid( const char *s )
 {
-	if( Q_strstr( s, "\"" )) return false;
-	if( Q_strstr( s, ";" )) return false;
+	char	key[MAX_KV_SIZE];
+	char	value[MAX_KV_SIZE];
+	int	count;
+	char	*o;
+
+	if( *s == '\\' ) s++;
+
+	while( *s )
+	{
+		count = 0;
+		o = key;
+
+		while( count < (MAX_KV_SIZE - 1) && *s && *s != '\\' )
+		{
+			*o++ = *s++;
+			count++;
+		}
+		*o = 0;
+
+		if( !*s ) return false;
+
+		count = 0;
+		o = value;
+		s++;
+		while( count < (MAX_KV_SIZE - 1) && *s && *s != '\\' )
+		{
+			*o++ = *s++;
+			count++;
+		}
+		*o = 0;
+
+		if( !value[0] )
+			return false;
+
+		if( *s ) s++;
+	}
+
 	return true;
 }
 
