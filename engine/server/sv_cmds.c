@@ -943,6 +943,7 @@ void SV_Status_f( void )
 		return;
 	}
 
+	Msg( "hostname: %s\n", hostname->string );
 	Msg( "map: %s\n", sv.name );
 	Msg( "num score ping    name                             lastmsg   address               port  \n" );
 	Msg( "--- ----- ------- -------------------------------- --------- --------------------- ------\n" );
