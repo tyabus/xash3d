@@ -50,6 +50,7 @@ static void pfnVibrate( float life, char flags )
 #endif
 }
 
+#ifdef __ANDROID__
 static void Vibrate_f()
 {
 	if( Cmd_Argc() != 2 )
@@ -60,6 +61,7 @@ static void Vibrate_f()
 
 	pfnVibrate( Q_atof( Cmd_Argv(1) ), VIBRATE_NORMAL );
 }
+#endif
 
 static void pfnEnableTextInput( int enable )
 {
@@ -139,9 +141,15 @@ void Mobile_Init( void )
 		MsgDev( D_INFO, "Mobility interface not found\n");
 	}
 
+	#ifdef __ANDROID__
 	Cmd_AddCommand( "vibrate", (xcommand_t)Vibrate_f, "Vibrate for specified time");
 	vibration_length = Cvar_Get( "vibration_length", "1.0", CVAR_ARCHIVE, "Vibration length");
 	vibration_enable = Cvar_Get( "vibration_enable", "0", CVAR_ARCHIVE, "Enable vibration");
+	#else
+	Cmd_AddCommand( "vibrate", NULL, "Vibrate for specified time (not implemented on this platform)");
+	vibration_length = Cvar_Get( "vibration_length", "0", CVAR_READ_ONLY, "Vibration length (not implemented on this platform)");
+	vibration_enable = Cvar_Get( "vibration_enable", "0", CVAR_READ_ONLY, "Enable vibration (not implemented on this platform)");
+	#endif
 }
 
 void Mobile_Shutdown( void )
