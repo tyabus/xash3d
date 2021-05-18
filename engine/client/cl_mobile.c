@@ -141,7 +141,7 @@ void Mobile_Init( void )
 
 	Cmd_AddCommand( "vibrate", (xcommand_t)Vibrate_f, "Vibrate for specified time");
 	vibration_length = Cvar_Get( "vibration_length", "1.0", CVAR_ARCHIVE, "Vibration length");
-	vibration_enable = Cvar_Get( "vibration_enable", "1", CVAR_ARCHIVE, "Enable vibration");
+	vibration_enable = Cvar_Get( "vibration_enable", "0", CVAR_ARCHIVE, "Enable vibration");
 }
 
 void Mobile_Shutdown( void )
