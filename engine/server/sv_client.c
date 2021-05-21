@@ -2174,6 +2174,8 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 
 	if( !userinfo || !userinfo[0] ) return; // ignored
 
+	if( !Info_IsValid( userinfo ) ) return; // ignored
+
 	if( !SV_ShouldUpdateUserinfo( cl )) return; // ignored
 
 	Q_strncpy( cl->userinfo, userinfo, sizeof( cl->userinfo ));
