@@ -654,11 +654,7 @@ qboolean NET_CompareBaseAdr( const netadr_t a, const netadr_t b )
 		return true;
 
 	if( a.type == NA_IP )
-	{
-		if ( a.ip.u32 == b.ip.u32 )
-			return true;
-		return false;
-	}
+		return a.ip.u32 == b.ip.u32;
 
 	MsgDev( D_ERROR, "NET_CompareBaseAdr: bad address type\n" );
 	return false;
@@ -673,11 +669,7 @@ qboolean NET_CompareAdr( const netadr_t a, const netadr_t b )
 		return true;
 
 	if( a.type == NA_IP )
-	{
-		if( a.ip.u32 == b.ip.u32 && a.port == b.port )
-			return true;
-		return false;
-	}
+		return a.ip.u32 == b.ip.u32 && a.port == b.port;
 
 	MsgDev( D_ERROR, "NET_CompareAdr: bad address type\n" );
 	return false;
@@ -686,6 +678,24 @@ qboolean NET_CompareAdr( const netadr_t a, const netadr_t b )
 qboolean NET_IsLocalAddress( netadr_t adr )
 {
 	return adr.type == NA_LOOPBACK;
+}
+
+qboolean NET_IsLanAddress( netadr_t adr )
+{
+
+	if( adr.type == NA_LOOPBACK )
+	{
+		return true;
+	} else if ( adr.type == NA_IP || adr.type == NA_BROADCAST ) {
+		// 127.x.x.x and 10.x.x.x networks
+		if( adr.ip.u8[0] == 127 || adr.ip.u8[0] == 10 )
+			return true;
+		// 192.168.x.x and 172.16.x.x networks
+		if( (adr.ip.u8[0] == 192 && adr.ip.u8[1] == 168) || (adr.ip.u8[0] == 172 && adr.ip.u8[1] == 16) )
+			return true;
+	}
+
+	return false;
 }
 
 /*
