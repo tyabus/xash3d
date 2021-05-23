@@ -329,13 +329,25 @@ static qboolean StringToIP( const char *str, const char *maskstr, uint32_t *outi
 	} while( i < 4 );
 
 end:
+#ifndef XASH_BIG_ENDIAN
+	*outip = ip[3] << 24 | ip[2] << 16 | ip[1] << 8 | ip[0];
+#else
 	*outip = ip[0] << 24 | ip[1] << 16 | ip[2] << 8 | ip[3];
+#endif
 	if( outmask )
+#ifndef XASH_BIG_ENDIAN
+		*outmask = mask[3] << 24 | mask[2] << 16 | mask[1] << 8 | mask[0];
+#else
 		*outmask = mask[0] << 24 | mask[1] << 16 | mask[2] << 8 | mask[3];
+#endif
 
 	return true;
 }
+#ifndef XASH_BIG_ENDIAN
+#define IPARGS(ip) ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24) & 0xFF
+#else
 #define IPARGS(ip) (ip >> 24) & 0xFF, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF
+#endif
 void SV_AddIP_f( void )
 {
 	float time = Q_atof( Cmd_Argv( 1 ) );
