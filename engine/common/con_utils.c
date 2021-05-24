@@ -1348,10 +1348,7 @@ void Host_WriteConfig( void )
 
 	if( f )
 	{
-		FS_Printf( f, "//=======================================================================\n");
-		FS_Printf( f, "//\t\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 		FS_Printf( f, "//\t\t\tconfig.cfg - archive of cvars\n" );
-		FS_Printf( f, "//=======================================================================\n" );
 		Cmd_WriteVariables( f );
 
 		FS_Printf( f, "exec keyboard.cfg\n" );
@@ -1367,10 +1364,7 @@ void Host_WriteConfig( void )
 		f = FS_Open( "keyboard.cfg.new", "w", true );
 		if( f )
 		{
-			FS_Printf( f, "//=======================================================================\n");
-			FS_Printf( f, "//\t\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 			FS_Printf( f, "//\t\t\tkeyboard.cfg - archive of keybindings\n" );
-			FS_Printf( f, "//=======================================================================\n" );
 			Key_WriteBindings( f );
 
 			mlook = (kbutton_t *)clgame.dllFuncs.KB_Find( "in_mlook" );
@@ -1416,13 +1410,10 @@ void Host_WriteGameConfig( const char *name )
 	Q_snprintf( newconfigfile, MAX_STRING, "%s.new", name );
 
 	SV_InitGameProgs();	// collect user variables
-	
+
 	if(( f = FS_Open( newconfigfile, "w", false )) != NULL )
 	{
-		FS_Printf( f, "//=======================================================================\n" );
-		FS_Printf( f, "//\t\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 		FS_Printf( f, "//\t\t\t%s - multiplayer config\n", name );
-		FS_Printf( f, "//=======================================================================\n" );
 
 		Cmd_WriteServerVariables( f );
 		CSCR_WriteGameCVars( f, "user.scr" );
@@ -1457,10 +1448,7 @@ void Host_WriteOpenGLConfig( void )
 
 	if( f )
 	{
-		FS_Printf( f, "//=======================================================================\n" );
-		FS_Printf( f, "//\t\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 		FS_Printf( f, "//\t\t    opengl.cfg - archive of opengl extension cvars\n");
-		FS_Printf( f, "//=======================================================================\n" );
 
 		Cmd_WriteOpenGLVariables( f );
 
@@ -1492,10 +1480,7 @@ void Host_WriteVideoConfig( void )
 
 	if( f )
 	{
-		FS_Printf( f, "//=======================================================================\n" );
-		FS_Printf( f, "//\t\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 		FS_Printf( f, "//\t\tvideo.cfg - archive of renderer variables\n");
-		FS_Printf( f, "//=======================================================================\n" );
 
 		Cmd_WriteRenderVariables( f );
 
@@ -1519,10 +1504,7 @@ void Key_EnumCmds_f( void )
 	f = FS_Open( "../help.txt", "w", false );
 	if( f )
 	{
-		FS_Printf( f, "//=======================================================================\n");
-		FS_Printf( f, "//\t\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 		FS_Printf( f, "//\t\thelp.txt - xash commands and console variables\n");
-		FS_Printf( f, "//=======================================================================\n");
 
 		FS_Printf( f, "\n\n\t\t\tconsole variables\n\n");
 		Cvar_LookupVars( 0, NULL, f, (void*)Cmd_WriteHelp );

@@ -273,10 +273,7 @@ void SV_WriteID_f( void )
 		return;
 	}
 
-	FS_Printf( f, "//=======================================================================\n" );
-	FS_Printf( f, "//\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 	FS_Printf( f, "//\t\t    %s - archive of id blacklist\n", Cvar_VariableString( "bannedcfgfile" ) );
-	FS_Printf( f, "//=======================================================================\n" );
 
 	for( filter = cidfilter; filter; filter = filter->next )
 		if( !filter->endTime ) // only permanent
@@ -418,10 +415,7 @@ void SV_WriteIP_f( void )
 		return;
 	}
 
-	FS_Printf( f, "//=======================================================================\n" );
-	FS_Printf( f, "//\t\tCopyright Flying With Gauss Team %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 	FS_Printf( f, "//\t\t    %s - archive of IP blacklist\n", Cvar_VariableString( "listipcfgfile" ) );
-	FS_Printf( f, "//=======================================================================\n" );
 
 	for( filter = ipfilter; filter; filter = filter->next )
 		if( !filter->endTime ) // only permanent
