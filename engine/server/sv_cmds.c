@@ -1001,7 +1001,7 @@ void SV_ConSay_f( void )
 		return;
 	}
 
-	Q_strncpy( text, "console: ", MAX_SYSPATH );
+	Q_snprintf( text, sizeof( text ), "<%s> ", hostname->string );
 	p = Cmd_Args();
 
 	if( *p == '"' )
