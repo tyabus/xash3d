@@ -911,7 +911,7 @@ static void NET_AdjustLag( void )
 	else
 	{
 		MsgDev( D_INFO, "Server must enable dev-mode to activate fakelag\n" );
-		Cvar_SetFloat( "fakelag", 0.0 );
+		Cvar_SetFloat( "net_fakelag", 0.0 );
 		fakelag = 0.0f;
 	}
 }
@@ -976,7 +976,7 @@ static qboolean NET_LagPacket( qboolean newdata, netsrc_t sock, netadr_t *from, 
 			}
 			else
 			{
-				Cvar_SetFloat( "fakeloss", 0.0 );
+				Cvar_SetFloat( "net_fakeloss", 0.0 );
 			}
 		}
 
@@ -1469,8 +1469,8 @@ void NET_Init( void )
 	Cmd_AddCommand( "net_showip", NET_ShowIP_f,  "show hostname and IPs" );
 	Cmd_AddCommand( "net_restart", NET_Restart_f, "restart the network subsystem" );
 
-	net_fakelag = Cvar_Get( "fakelag", "0", 0, "lag all incoming network data (including loopback) by xxx ms." );
-	net_fakeloss = Cvar_Get( "fakeloss", "0", 0, "act like we dropped the packet this % of the time." );
+	net_fakelag = Cvar_Get( "net_fakelag", "0", 0, "lag all incoming network data (including loopback) by xxx ms." );
+	net_fakeloss = Cvar_Get( "net_fakeloss", "0", 0, "act like we dropped the packet this % of the time." );
 
 	// prepare some network data
 	for( i = 0; i < NS_COUNT; i++ )
