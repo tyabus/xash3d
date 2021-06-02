@@ -294,35 +294,36 @@ TODO: Make it more convenient. (Timestamp check, temporary file, ...)
 void SV_Maps_f(void)
 {
 	char mapName[256], *seperator = "-------------------";
-	char *argStr = Cmd_Argv(1); //Substr
+	char *argStr = Cmd_Argv(1); // Substr
 	int listIndex;
 	search_t *mapList;
 
-	if (Cmd_Argc() != 2)
+	if( Cmd_Argc() != 2 )
 	{
-		Msg("Usage:  maps <substring>\nmaps * for full listing\n");
+		Msg( "Usage: maps <substring>\nmaps * for full listing\n" );
 		return;
 	}
 
-        mapList = FS_Search(va("maps/*%s*.bsp", argStr), false, true);
-	if (!mapList)
+        mapList = FS_Search( va( "maps/*%s*.bsp", argStr ), false, true );
+
+	if( !mapList )
 	{
-		Msg("No related map found in \"%s/maps\"\n", GI->gamefolder);
+		Msg( "No related map found in \"%s/maps\"\n", GI->gamefolder );
 		return;
 	}
-	Msg("%s\n", seperator);
-	for (listIndex = 0; listIndex != mapList->numfilenames; ++listIndex)
+
+	Msg( "%s\n", seperator );
+
+	for( listIndex = 0; listIndex != mapList->numfilenames; ++listIndex )
 	{
-		const char *ext;
-		Q_strncpy(mapName, mapList->filenames[listIndex], sizeof(mapName) - 1);
-		ext = FS_FileExtension(mapName);
-		if (Q_strcmp(ext, "bsp")) continue;
-		if ( (Q_strcmp(argStr, "*") == 0) || (Q_stristr(mapName, argStr) != NULL) )
+		Q_strncpy( mapName, mapList->filenames[listIndex], sizeof( mapName ) - 1 );
+
+		if ( ( Q_strcmp( argStr, "*" ) == 0 ) || ( Q_stristr( mapName, argStr ) != NULL ) )
 		{
-			Msg("%s\n", &mapName[5]); //Do not show "maps/"
+			Msg( "%s\n", &mapName[5] ); // Do not show "maps/"
 		}
 	}
-	Msg("%s\nDirectory: \"%s/maps\" - Maps listed: %d\n", seperator, GI->basedir, mapList->numfilenames);
+	Msg( "%s\nDirectory: \"%s/maps\" - Maps listed: %d\n", seperator, GI->basedir, mapList->numfilenames );
 }
 
 /*
