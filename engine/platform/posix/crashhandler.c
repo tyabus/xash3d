@@ -163,6 +163,7 @@ static void Sys_Crash( int signal, siginfo_t *si, void *context)
 void Sys_SetupCrashHandler( void )
 {
 	struct sigaction act;
+	memset(&act, 0, sizeof(act));
 	act.sa_sigaction = Sys_Crash;
 	act.sa_flags = SA_SIGINFO | SA_ONSTACK;
 	sigaction(SIGSEGV, &act, &oldFilter);
