@@ -4978,7 +4978,10 @@ qboolean SV_ParseEdict( char **pfile, edict_t *ent )
 			classname = pkvd[numpairs].szValue;
 		if( ++numpairs >= 256 ) break;
 	}
-	
+
+	if( classname == NULL )
+		return false;
+
 	ent = SV_AllocPrivateData( ent, ALLOC_STRING( classname ));
 
 	if( !SV_IsValidEdict( ent ) || ent->v.flags & FL_KILLME )
