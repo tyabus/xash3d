@@ -2205,6 +2205,10 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 		Q_strncpy( temp1, "unnamed", sizeof( temp1 ));
 	}
 
+	// some players try to fake it by setting it by themselves, so update it for every userinfo update
+	if( !cl->fakeclient )
+		Info_SetValueForKey( cl->userinfo, "ip", NET_BaseAdrToString( cl->netchan.remote_address ), sizeof( cl->userinfo ) );
+
 	// check to see if another user by the same name exists
 	while( 1 )
 	{
