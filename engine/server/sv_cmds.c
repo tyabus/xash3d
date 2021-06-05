@@ -293,7 +293,7 @@ TODO: Make it more convenient. (Timestamp check, temporary file, ...)
 */
 void SV_Maps_f(void)
 {
-	char mapName[256], *seperator = "-------------------";
+	const char *separator = "-------------------";
 	char *argStr = Cmd_Argv(1); // Substr
 	int listIndex;
 	search_t *mapList;
@@ -312,18 +312,14 @@ void SV_Maps_f(void)
 		return;
 	}
 
-	Msg( "%s\n", seperator );
+	Msg( "%s\n", separator );
 
 	for( listIndex = 0; listIndex != mapList->numfilenames; ++listIndex )
 	{
-		Q_strncpy( mapName, mapList->filenames[listIndex], sizeof( mapName ) - 1 );
-
-		if ( ( Q_strcmp( argStr, "*" ) == 0 ) || ( Q_stristr( mapName, argStr ) != NULL ) )
-		{
-			Msg( "%s\n", &mapName[5] ); // Do not show "maps/"
-		}
+		Msg( "%s\n", mapList->filenames[listIndex] + 5 ); // Do not show "maps/"
 	}
-	Msg( "%s\nDirectory: \"%s/maps\" - Maps listed: %d\n", seperator, GI->basedir, mapList->numfilenames );
+
+	Msg( "%s\nDirectory: \"%s/maps\" - Maps listed: %d\n", separator, GI->basedir, mapList->numfilenames );
 }
 
 /*
