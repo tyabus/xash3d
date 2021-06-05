@@ -2296,7 +2296,7 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 	else cl->modelindex = 0;
 
 	// Force reset player model to "player"
-	if( cl->modelindex == 0 || !model[0] || !model )
+	if( cl->modelindex == 0 || !model || !model[0] )
 	{
 		Info_SetValueForKey( cl->userinfo, "model", "player", sizeof( cl->userinfo ) );
 		Mod_RegisterModel( "models/player.mdl", SV_ModelIndex( "models/player.mdl" ));
