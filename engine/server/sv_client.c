@@ -128,7 +128,7 @@ void SV_DirectConnect( netadr_t from )
 		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nServer uses protocol version %i.\n", PROTOCOL_VERSION );
 		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nServer uses protocol version %i.\n", PROTOCOL_VERSION );
 
-		MsgDev( D_ERROR, "SV_DirectConnect: rejected connect from version %i\n", version );
+		MsgDev( D_ERROR, "SV_DirectConnect: rejected connect from %s, version %i\n",  NET_AdrToString( from ), version );
 		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
 		return;
 	}
