@@ -2311,18 +2311,6 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 
 /*
 ==================
-SV_UpdateUserinfo_f
-==================
-*/
-#if 0
-static void SV_UpdateUserinfo_f( sv_client_t *cl )
-{
-	SV_UserinfoChanged( cl, Cmd_Argv( 1 ));
-}
-#endif
-
-/*
-==================
 SV_Noclip_f
 ==================
 */
@@ -3226,7 +3214,6 @@ ucmd_t ucmds[] =
 { "eventlist", SV_WriteEvents_f },
 { "disconnect", SV_Disconnect_f },
 { "usermsgs", SV_UserMessages_f },
-//{ "userinfo", SV_UpdateUserinfo_f },
 { "lightstyles", SV_WriteLightstyles_f },
 { "getresourcelist", SV_SendResourceList_f },
 { "continueloading", SV_ContinueLoading_f },
