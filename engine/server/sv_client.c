@@ -2335,6 +2335,34 @@ static void SV_Noclip_f( sv_client_t *cl )
 
 /*
 ==================
+SV_Resurrect_f
+==================
+*/
+static void SV_Resurrect_f( sv_client_t *cl )
+{
+	edict_t *pEntity = cl->edict;
+
+	if( !Cvar_VariableInteger( "sv_cheats" ) || sv.background || !sv_allow_resurrect->integer )
+		return;
+
+	if( !cl || !SV_IsValidEdict( pEntity ) || cl->state != cs_spawned )
+		return;
+
+	if( pEntity->v.deadflag != DEAD_DEAD )
+		return;
+
+	pEntity->v.health = 1;
+	pEntity->v.effects &= ~EF_NODRAW;
+	pEntity->v.deadflag = DEAD_NO;
+	pEntity->v.takedamage = DAMAGE_YES;
+
+	if( !Q_stricmp( GI->gamefolder, "valve" ) && !VectorIsNull( pEntity->v.view_ofs ) )
+		VectorClear( pEntity->v.view_ofs );
+		pEntity->v.view_ofs[2] = 28;
+}
+
+/*
+==================
 SV_Kill_f
 ==================
 */
@@ -3204,6 +3232,7 @@ ucmd_t ucmds[] =
 { "begin", SV_Begin_f },
 { "pause", SV_Pause_f },
 { "noclip", SV_Noclip_f },
+{ "resurrect", SV_Resurrect_f },
 { "sendres", SV_SendRes_f },
 { "notarget", SV_Notarget_f },
 { "baselines", SV_Baselines_f },

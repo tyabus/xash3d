@@ -67,6 +67,7 @@ convar_t	*sv_downloadurl;
 convar_t	*sv_allow_studio_attachment_angles;
 convar_t	*sv_allow_rotate_pushables;
 convar_t	*sv_allow_godmode;
+convar_t	*sv_allow_resurrect;
 convar_t	*sv_allow_noclip;
 convar_t	*sv_allow_notarget;
 convar_t	*sv_allow_impulse;
@@ -952,6 +953,7 @@ void SV_Init( void )
 	sv_allow_studio_attachment_angles = Cvar_Get( "sv_allow_studio_attachment_angles", "0", CVAR_ARCHIVE, "enable calc angles for attachment points (on studio models)" );
 	sv_allow_rotate_pushables = Cvar_Get( "sv_allow_rotate_pushables", "0", CVAR_ARCHIVE, "let the pushers rotate pushables with included origin-brush" );
 	sv_allow_godmode = Cvar_Get( "sv_allow_godmode", "1", CVAR_LATCH, "allow players to be a god when sv_cheats is \"1\"" );
+	sv_allow_resurrect = Cvar_Get( "sv_allow_resurrect", "1", CVAR_LATCH, "allow players to use resurrect when sv_cheats is \"1\"" );
 	sv_allow_noclip = Cvar_Get( "sv_allow_noclip", "1", CVAR_LATCH, "allow players to use noclip when sv_cheats is \"1\"" );
 	sv_allow_notarget = Cvar_Get( "sv_allow_notarget", "1", CVAR_LATCH, "allow players to use notarget when sv_cheats is \"1\"" );
 	sv_enttools_enable = Cvar_Get( "sv_enttools_enable", "0", CVAR_ARCHIVE | CVAR_PROTECTED, "Enable powerful and dangerous entity tools" );

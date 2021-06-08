@@ -2173,6 +2173,7 @@ void CL_InitLocal( void )
 
 	// server commands
 	Cmd_AddCommand ("noclip", NULL, "toggle noclipping mode" );
+	Cmd_AddCommand ("resurrect", NULL, "resurrects dead player" );
 	Cmd_AddCommand ("notarget", NULL, "notarget mode (monsters do not see you)" );
 	Cmd_AddCommand ("fullupdate", NULL, "re-init HUD on start of demo recording" );
 	Cmd_AddCommand ("give", NULL, "give specified item or weapon" );
