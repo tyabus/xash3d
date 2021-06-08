@@ -2424,7 +2424,7 @@ static void SV_Godmode_f( sv_client_t *cl )
 {
 	edict_t	*pEntity = cl->edict;
 
-	if( !Cvar_VariableInteger( "sv_cheats" ) || sv.background || !sv_allow_noclip->value )
+	if( !Cvar_VariableInteger( "sv_cheats" ) || sv.background || !sv_allow_godmode->value )
 		return;
 
 	pEntity->v.flags = pEntity->v.flags ^ FL_GODMODE;
