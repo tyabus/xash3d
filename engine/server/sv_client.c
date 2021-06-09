@@ -1387,6 +1387,18 @@ void SV_New_f( sv_client_t *cl )
 
 	playernum = cl - svs.clients;
 
+	// Only send this message to multiplayer clients.
+	if( sv_maxclients->integer > 1 )
+	{
+		string  message;
+
+		Q_snprintf( message, sizeof( message ), "^3BUILD %i SERVER #%i\n", Q_buildnum(), svs.spawncount );
+
+		BF_WriteByte( &cl->netchan.message, svc_print );
+		BF_WriteByte( &cl->netchan.message, PRINT_HIGH );
+		BF_WriteString( &cl->netchan.message, message );
+	}
+
 	// send the serverdata
 	BF_WriteByte( &cl->netchan.message, svc_serverdata );
 	BF_WriteLong( &cl->netchan.message, PROTOCOL_VERSION );
