@@ -1301,6 +1301,7 @@ packet <destination> <contents>
 Contents allows \n escape character
 ====================
 */
+#ifndef XASH_RELEASE
 void CL_Packet_f( void )
 {
 	char	send[2048];
@@ -1343,6 +1344,7 @@ void CL_Packet_f( void )
 
 	NET_SendPacket( NS_CLIENT, out - send, send, adr );
 }
+#endif
 
 /*
 =================
@@ -2228,8 +2230,10 @@ void CL_InitLocal( void )
 
 	Cmd_AddRestrictedCommand ("rcon", CL_Rcon_f, "sends a command to the server console (rcon_password and rcon_address required)" );
 
+#ifndef XASH_RELEASE
 	if( host.developer > 3 )
 		Cmd_AddRestrictedCommand ("packet", CL_Packet_f, "send a packet with custom contents (use with caution)" );
+#endif
 
 	Cmd_AddCommand ("precache", CL_Precache_f, "precache specified resource (by index)" );
 	Cmd_AddCommand ( "trysaveconfig", CL_TrySaveConfig_f, "schedule config save on disconnected state" );
