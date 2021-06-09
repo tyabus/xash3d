@@ -50,11 +50,7 @@ qboolean Sound_LoadMPG( const char *name, const byte *buffer, size_t filesize )
 	// trying to read header
 	if( !feed_mpeg_header( mpeg, buffer, FRAME_SIZE, filesize, &sc ))
 	{
-#ifdef _DEBUG
 		MsgDev( D_ERROR, "Sound_LoadMPG: failed to load (%s): %s\n", name, get_error( mpeg ));
-#else
-		MsgDev( D_ERROR, "Sound_LoadMPG: (%s) is probably corrupted\n", name );
-#endif
 		close_decoder( mpeg );
 		return false;
 	}
@@ -147,11 +143,7 @@ stream_t *Stream_OpenMPG( const char *filename )
 	// trying to open stream and read header
 	if( !open_mpeg_stream( mpeg, file, FS_Read, FS_Seek, &sc ))
 	{
-#ifdef _DEBUG
 		MsgDev( D_ERROR, "Stream_OpenMPG: failed to load (%s): %s\n", filename, get_error( mpeg ));
-#else
-		MsgDev( D_ERROR, "Stream_OpenMPG: (%s) is probably corrupted\n", filename );
-#endif
 		close_decoder( mpeg );
 		Mem_Free( stream );
 		FS_Close( file );
