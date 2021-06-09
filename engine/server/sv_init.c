@@ -418,9 +418,6 @@ void SV_DeactivateServer( void )
 
 	SV_EmptyStringPool();
 
-	if( sv_maxclients->integer > 32 )
-		Cvar_SetFloat( "maxplayers", 32.0f );
-
 	for( i = 0; i < svgame.globals->maxClients; i++ )
 	{
 		// release client frames
