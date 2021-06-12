@@ -2369,8 +2369,10 @@ static void SV_Resurrect_f( sv_client_t *cl )
 	pEntity->v.takedamage = DAMAGE_YES;
 
 	if( !Q_stricmp( GI->gamefolder, "valve" ) && !VectorIsNull( pEntity->v.view_ofs ) )
+	{
 		VectorClear( pEntity->v.view_ofs );
 		pEntity->v.view_ofs[2] = 28;
+	}
 }
 
 /*
