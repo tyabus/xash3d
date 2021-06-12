@@ -3703,8 +3703,8 @@ static qboolean W_ReadLumpTable( wfile_t *wad )
 	if( read( wad->handle, srclumps, lat_size ) != lat_size )
 	{
 		MsgDev( D_ERROR, "W_ReadLumpTable: %s has corrupted lump allocation table\n", wad->filename );
-		W_Close( wad );
 		Mem_Free( srclumps );
+		W_Close( wad );
 		return false;
 	}
 
