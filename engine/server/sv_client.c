@@ -1152,6 +1152,13 @@ void SV_FullClientUpdate( sv_client_t *cl, sizebuf_t *msg )
 
 		// remove server passwords, etc.
 		Info_RemovePrefixedKeys( info, '_' );
+		Info_RemoveKey( info, "ip" );
+		Info_RemoveKey( info, "rate" );
+		Info_RemoveKey( info, "hud_classautokill" );
+		Info_RemoveKey( info, "cl_nopred" );
+		Info_RemoveKey( info, "cl_lc" );
+		Info_RemoveKey( info, "cl_lw" );
+
 		BF_WriteString( msg, info );
 	}
 	else BF_WriteOneBit( msg, 0 );
