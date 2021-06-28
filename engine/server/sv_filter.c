@@ -190,7 +190,7 @@ void SV_BanID_f( void )
 				}
 		}
 
-		if( !cl )
+		if( !cl && id[0] == '#' )
 		{
 			MsgDev( D_WARN, "banid: no such player\n");
 		}
