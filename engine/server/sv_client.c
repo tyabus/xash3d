@@ -3356,7 +3356,7 @@ void SV_TSourceEngineQuery( netadr_t from )
 
 	BF_Init( &buf, "TSourceEngineQuery", answer, sizeof( answer ));
 
-#if 1 // Source format
+	// Source format
 	BF_WriteLong  ( &buf, -1 ); // Mark as connectionless
 	BF_WriteByte  ( &buf, 'I' );
 	BF_WriteByte  ( &buf, PROTOCOL_VERSION );
@@ -3378,52 +3378,7 @@ void SV_TSourceEngineQuery( netadr_t from )
 #endif
 	BF_WriteByte  ( &buf, havePassword ); // visibility
 	BF_WriteByte  ( &buf, 0 ); // secure
-#else // GS format
-	/*
-	**	This will work in monitoring,
-	**	but does not appear in the list of GoldSource servers
-	*/
-	BF_WriteLong(&buf, -1);// Fixed this
-	BF_WriteByte( &buf, 'm' );
-	BF_WriteString( &buf, NET_AdrToString( net_local ) );
-	BF_WriteString( &buf, hostname->string );
-	BF_WriteString( &buf, sv.name );
-	BF_WriteString( &buf, GI->gamefolder );
-	BF_WriteString( &buf, GI->title );
-	BF_WriteByte( &buf, count );
-	BF_WriteByte( &buf, sv_maxclients->integer );
-	BF_WriteByte( &buf, PROTOCOL_VERSION );
-	BF_WriteByte( &buf, Host_IsDedicated() ? 'D' : 'L');
-#if defined(_WIN32)
-	BF_WriteByte( &buf, 'W' );
-#else
-	BF_WriteByte( &buf, 'L' );
-#endif
-	BF_WriteByte( &buf, havePassword );
-	if( Q_stricmp( GI->gamedir, "valve" ) )
-	{
-		BF_WriteByte( &buf, 1 ); // mod
-		BF_WriteString( &buf, GI->game_url );
-		BF_WriteString( &buf, GI->update_url );
-		BF_WriteByte( &buf, 0 );
-		BF_WriteLong( &buf, (long)GI->version );
-		BF_WriteLong( &buf, GI->size );
-		if( GI->gamemode == 2 )
-			BF_WriteByte( &buf, 1 ); // multiplayer_only
-		else
-			BF_WriteByte( &buf, 0 );
-		if( Q_strstr(SI.gamedll, "hl." ) )
-			BF_WriteByte( &buf, 0 ); // Half-Life DLL
-		else
-			BF_WriteByte( &buf, 1 ); // Own DLL
-	}
-	else
-	{
-		BF_WriteByte( &buf, 0 ); // Half-Life
-	}
-	BF_WriteByte( &buf, 0 ); // unsecure
-	BF_WriteByte( &buf, bots );
-#endif
+
 	NET_SendPacket( NS_SERVER, BF_GetNumBytesWritten( &buf ), BF_GetData( &buf ), from );
 }
 
