@@ -58,7 +58,11 @@ extern "C" {
 #include "xash3d_types.h"
 #include "const.h"
 
+#ifndef XASH_RELEASE
 #define ASSERT( exp )	if(!( exp )) Sys_Break( "assert failed at %s:%i\n", __FILE__, __LINE__ )
+#else
+#define ASSERT( exp )	if(!( exp )) Sys_Warn( "assert failed at %s:%i\n", __FILE__, __LINE__ )
+#endif
 
 /*
 ========================================================================
