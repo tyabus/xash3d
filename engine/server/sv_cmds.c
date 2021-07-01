@@ -779,6 +779,7 @@ restarts current level
 void SV_Restart_f( void )
 {
 	if( sv.state != ss_active )
+		Msg( "^3No server running.\n" );
 		return;
 
 	// just sending console command
