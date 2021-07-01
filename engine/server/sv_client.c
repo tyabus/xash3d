@@ -2085,18 +2085,6 @@ void SV_Disconnect_f( sv_client_t *cl )
 
 /*
 ==================
-SV_ShowServerinfo_f
-
-Dumps the serverinfo info string
-==================
-*/
-void SV_ShowServerinfo_f( sv_client_t *cl )
-{
-	Info_Print( Cvar_Serverinfo( ));
-}
-
-/*
-==================
 SV_Pause_f
 ==================
 */
@@ -3258,7 +3246,6 @@ ucmd_t ucmds[] =
 { "notarget", SV_Notarget_f },
 { "baselines", SV_Baselines_f },
 { "deltainfo", SV_DeltaInfo_f },
-{ "info", SV_ShowServerinfo_f },
 { "modellist", SV_WriteModels_f },
 { "soundlist", SV_WriteSounds_f },
 { "eventlist", SV_WriteEvents_f },
