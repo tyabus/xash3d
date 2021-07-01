@@ -159,7 +159,7 @@ static void UI_DrawLogo( const char *filename, float x, float y, float width, fl
 		}
 
 		AVI_OpenVideo( cin_state, fullpath, false, false, true );
-		if( !( AVI_GetVideoInfo( cin_state, &menu.logo_xres, &menu.logo_yres, &menu.logo_length )))
+		if( !( AVI_GetVideoInfo( cin_state, (long*)&menu.logo_xres, (long*)&menu.logo_yres, &menu.logo_length )))
 		{
 			AVI_CloseVideo( cin_state );
 			menu.drawLogo = false;
