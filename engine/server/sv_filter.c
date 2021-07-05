@@ -190,9 +190,12 @@ void SV_BanID_f( void )
 				}
 		}
 
-		if( !cl && id[0] == '#' )
+		if( !cl )
 		{
-			MsgDev( D_WARN, "banid: no such player\n");
+			if( id && id[0] == '#' )
+			{
+				MsgDev( D_WARN, "banid: no such player\n");
+			}
 		}
 		else
 			id = Info_ValueForKey( cl->useragent, "i" );
