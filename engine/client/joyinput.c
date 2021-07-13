@@ -371,7 +371,7 @@ void Joy_FinalizeMove( float *fw, float *side, float *dpitch, float *dyaw )
 		size_t i;
 		Q_strncpy( bind, joy_axis_binding->string, sizeof(bind) );
 
-		for( i = 0; i < sizeof(bind); i++ )
+		for( i = 0; i < ARRAYSIZE( bind ); i++ )
 		{
 			switch( bind[i] )
 			{

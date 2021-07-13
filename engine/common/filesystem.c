@@ -3857,6 +3857,12 @@ wfile_t *W_Open( const char *filename, const char *mode )
 			MsgDev( D_WARN, "W_Open: %s is full (%i lumps)\n", filename, wad->numlumps );
 			wad->mode = O_RDONLY; // set read-only mode
 		}
+		if( wad->numlumps <= 0 )
+		{
+			MsgDev( D_NOTE, "W_Open: %s has no files\n", filename );
+			W_Close( wad );
+			return NULL;
+		}
 		wad->infotableofs = header.infotableofs; // save infotableofs position
 		if( lseek( wad->handle, wad->infotableofs, SEEK_SET ) == -1 )
 		{
