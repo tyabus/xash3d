@@ -761,7 +761,7 @@ void SV_SaveFinish( SAVERESTOREDATA *pSaveData )
 	char 		**pTokens;
 	ENTITYTABLE	*pEntityTable;
 
-	if( !pSaveData ) Sys_Error("pSaveData == NULL");
+	ASSERT( pSaveData );
 
 	pTokens = SaveRestore_DetachSymbolTable( pSaveData );
 	if( pTokens ) Mem_Free( pTokens );

@@ -74,7 +74,7 @@ entavrs table for FindEntityByString
 */
 TYPEDESCRIPTION *SV_GetEntvarsDescirption( int number )
 {
-	if( number < 0 && number >= ENTVARS_COUNT )
+	if( number < 0 || number >= ENTVARS_COUNT )
 		return NULL;
 	return &gEntvarsDescription[number];
 }
