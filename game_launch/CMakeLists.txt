@@ -41,6 +41,10 @@ if(XASH_SDL AND NOT WIN32)
 	add_definitions(-DXASH_SDL)
 endif()
 
+if(MSVC)
+        add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 if(WIN32)
 	set_target_properties(${XASH_LAUNCHER} PROPERTIES
 		OUTPUT_NAME xash) # Change name to your gamedir, if you building a standalone game
