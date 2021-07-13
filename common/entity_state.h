@@ -19,6 +19,9 @@
 #define ENTITY_NORMAL		(1<<0)
 #define ENTITY_BEAM			(1<<1)
 
+// For physinfo below
+#define MAX_PHYSINFO_STRING     256
+
 // Entity state is used for the baseline and for delta compression of a packet of 
 //  entities that is sent to a client.
 typedef struct entity_state_s entity_state_t;
@@ -117,8 +120,6 @@ struct entity_state_s
 	vec3_t		vuser3;
 	vec3_t		vuser4;
 };
-
-#include "pm_info.h"
 
 typedef struct clientdata_s
 {

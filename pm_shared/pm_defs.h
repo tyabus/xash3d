@@ -31,8 +31,6 @@
 #define PM_TRACELINE_PHYSENTSONLY	0
 #define PM_TRACELINE_ANYVISIBLE	1
 
-#include "pm_info.h"
-
 // PM_PlayerTrace results.
 #include "pmtrace.h"
 
