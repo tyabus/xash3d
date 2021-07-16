@@ -621,9 +621,9 @@ WIN_BOOL WINAPI FreeLibrary(HINSTANCE hLibModule)
 	return 0;
     }
     else
-        retv = MODULE_FreeLibrary( wm );
+	MODULE_RemoveFromList( wm );
 
-    MODULE_RemoveFromList(wm);
+        retv = MODULE_FreeLibrary( wm );
 
     /* garbage... */
     if (local_wm == NULL) my_garbagecollection();
