@@ -954,6 +954,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 {
 	char		dev_level[4];
 	char		*baseDir;
+	int		retval_stdin, retval_stderr, retval_stdout;
 
 	// some commands may turn engine into infinite loop,
 	// e.g. xash.exe +game xash -game xash
@@ -995,9 +996,14 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 			close( STDIN_FILENO );
 			close( STDOUT_FILENO );
 			close( STDERR_FILENO );
-			open("/dev/null", O_RDONLY); // becomes stdin
-			open("/dev/null", O_RDWR); // stdout
-			open("/dev/null", O_RDWR); // stderr
+
+			retval_stdin = open( "/dev/null", O_RDONLY );
+			retval_stdout = open( "/dev/null", O_RDWR );
+			retval_stderr = open( "/dev/null", O_RDWR );
+			if( retval_stdin < 0 || retval_stdout < 0 || retval_stderr < 0 )
+			{
+				Sys_Error( "Failed to open /dev/null: %s", strerror( errno ) );
+			}
 
 			// fallthrough
 		}
