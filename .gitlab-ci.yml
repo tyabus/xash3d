@@ -72,7 +72,7 @@ linux_desktop:
   - cmake -DCMAKE_PREFIX_PATH=$CI_PROJECT_DIR/sdl2-linux/usr/local -DXASH_DOWNLOAD_DEPENDENCIES=yes -DXASH_STATIC=ON -DXASH_DLL_LOADER=ON -DXASH_VGUI=ON -DMAINUI_USE_STB=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
   - make -j2
   - mkdir artifacts
-  - cp scripts/xash3d.sh artifacts
+  - cp ../scripts/xash3d.sh artifacts
   - cp engine/xash3d artifacts
   - cp mainui/libxashmenu.so artifacts
   - cp vgui_support/libvgui_support.so artifacts
