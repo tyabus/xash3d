@@ -1064,7 +1064,7 @@ void CL_WarnLostSplitPacket( void )
 	if( Host_IsLocalClient() )
 		return;
 
-	if( ++cl.lostpackets == 8 )
+	if( ++cl.lostpackets == 8 && host.developer != D_NOTE )
 	{
 		CL_Disconnect();
 		Cbuf_AddText( "menu_connectionwarning" );
