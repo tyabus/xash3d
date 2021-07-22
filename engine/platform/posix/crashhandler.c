@@ -27,7 +27,9 @@ Crash handler, called from system
 #include "library.h"
 #define _GNU_SOURCE
 #define __USE_GNU
+#if !defined(__OpenBSD__)
 #include <ucontext.h>
+#endif
 #include <dlfcn.h>
 #include <signal.h>
 #include <sys/mman.h>
