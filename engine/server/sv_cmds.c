@@ -1030,6 +1030,18 @@ SV_Heartbeat_f
 */
 void SV_Heartbeat_f( void )
 {
+ 	if( !SV_Active() )
+	{
+		Msg( "^3No server running.\n" );
+		return;
+	}
+
+	if( !public_server->integer || sv_maxclients->integer == 1 )
+	{
+		Msg( "^3Your server isn't public.\n" );
+		return;
+	}
+
 	svs.last_heartbeat = MAX_HEARTBEAT;
 }
 
