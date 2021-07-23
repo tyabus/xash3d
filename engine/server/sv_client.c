@@ -3360,6 +3360,8 @@ void SV_TSourceEngineQuery( netadr_t from )
 	BF_WriteByte  ( &buf, 'w' );
 #elif defined(__APPLE__)
 	BF_WriteByte  ( &buf, 'm' );
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+	BF_WriteByte  ( &buf, 'b' );
 #else
 	BF_WriteByte  ( &buf, 'l' );
 #endif
