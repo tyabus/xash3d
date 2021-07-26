@@ -19,7 +19,7 @@ linux_dedicated:
   before_script:
   - dpkg --add-architecture i386
   - apt update
-  - apt install -y cmake ccache p7zip-full gcc-multilib g++-multilib zlib1g:i386 libstdc++6:i386
+  - apt install -y git cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386
   - mkdir -p ccache
   - export PATH="/usr/lib/ccache:$PATH"
   - export CCACHE_BASEDIR="$PWD"
@@ -46,7 +46,7 @@ linux_desktop:
   before_script:
   - dpkg --add-architecture i386
   - apt update
-  - apt install -y curl ccache cmake p7zip-full gcc-multilib g++-multilib libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
+  - apt install -y git curl ccache cmake p7zip-full gcc-multilib g++-multilib build-essential libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
   - mkdir -p ccache
   - export PATH="/usr/lib/ccache:$PATH"
   - export CCACHE_BASEDIR="$PWD"
@@ -88,7 +88,7 @@ android:
   before_script:
   - dpkg --add-architecture i386
   - apt update
-  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
+  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
   - curl -s http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz | tar xzf -
   - curl https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.7-bin.tar.xz | tar xJ
   - export ANDROID_HOME=$PWD/android-sdk-linux
@@ -144,7 +144,7 @@ coverity_scan:
   before_script:
   - dpkg --add-architecture i386
   - apt update
-  - apt install -y wget curl git ccache cmake p7zip-full gcc-multilib g++-multilib libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
+  - apt install -y wget curl git ccache cmake p7zip-full gcc-multilib g++-multilib build-essential libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
   - mkdir -p ccache
   #- curl -o /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64 --form project=$COVERITY_SCAN_PROJECT_NAME --form token=$COVERITY_SCAN_TOKEN
   - wget -nv -O /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64 --post-data "token=$COVERITY_SCAN_TOKEN&project=tyabus%2Fxash3d"
