@@ -1,4 +1,4 @@
-# Xash3D FWGS Engine [![Coverity Scan](https://scan.coverity.com/projects/21970/badge.svg)](https://scan.coverity.com/projects/tyabus-xash3d) [![Build Status](https://travis-ci.org/tyabus/xash3d.svg)](https://travis-ci.org/tyabus/xash3d) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/tyabus/xash3d?svg=true)](https://ci.appveyor.com/project/tyabus/xash3d)
+# Xash3D FWGS Engine [![Coverity Scan](https://scan.coverity.com/projects/21970/badge.svg)](https://scan.coverity.com/projects/tyabus-xash3d) [![Build Status](https://gitlab.com/tyabus/xash3d/badges/master/pipeline.svg)](https://gitlab.com/tyabus/xash3d/-/pipelines) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/tyabus/xash3d?svg=true)](https://ci.appveyor.com/project/tyabus/xash3d)
 
 Latest version of the engine is available at:
 https://github.com/tyabus/xash3d
