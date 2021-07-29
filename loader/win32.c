@@ -78,6 +78,12 @@ for DLL to know too much about its environment.
 #ifdef HAVE_EXECINFO_H
 #include <execinfo.h>
 #endif
+#ifdef SDL
+#include <SDL.h>
+#endif
+#ifdef __GLIBC__
+#include <execinfo.h>
+#endif
 
 #include <sys/mman.h>
 
