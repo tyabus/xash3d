@@ -2407,7 +2407,7 @@ void SV_Fullupdate_f( sv_client_t *cl )
 {
 	if( host.realtime < cl->fullupdate_next_calltime )
 	{
-		MsgDev( D_INFO, "SV_Fullupdate_f: ignore call from %s due delay\n", cl->name );
+		MsgDev( D_INFO, "SV_Fullupdate_f: ignore call from %s (%i) due delay\n", cl->name, cl->userid );
 		cl->fullupdate_next_calltime = cl->fullupdate_next_calltime * sv_fullupdate_penalty_multiplier->value;
 		return;
 	}
