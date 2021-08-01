@@ -856,9 +856,9 @@ Responds with long info for local and broadcast requests
 */
 void SV_BuildNetAnswer( netadr_t from )
 {
-	char	string[MAX_INFO_STRING], answer[1024];
-	int	version, context, type;
-	int	i, count = 0;
+	char string[8096], answer[8096];
+	int  version, context, type;
+	int  i, count = 0;
 
 	// ignore in single player
 	if( sv_maxclients->integer == 1 || !svs.initialized )
