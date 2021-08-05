@@ -17,6 +17,7 @@ GNU General Public License for more details.
 #include "server.h"
 
 static qboolean startingdefmap;
+extern convar_t *host_maxfps;
 
 /*
 =================
@@ -935,6 +936,7 @@ SV_Status_f
 void SV_Status_f( void )
 {
 	int		i;
+	float		fps;
 	sv_client_t	*cl;
 	edict_t		*ent;
 
@@ -945,8 +947,10 @@ void SV_Status_f( void )
 	}
 
 	ent = EDICT_NUM( 0 ); // worldspawn
+	fps = (1.0 / host.frametime);
 
 	Msg( "hostname: %s\n", hostname->string );
+	Msg( "fps: %.1f (max %.1f)\n", fps, host_maxfps->value );
 	Msg( "map: %s (x %.f y %.f z %.f)\n", sv.name, ent->v.origin[0], ent->v.origin[1], ent->v.origin[2] );
 	Msg( "num score ping    name                             lastmsg   address               port  \n" );
 	Msg( "--- ----- ------- -------------------------------- --------- --------------------- ------\n" );
