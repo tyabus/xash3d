@@ -936,6 +936,7 @@ void SV_Status_f( void )
 {
 	int		i;
 	sv_client_t	*cl;
+	edict_t		*ent;
 
 	if( !svs.clients || sv.background )
 	{
@@ -943,8 +944,10 @@ void SV_Status_f( void )
 		return;
 	}
 
+	ent = EDICT_NUM( 0 ); // worldspawn
+
 	Msg( "hostname: %s\n", hostname->string );
-	Msg( "map: %s\n", sv.name );
+	Msg( "map: %s (x %.f y %.f z %.f)\n", sv.name, ent->v.origin[0], ent->v.origin[1], ent->v.origin[2] );
 	Msg( "num score ping    name                             lastmsg   address               port  \n" );
 	Msg( "--- ----- ------- -------------------------------- --------- --------------------- ------\n" );
 
