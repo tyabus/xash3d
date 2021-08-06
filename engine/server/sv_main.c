@@ -401,6 +401,7 @@ void SV_ReadPackets( void )
 			if( i >= sv_maxclients->integer )
 			{
 				MsgDev( D_INFO, "netsplit from unknown addr %s\n", NET_AdrToString( net_from ) );
+				Netchan_OutOfBandPrint( NS_SERVER, net_from, "disconnect\n" );
 				continue;
 			}
 
