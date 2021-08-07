@@ -1430,7 +1430,13 @@ void EXPORT Host_Shutdown( void )
 	SV_Shutdown( false );
 	SV_ShutdownFilter();
 	SV_UnloadProgs();
-	CL_Shutdown();
+
+#if !defined( XASH_DEDICATED )
+	if( !Host_IsDedicated() )
+	{
+		CL_Shutdown();
+	}
+#endif
 
 	Mod_Shutdown();
 	NET_Shutdown();
