@@ -1290,14 +1290,16 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 
 	HTTP_Init();
 
-	ID_Init();
-
 	// post initializations
 	switch( host.type )
 	{
 	case HOST_NORMAL:
 #ifdef XASH_W32CON
 		Wcon_ShowConsole( false ); // hide console
+#endif
+
+#ifndef XASH_DEDICATED
+		ID_Init();
 #endif
 		// execute startup config and cmdline
 		Cbuf_AddText( va( "exec %s.rc\n", GI->gamefolder ) );
