@@ -2050,7 +2050,13 @@ before allowing the client into the server
 */
 void CL_Precache_f( void )
 {
-	int	spawncount;
+	int spawncount;
+
+	if( cls.state != ca_connected )
+	{
+		MsgDev( D_INFO, "precache is not valid from the console\n" );
+		return;
+	}
 
 	spawncount = Q_atoi( Cmd_Argv( 1 ));
 
