@@ -1282,7 +1282,12 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	}
 
 	SV_Init();
-	CL_Init();
+#if !defined( XASH_DEDICATED )
+	if( !Host_IsDedicated() )
+	{
+		CL_Init();
+	}
+#endif
 
 #if defined(__ANDROID__) && !defined( XASH_SDL ) && !defined( XASH_DEDICATED )
 	Android_Init();
