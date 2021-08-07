@@ -365,13 +365,7 @@ void SV_DisconnectClient( edict_t *pClient )
 	 * If it cleaned here, server will crash later */
 	if( pClient->pvPrivateData != NULL )
 	{
-		// NOTE: new interface can be missing
-		if( svgame.dllFuncs2.pfnOnFreeEntPrivateData != NULL )
-			svgame.dllFuncs2.pfnOnFreeEntPrivateData( pClient );
-
-		// clear any dlls data but keep engine data
-		Mem_Free( pClient->pvPrivateData );
-		pClient->pvPrivateData = NULL;
+		SV_FreePrivateData( pClient );
 	}
 	// HACK: invalidate serial number
 	pClient->serialnumber++;

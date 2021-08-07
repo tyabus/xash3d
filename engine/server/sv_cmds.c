@@ -205,7 +205,8 @@ void SV_Map_f( void )
 
 	// hold mapname to other place
 	Q_strncpy( mapname, Cmd_Argv( 1 ), sizeof( mapname ));
-	
+	FS_StripExtension( mapname );
+
 	// determine spawn entity classname
 	if( sv_maxclients->integer == 1 )
 		spawn_entity = GI->sp_entity;

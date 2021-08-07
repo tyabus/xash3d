@@ -116,7 +116,8 @@ hull_t *PM_HullForBsp( physent_t *pe, playermove_t *pmove, float *offset )
 {
 	hull_t	*hull;
 
-	ASSERT( pe && pe->model != NULL );
+	ASSERT( pe != NULL );
+	ASSERT( pe->model != NULL );
 
 	switch( pmove->usehull )
 	{
@@ -214,7 +215,7 @@ qboolean PM_RecursiveHullCheck( hull_t *hull, int num, float p1f, float p2f, vec
 	}
 
 	if( num < hull->firstclipnode || num > hull->lastclipnode )
-		Sys_Error( "PM_RecursiveHullCheck: bad node number\n" );
+		Host_Error( "PM_RecursiveHullCheck: bad node number %i\n", num );
 
 	// find the point distances
 	node = hull->clipnodes + num;
