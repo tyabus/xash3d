@@ -140,11 +140,6 @@ void CL_ProcessFile( qboolean successfully_received, const char *filename )
 {
 }
 
-void CL_Init()
-{
-
-}
-
 void Key_Init()
 {
 
@@ -224,11 +219,6 @@ void Touch_InitConfig()
 }
 
 void CL_Disconnect()
-{
-
-}
-
-void CL_Shutdown()
 {
 
 }
