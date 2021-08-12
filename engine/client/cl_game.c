@@ -3972,7 +3972,7 @@ void CL_UnloadProgs( void )
 	CL_FreeParticles();
 	CL_ClearAllRemaps();
 	Mod_ClearUserData();
-
+	NET_ClearMasters();
 
 	// NOTE: HLFX 0.5 has strange bug: hanging on exit if no map was loaded
 	if( !( !Q_stricmp( GI->gamefolder, "hlfx" ) && GI->version == 0.5f ))

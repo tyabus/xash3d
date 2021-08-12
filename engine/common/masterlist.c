@@ -133,7 +133,7 @@ NET_ClearMasters
 Clear master list
 ========================
 */
-static void NET_ClearMasters_f( void )
+void NET_ClearMasters( void )
 {
 	while( ml.list )
 	{
@@ -141,6 +141,18 @@ static void NET_ClearMasters_f( void )
 		ml.list = ml.list->next;
 		Mem_Free( prev );
 	}
+}
+
+/*
+========================
+NET_ClearMasters_f
+
+Clears master list
+========================
+*/
+void NET_ClearMasters_f( void )
+{
+	NET_ClearMasters();
 }
 
 /*
