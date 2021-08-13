@@ -150,7 +150,7 @@ NET_ClearMasters_f
 Clears master list
 ========================
 */
-void NET_ClearMasters_f( void )
+static void NET_ClearMasters_f( void )
 {
 	NET_ClearMasters();
 }
