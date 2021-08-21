@@ -115,7 +115,7 @@ void GAME_EXPORT CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, size_t
 	uint	*pu = NULL;
 
 	// align pointer
-	while (((size_t)pBuffer & 3u) && nBuffer--)
+	while (((size_t)pb & 3u) && nBuffer--)
 	{
 		ulCrc  = crc32table[*pb++ ^ (byte)ulCrc] ^ (ulCrc >> 8);
 	}
