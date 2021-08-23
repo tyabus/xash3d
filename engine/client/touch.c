@@ -931,10 +931,10 @@ void Touch_Init( void )
 	Cmd_AddCommand( "touch_show", Touch_Show_f, "show button" );
 	Cmd_AddCommand( "touch_hide", Touch_Hide_f, "hide button" );
 	Cmd_AddCommand( "touch_list", Touch_ListButtons_f, "list buttons" );
-	Cmd_AddCommand( "touch_removeall", Touch_RemoveAll_f, "remove all buttons" );
+	Cmd_AddRestrictedCommand( "touch_removeall", Touch_RemoveAll_f, "remove all buttons" );
 	Cmd_AddCommand( "touch_loaddefaults", Touch_LoadDefaults_f, "generate config from defaults" );
 	Cmd_AddCommand( "touch_roundall", Touch_RoundAll_f, "round all buttons coordinates to grid" );
-	Cmd_AddCommand( "touch_exportconfig", Touch_ExportConfig_f, "export config keeping aspect ratio" );
+	Cmd_AddRestrictedCommand( "touch_exportconfig", Touch_ExportConfig_f, "export config keeping aspect ratio" );
 	Cmd_AddCommand( "touch_set_stroke", Touch_Stroke_f, "set global stroke width and color" );
 	Cmd_AddCommand( "touch_setclientonly", Touch_SetClientOnly_f, "when 1, only client buttons are shown" );
 	Cmd_AddCommand( "touch_reloadconfig", Touch_ReloadConfig_f, "load config, not saving changes" );
