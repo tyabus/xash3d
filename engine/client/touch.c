@@ -259,6 +259,7 @@ void Touch_ExportConfig_f( void )
 {
 	file_t	*f;
 	char *name;
+	char *newname;
 
 	if( Cmd_Argc() != 2 )
 	{
@@ -270,19 +271,22 @@ void Touch_ExportConfig_f( void )
 
 	name = Cmd_Argv( 1 );
 
-	MsgDev( D_NOTE, "Exporting config to %s\n", name );
-	f = FS_Open( name, "w", true );
+	FS_StripExtension( name );
+	Q_snprintf( newname, 64, "%s.cfg", name );
+
+	MsgDev( D_NOTE, "Exporting config to %s\n", newname );
+	f = FS_Open( newname, "w", true );
 	if( f )
 	{
 		char profilename[256];
 		char profilebase[256];
 		touch_button_t *button;
-		if( Q_strstr( name, "touch_presets/" ) )
+		if( Q_strstr( newname, "touch_presets/" ) )
 		{
-			FS_FileBase( name, profilebase );
+			FS_FileBase( newname, profilebase );
 			Q_snprintf( profilename, 256, "touch_profiles/%s (copy).cfg", profilebase );
 		}
-		else Q_strncpy( profilename, name, 256 );
+		else Q_strncpy( profilename, newname, 256 );
 		FS_Printf( f, "//=======================================================================\n");
 		FS_Printf( f, "//\tCopyright SDLash3D team & XashXT group %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
 		FS_Printf( f, "//\t\t\ttouchscreen preset\n" );
@@ -345,7 +349,7 @@ void Touch_ExportConfig_f( void )
 		FS_Printf( f, "touch_roundall\n" );
 		FS_Close( f );
 	}
-	else MsgDev( D_ERROR, "Couldn't write %s.\n", name );
+	else MsgDev( D_ERROR, "Couldn't write %s.\n", newname );
 }
 
 void Touch_GenetateCode_f( void )
