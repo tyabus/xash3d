@@ -128,8 +128,20 @@ qboolean SV_SetPlayer( void )
 
 	s = Cmd_Argv( 1 );
 
-	// numeric values are just slot numbers
-	if( Q_isdigit( s ) || (s[0] == '-' && Q_isdigit( s + 1 )))
+	if( s[0] == '#' )
+	{
+		cl = SV_ClientById( Q_atoi( s + 1 ) );
+		if( !cl )
+                {
+			Msg( "Client is not on the server\n" );
+                        return false;
+                }
+
+                svs.currentPlayer = cl;
+                svs.currentPlayerNum = (cl - svs.clients);
+                return true;
+	}
+	else if( Q_isdigit( s ) || ( s[0] == '-' && Q_isdigit( s + 1 ) ) ) // numeric values are just slot numbers
 	{
 		idnum = Q_atoi( s );
 		if( idnum < 0 || idnum >= sv_maxclients->integer )
@@ -1109,7 +1121,7 @@ void SV_ClientInfo_f( void )
 {
 	if( Cmd_Argc() != 2 )
 	{
-		Msg( "Usage: clientinfo <userid>\n" );
+		Msg( "Usage: clientinfo <slotid|#userid|name>\n" );
 		return;
 	}
 
@@ -1130,7 +1142,7 @@ void SV_ClientUserAgent_f( void )
 {
 	if( Cmd_Argc() != 2 )
 	{
-		Msg( "Usage: clientuseragent <userid>\n" );
+		Msg( "Usage: clientuseragent <slotid|#userid|name>\n" );
 		return;
 	}
 
