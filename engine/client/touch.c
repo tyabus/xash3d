@@ -259,7 +259,7 @@ void Touch_ExportConfig_f( void )
 {
 	file_t	*f;
 	char *name;
-	char *newname;
+	char newname[64];
 
 	if( Cmd_Argc() != 2 )
 	{
@@ -270,8 +270,8 @@ void Touch_ExportConfig_f( void )
 	if( !touch.list_user.first ) return;
 
 	name = Cmd_Argv( 1 );
-
 	FS_StripExtension( name );
+
 	Q_snprintf( newname, 64, "%s.cfg", name );
 
 	MsgDev( D_NOTE, "Exporting config to %s\n", newname );
