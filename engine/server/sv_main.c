@@ -789,7 +789,7 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 	}
 
 	challenge = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
-	havePassword = sv_password->string[0] && Q_stricmp( sv_password->string, "none" );
+	havePassword = sv_password->string[0];
 
 	Info_SetValueForKey(s, "protocol",  va( "%d", PROTOCOL_VERSION ), sizeof( s ) ); // protocol version
 	Info_SetValueForKey(s, "challenge", va( "%u", challenge ), sizeof( s )  ); // challenge number
@@ -1013,7 +1013,7 @@ void SV_Init( void )
 	sv_allow_touch = Cvar_Get( "sv_allow_touch", "1", CVAR_ARCHIVE, "allow connect with touch controls" );
 	sv_allow_vr = Cvar_Get( "sv_allow_vr", "1", CVAR_ARCHIVE, "allow connect from vr version" );
 
-	sv_password = Cvar_Get( "sv_password", "", CVAR_PROTECTED, "server password. Leave blank or set to \"none\" if none" );
+	sv_password = Cvar_Get( "sv_password", "", CVAR_PROTECTED, "server password. Leave blank if none" );
 
 	sv_userinfo_enable_penalty = Cvar_Get( "sv_userinfo_enable_penalty", "1", CVAR_ARCHIVE, "enable penalty time for too fast userinfo updates(name, model, etc)" );
 	sv_userinfo_penalty_time = Cvar_Get( "sv_userinfo_penalty_time", "0.3", CVAR_ARCHIVE, "initial penalty time" );

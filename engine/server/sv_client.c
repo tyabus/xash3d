@@ -203,7 +203,7 @@ void SV_DirectConnect( netadr_t from )
 
 		password = sv_password->string;
 
-		if( password[0] && Q_stricmp( password, "none" ) && // does server have password
+		if( password[0] && // does server have password
 			Q_stricmp( password, Info_ValueForKey( userinfo, "password" ) ) ) // does user have match it
 		{
 			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nInvalid server password.\n", errorpacket );
@@ -823,7 +823,7 @@ void SV_Info( netadr_t from, int version )
 			if( svs.clients[i].state >= cs_connected && !svs.clients[i].fakeclient )
 				count++;
 
-		havePassword = sv_password->string[0] && Q_stricmp( sv_password->string, "none" );
+		havePassword = sv_password->string[0];
 
 		Info_SetValueForKey( string, "host", hostname->string, sizeof( string ) );
 		Info_SetValueForKey( string, "map", sv.name, sizeof( string ) );
@@ -903,7 +903,7 @@ void SV_BuildNetAnswer( netadr_t from )
 			if( svs.clients[i].state >= cs_connected )
 				count++;
 
-		havePassword = sv_password->string[0] && Q_stricmp( sv_password->string, "none" );
+		havePassword = sv_password->string[0];
 
 		string[0] = '\0';
 		Info_SetValueForKey( string, "hostname", hostname->string, sizeof( string ) );
@@ -3333,7 +3333,7 @@ void SV_TSourceEngineQuery( netadr_t from )
 		}
 	}
 
-	havePassword = ( sv_password->string[0] && Q_stricmp( sv_password->string, "none" ) ) ? 0 : 1;
+	havePassword = sv_password->string[0];
 
 	BF_Init( &buf, "TSourceEngineQuery", answer, sizeof( answer ));
 
