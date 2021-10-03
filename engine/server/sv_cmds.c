@@ -1349,6 +1349,26 @@ void Rcon_Redirect_f( void )
 }
 
 /*
+================
+Rcon_StopRedirect_f
+
+Stops the redirect
+
+================
+*/
+void Rcon_StopRedirect_f( void )
+{
+	if( !host.rd.target )
+	{
+		Msg( "stopredirect is only valid from rcon\n" );
+		return;
+	}
+	Msg( "Stoping rcon redirection\n" );
+	host.rd.lines = 0;
+}
+
+
+/*
 ==================
 SV_InitOperatorCommands
 ==================
@@ -1385,6 +1405,7 @@ void SV_InitOperatorCommands( void )
 	Cmd_AddCommand( "killsave", SV_DeleteSave_f, "delete a saved game file and saveshot" );
 	Cmd_AddCommand( "autosave", SV_AutoSave_f, "save the game to 'autosave' file" );
 	Cmd_AddCommand( "redirect", Rcon_Redirect_f, "force enable rcon redirection" );
+	Cmd_AddCommand( "stopredirect", Rcon_StopRedirect_f, "force stop rcon redirection" );
 	Cmd_AddCommand( "updatereslist", SV_UpdateResourceList, "force update server resource list" );
 	Cmd_AddCommand( "dumpreslist", SV_DumpResList_f, "dump resource list to reslist-dump.txt" );
 	Cmd_AddCommand( "dumpprecache", SV_DumpPrecache_f, "dump precached resources to precache-dump.txt" );
