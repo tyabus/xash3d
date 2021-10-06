@@ -996,7 +996,7 @@ void CL_Rcon_f( void )
 	netadr_t	to;
 	int	i = 1;
 
-	if( !rcon_client_password->string )
+	if( !rcon_client_password->string[0] )
 	{
 		Msg( "You must set 'rcon_password' before issuing an rcon command.\n" );
 		return;
