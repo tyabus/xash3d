@@ -95,7 +95,7 @@ qboolean SV_CopyEdictToPhysEnt( physent_t *pe, edict_t *ed )
 		VectorClear( pe->maxs );
 		break;
 	case SOLID_BBOX:
-		if( mod && mod->type == mod_studio && mod->flags & STUDIO_TRACE_HITBOX )
+		if( mod->type == mod_studio && mod->flags & STUDIO_TRACE_HITBOX )
 			pe->studiomodel = mod;
 		VectorCopy( ed->v.mins, pe->mins );
 		VectorCopy( ed->v.maxs, pe->maxs );
