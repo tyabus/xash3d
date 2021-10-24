@@ -141,7 +141,7 @@ void SV_DirectConnect( netadr_t from )
 	// quick reject
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
 	{
-		if( cl->state == cs_free || cl->state == cs_zombie )
+		if( cl->state == cs_free || cl->state == cs_zombie || cl->fakeclient )
 			continue;
 
 		if( NET_CompareBaseAdr( from, cl->netchan.remote_address ) && ( cl->netchan.qport == qport || from.port == cl->netchan.remote_address.port ))
@@ -221,7 +221,7 @@ void SV_DirectConnect( netadr_t from )
 	// if there is already a slot for this ip, reuse it
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
 	{
-		if( cl->state == cs_free || cl->state == cs_zombie )
+		if( cl->state == cs_free || cl->state == cs_zombie || cl->fakeclient )
 			continue;
 
 		if( NET_CompareBaseAdr( from, cl->netchan.remote_address ) && ( cl->netchan.qport == qport || from.port == cl->netchan.remote_address.port ))
