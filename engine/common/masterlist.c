@@ -262,6 +262,7 @@ void NET_InitMasters()
 
 	// keep main master always there
 	NET_AddMaster( DEFAULT_PRIMARY_MASTER, false );
-	NET_AddMaster( DEFAULT_SECONDARY_MASTER, false );
+	NET_AddMaster( FWGS_PRIMARY_MASTER, false );
+	NET_AddMaster( FWGS_SECONDARY_MASTER, false );
 	NET_LoadMasters( );
 }
