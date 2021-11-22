@@ -2619,6 +2619,13 @@ edict_t *SV_EntFindSingle( sv_client_t *cl, const char *pattern )
 		if( i >= svgame.numEntities )
 			return NULL;
 	}
+	else if( !Q_stricmp( pattern, "!self" ) )
+	{
+		if( !SV_IsValidEdict( cl->edict ) )
+			return NULL;
+
+		i = NUM_FOR_EDICT( cl->edict );
+	}
 	else if( !Q_stricmp( pattern, "!cross" ) )
 	{
 		ent = SV_GetCrossEnt( cl->edict );
@@ -2797,6 +2804,13 @@ void SV_EntFire_f( sv_client_t *cl )
 			return;
 
 		ent = EDICT_NUM( i );
+	}
+	else if( ( single = !Q_stricmp( Cmd_Argv( 1 ), "!self" ) ) )
+	{
+		if( !SV_IsValidEdict( cl->edict ) )
+			return;
+
+		i = NUM_FOR_EDICT( cl->edict );
 	}
 	else if( ( single = !Q_stricmp( Cmd_Argv( 1 ), "!cross" ) ) )
 	{
