@@ -53,7 +53,7 @@ extern "C" {
 //
 
 #if !defined(XASH_LITTLE_ENDIAN) && !defined(XASH_BIG_ENDIAN)
-	#if defined XASH_MSVC || __LITTLE_ENDIAN__
+	#if defined _MSC_VER && defined(__LITTLE_ENDIAN__)
 		// !!! Probably all WinNT installations runs in little endian
 		#define XASH_LITTLE_ENDIAN 1
 	#elif __BIG_ENDIAN__
