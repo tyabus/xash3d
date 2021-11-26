@@ -1345,19 +1345,19 @@ void Cvar_Init( void )
 	serverinfo = Cvar_Get( "@serverinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
 	renderinfo = Cvar_Get( "@renderinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
 
-	Cmd_AddCommand ("toggle", Cvar_Toggle_f, "toggles a console variable's value (use for more info)" );
-	Cmd_AddCommand ("set", Cvar_Set_f, "create or change the value of a console variable" );
-	Cmd_AddCommand ("sets", Cvar_SetS_f, "create or change the value of a serverinfo variable" );
-	Cmd_AddCommand ("setu", Cvar_SetU_f, "create or change the value of a userinfo variable" );
-	Cmd_AddCommand ("setinfo", Cvar_SetU_f, "create or change the value of a userinfo variable" );
-	Cmd_AddCommand ("setp", Cvar_SetP_f, "create or change the value of a physicinfo variable" );
-	Cmd_AddCommand ("setr", Cvar_SetR_f, "create or change the value of a renderinfo variable" );
-	Cmd_AddCommand ("setgl", Cvar_SetGL_f, "create or change the value of a opengl variable" );
-	Cmd_AddCommand ("seta", Cvar_SetA_f, "create or change the value of a console variable that will be saved to config.cfg" );
-	Cmd_AddCommand ("reset", Cvar_Reset_f, "reset any type of variable to initial value" );
-	Cmd_AddCommand ("latch", Cvar_Latched_f, "apply latched values" );
-	Cmd_AddCommand ("vidlatch", Cvar_LatchedVideo_f, "apply latched values for video subsystem" );
-	Cmd_AddCommand ("cvarlist", Cvar_List_f, "display all console variables beginning with the specified prefix" );
-	Cmd_AddCommand ("unsetall", Cvar_Restart_f, "reset all console variables to their default values" );
-	Cmd_AddCommand ("@unlink", Cvar_Unlink_f, "unlink static cvars defined in gamedll" );
+	Cmd_AddRestrictedCommand ("toggle", Cvar_Toggle_f, "toggles a console variable's value (use for more info)" );
+	Cmd_AddRestrictedCommand ("set", Cvar_Set_f, "create or change the value of a console variable" );
+	Cmd_AddRestrictedCommand ("sets", Cvar_SetS_f, "create or change the value of a serverinfo variable" );
+	Cmd_AddRestrictedCommand ("setu", Cvar_SetU_f, "create or change the value of a userinfo variable" );
+	Cmd_AddRestrictedCommand ("setinfo", Cvar_SetU_f, "create or change the value of a userinfo variable" );
+	Cmd_AddRestrictedCommand ("setp", Cvar_SetP_f, "create or change the value of a physicinfo variable" );
+	Cmd_AddRestrictedCommand ("setr", Cvar_SetR_f, "create or change the value of a renderinfo variable" );
+	Cmd_AddRestrictedCommand ("setgl", Cvar_SetGL_f, "create or change the value of a opengl variable" );
+	Cmd_AddRestrictedCommand ("seta", Cvar_SetA_f, "create or change the value of a console variable that will be saved to config.cfg" );
+	Cmd_AddRestrictedCommand ("reset", Cvar_Reset_f, "reset any type of variable to initial value" );
+	Cmd_AddRestrictedCommand ("latch", Cvar_Latched_f, "apply latched values" );
+	Cmd_AddRestrictedCommand ("vidlatch", Cvar_LatchedVideo_f, "apply latched values for video subsystem" );
+	Cmd_AddRestrictedCommand ("cvarlist", Cvar_List_f, "display all console variables beginning with the specified prefix" );
+	Cmd_AddRestrictedCommand ("unsetall", Cvar_Restart_f, "reset all console variables to their default values" );
+	Cmd_AddRestrictedCommand ("@unlink", Cvar_Unlink_f, "unlink static cvars defined in gamedll" );
 }
