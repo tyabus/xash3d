@@ -53,33 +53,23 @@ extern "C" {
 //
 
 #if !defined(XASH_LITTLE_ENDIAN) && !defined(XASH_BIG_ENDIAN)
-	#if defined _MSC_VER && defined(_M_X86)
+	#if defined(_MSC_VER) || defined(_WIN32)
 		// !!! Probably all WinNT installations runs in little endian
 		#define XASH_LITTLE_ENDIAN 1
-	#elif __BIG_ENDIAN__
-		#define XASH_BIG_ENDIAN 1
-	#elif defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && defined(__ORDER_LITTLE_ENDIAN__) // some compilers define this
-		#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-			#define XASH_BIG_ENDIAN 1
-		#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-			#define XASH_LITTLE_ENDIAN 1
-		#elif defined(XASH_BIG_ENDIAN) && defined(XASH_LITTLE_ENDIAN)
-			#error "Both XASH_LITTLE_ENDIAN and XASH_BIG_ENDIAN are defined!"
-		#else
-			#error "Unknown endianness!"
-		#endif
-	#else
+	#else // !_MSC_VER
 		#include <sys/param.h>
 		#if __BYTE_ORDER == __BIG_ENDIAN
 			#define XASH_BIG_ENDIAN 1
 		#elif __BYTE_ORDER == __LITTLE_ENDIAN
 			#define XASH_LITTLE_ENDIAN 1
-		#elif defined(XASH_BIG_ENDIAN) && defined(XASH_LITTLE_ENDIAN)
-			#error "Both XASH_LITTLE_ENDIAN and XASH_BIG_ENDIAN are defined!"
 		#else
 			#error "Unknown endianness!"
 		#endif
-	#endif // !XASH_WIN32
+	#endif
+#endif
+
+#if defined(XASH_BIG_ENDIAN) && defined(XASH_LITTLE_ENDIAN)
+	#error "Both XASH_BIG_ENDIAN and XASH_LITTLE_ENDIAN are defined!"
 #endif
 
 #ifndef _WIN32
