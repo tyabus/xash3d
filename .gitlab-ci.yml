@@ -117,18 +117,7 @@ android:
   - git submodule update --init jni/src/NanoGL/nanogl xash-extras
   - git clone --depth 1 https://github.com/tyabus/hlsdk-xash3d jni/src/hlsdk-xash3d -b master
   - ln -s $CI_PROJECT_DIR jni/src/Xash3D/xash3d
-  - export GIT_REV_XML=res/values/git-rev.xml
-  - mkdir -p $(dirname $GIT_REV_XML)
-  - echo '<?xml version="1.0" encoding="utf-8"?>' > $GIT_REV_XML
-  - echo '<resources>' >> $GIT_REV_XML
-  - echo -n '<string name="git_revisions">"' >> $GIT_REV_XML
-  - echo -n '<b>Version information:</b> ' $*_endl| sed -e s/_endl/'\\n'/ >> $GIT_REV_XML
-  - git submodule --quiet foreach --recursive 'echo -n \<b\>`basename $name`:\</b\>\ `git log --abbrev-commit --pretty=oneline -1` _endl' | sed -e 's/_endl/\\n/g' | sed -e "s/'/\\\'/g" >> $GIT_REV_XML
-  - echo -n $USER@$(hostname) $(date +%H:%M:%S-%d-%m-%y) >> $GIT_REV_XML
-  - echo '"</string>' >> $GIT_REV_XML
-  - echo '</resources>' >> $GIT_REV_XML
-  - cat $GIT_REV_XML
-  - sed -i "s/2249/$(printf %04d $(( ( $(date +'%s') - $(date -ud '2015-04-01' +'%s') )/60/60/24 )))/g" AndroidManifest.xml
+  - bash ./gen-version.sh
   - python2 scripts/makepak.py xash-extras assets/extras.pak
   - ndk-build -j2 APP_CFLAGS="-w" NDK_CCACHE=ccache
   - ln -s android/libs libs
