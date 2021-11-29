@@ -57,7 +57,6 @@ extern "C" {
 		// !!! Probably all WinNT installations runs in little endian
 		#define XASH_LITTLE_ENDIAN 1
 	#else // !_MSC_VER
-		#include <sys/param.h>
 		#if __BYTE_ORDER == __BIG_ENDIAN
 			#define XASH_BIG_ENDIAN 1
 		#elif __BYTE_ORDER == __LITTLE_ENDIAN
