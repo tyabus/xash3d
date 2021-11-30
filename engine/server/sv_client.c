@@ -1650,8 +1650,8 @@ void SV_SendResourceList_f( sv_client_t *cl )
 	size_t		msg_size;
 	int msg_start, msg_end;
 
-	// transfer fastdl servers list
-	if( sv_downloadurl->string[0] )
+	// transfer fastdl servers list on first resourcelist send
+	if( sv_downloadurl->string[0] && cl->resources_sent == 1 )
 	{
 		char *line, *serverfile = NULL;
 		char token[1024];
