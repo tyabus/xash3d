@@ -1516,6 +1516,12 @@ void SV_AppendToResourceList( resourcelist_t *reslist, const resourcetype_t type
 		return;
 	}
 
+	if( Q_strlen( file ) >= CS_SIZE )
+	{
+		MsgDev( D_WARN, "Too long file path for resource list! Skipping %s\n", file );
+		return;
+	}
+
 	Q_strncpy( reslist->resnames[reslist->rescount], file, CS_SIZE );
 	reslist->restype[reslist->rescount] = type;
 	reslist->rescount++;
