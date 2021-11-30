@@ -1466,14 +1466,23 @@ void SV_New_f( sv_client_t *cl )
 		else
 		{
 			// transfer fastdl servers list
-			if( *sv_downloadurl->string )
+			if( sv_downloadurl->string[0] )
 			{
-				char *data = sv_downloadurl->string;
-				char token[256];
-				while( ( data = COM_ParseFile( data, token ) ) )
+				char *line, *serverfile = NULL;
+				char token[1024];
+
+				BF_WriteByte( &cl->netchan.message, svc_stufftext );
+				BF_WriteString( &cl->netchan.message, va( "http_addcustomserver %s\n", sv_downloadurl->string ));
+
+				line = serverfile = (char *)FS_LoadFile( "fastdl.txt", 0, false );
+
+				if( serverfile != NULL )
 				{
-					BF_WriteByte( &cl->netchan.message, svc_stufftext );
-					BF_WriteString( &cl->netchan.message, va( "http_addcustomserver %s\n", token ));
+					while ((line = COM_ParseFile(line, token))) {
+						BF_WriteByte( &cl->netchan.message, svc_stufftext );
+						BF_WriteString( &cl->netchan.message, va( "http_addcustomserver %s\n", token ));
+					}
+					Mem_Free( serverfile );
 				}
 			}
 			// request resource list
@@ -1642,14 +1651,23 @@ void SV_SendResourceList_f( sv_client_t *cl )
 	int msg_start, msg_end;
 
 	// transfer fastdl servers list
-	if( *sv_downloadurl->string )
+	if( sv_downloadurl->string[0] )
 	{
-		char *data = sv_downloadurl->string;
-		char token[256];
-		while( ( data = COM_ParseFile( data, token ) ) )
+		char *line, *serverfile = NULL;
+		char token[1024];
+
+		BF_WriteByte( &cl->netchan.message, svc_stufftext );
+		BF_WriteString( &cl->netchan.message, va( "http_addcustomserver %s\n", sv_downloadurl->string ));
+
+		line = serverfile = (char *)FS_LoadFile( "fastdl.txt", 0, false );
+
+		if( serverfile != NULL )
 		{
-			BF_WriteByte( &cl->netchan.message, svc_stufftext );
-			BF_WriteString( &cl->netchan.message, va( "http_addcustomserver %s\n", token ));
+			while ((line = COM_ParseFile(line, token))) {
+				BF_WriteByte( &cl->netchan.message, svc_stufftext );
+				BF_WriteString( &cl->netchan.message, va( "http_addcustomserver %s\n", token ));
+			}
+			Mem_Free( serverfile );
 		}
 	}
 
