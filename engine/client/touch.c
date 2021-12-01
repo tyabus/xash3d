@@ -186,10 +186,7 @@ void Touch_WriteConfig( void )
 	if( f )
 	{
 		touch_button_t *button;
-		FS_Printf( f, "//=======================================================================\n");
-		FS_Printf( f, "//\tCopyright SDLash3D team & XashXT group %s ©\n", Q_timestamp( TIME_YEAR_ONLY ));
-		FS_Printf( f, "//\t\t\ttouchscreen config\n" );
-		FS_Printf( f, "//=======================================================================\n" );
+		FS_Printf( f, "// touchscreen config\n" );
 		FS_Printf( f, "\ntouch_config_file \"%s\"\n", touch_config_file->string );
 		FS_Printf( f, "\n// touch cvars\n" );
 		FS_Printf( f, "\n// sensitivity settings\n" );
