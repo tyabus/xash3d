@@ -89,15 +89,15 @@ android:
   - dpkg --add-architecture i386
   - apt update
   - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
-  - curl -s http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz | tar xzf -
+  - curl -s http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz | tar xzf -
   - curl https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.8-bin.tar.xz | tar xJ
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=${PATH}:$PWD/apache-ant-1.10.8/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk
-  - sleep 3s; echo y | android update sdk -u --filter platform-tools,build-tools-19.0.1,android-19 --force --all > /dev/null
+  - sleep 3s; echo y | android update sdk -u --filter platform-tools,build-tools-20.0.0,android-21 --force --all > /dev/null
   - sed -e 's/1\.5/1\.6/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
-  - wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip >/dev/null 2>/dev/null
-  - 7z x ./android-ndk-r11c-linux-x86_64.zip > /dev/null
-  - mv android-ndk-r11c android-ndk
+  - wget https://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip >/dev/null 2>/dev/null
+  - 7z x ./android-ndk-r12b-linux-x86_64.zip > /dev/null
+  - mv android-ndk-r12b android-ndk
   - mkdir -p ccache
   - export PATH="/usr/lib/ccache:$PATH"
   - export CCACHE_BASEDIR="$PWD"
