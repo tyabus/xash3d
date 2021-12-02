@@ -33,7 +33,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <elf.h>
-#include <sys/exec_elf.h>
 
 #include <link.h>
 
@@ -83,6 +82,59 @@ typedef void (*linker_function_t)();
 // Android uses REL for 32-bit but only uses RELA for 64-bit.
 #if defined(__LP64__)
 #define USE_RELA 1
+#endif
+
+#if !defined(__LP64__)
+#define Elf_Ehdr	Elf32_Ehdr
+#define Elf_Phdr	Elf32_Phdr
+#define Elf_Shdr	Elf32_Shdr
+#define Elf_Sym		Elf32_Sym
+#define Elf_Rel		Elf32_Rel
+#define Elf_Rela	Elf32_Rela
+#define Elf_Dyn		Elf32_Dyn
+#define Elf_Word	Elf32_Word
+#define Elf_Sword	Elf32_Sword
+#define Elf_Half	Elf32_Half
+#define Elf_Addr	Elf32_Addr
+#define Elf_Off		Elf32_Off
+#define Elf_SOff	Elf32_SOff
+#define Elf_Nhdr	Elf32_Nhdr
+#define Elf_Verdef	Elf32_Verdef
+#define Elf_Verdaux	Elf32_Verdaux
+#define Elf_Verneed	Elf32_Verneed
+#define Elf_Vernaux	Elf32_Vernaux
+#define Elf_Versym	Elf32_Versym
+#define ELF_R_SYM	ELF32_R_SYM
+#define ELF_R_TYPE	ELF32_R_TYPE
+#define ELFCLASS	ELFCLASS32
+#define AuxInfo		Aux32Info
+#else
+#define Elf_Ehdr	Elf64_Ehdr
+#define Elf_Phdr	Elf64_Phdr
+#define Elf_Shdr	Elf64_Shdr
+#define Elf_Sym		Elf64_Sym
+#define Elf_Rel		Elf64_Rel
+#define Elf_Rela	Elf64_Rela
+#define Elf_Dyn		Elf64_Dyn
+#define Elf_Word	Elf64_Word
+#define Elf_Sword	Elf64_Sword
+#define Elf_Half	Elf64_Half
+#define Elf_Addr	Elf64_Addr
+#define Elf_Off		Elf64_Off
+#define Elf_SOff	Elf64_SOff
+#define Elf_Nhdr	Elf64_Nhdr
+#define Elf_Verdef	Elf64_Verdef
+#define Elf_Verdaux	Elf64_Verdaux
+#define Elf_Verneed	Elf64_Verneed
+#define Elf_Vernaux	Elf64_Vernaux
+#define Elf_Versym	Elf64_Versym
+#define ELF_R_SYM	ELF64_R_SYM
+#define ELF_R_TYPE	ELF64_R_TYPE
+#define ELFCLASS	ELFCLASS64
+#define AuxInfo		Aux64Info
+#endif
+#ifndef Elf_Symindx
+#define Elf_Symindx	uint32_t
 #endif
 
 struct soinfo {
