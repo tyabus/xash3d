@@ -52,12 +52,17 @@ extern "C" {
 // determine endianness
 //
 
+// Dirty hack of course
+#if defined(__ANDROID__) && __BYTE_ORDER == __BIG_ENDIAN
+	#define XASH_LITTLE_ENDIAN 1
+#endif
+
 #if !defined(XASH_LITTLE_ENDIAN) && !defined(XASH_BIG_ENDIAN)
 	#if defined(_MSC_VER) || defined(_WIN32)
 		// !!! Probably all WinNT installations runs in little endian
 		#define XASH_LITTLE_ENDIAN 1
 	#else // !_MSC_VER
-		#if __BYTE_ORDER == __BIG_ENDIAN || defined(__ORDER_BIG_ENDIAN__) || defined(__BIG_ENDIAN_BITFIELD)
+		#if __BYTE_ORDER == __BIG_ENDIAN || defined(__ORDER_BIG_ENDIAN__) || defined(__BIG_ENDIAN_BITFIELD) || defined(__ARMEB__)
 			#define XASH_BIG_ENDIAN 1
 		#elif __BYTE_ORDER == __LITTLE_ENDIAN || defined(__ORDER_LITTLE_ENDIAN__) || defined (__LITTLE_ENDIAN_BITFIELD)
 			#define XASH_LITTLE_ENDIAN 1
