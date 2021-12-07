@@ -909,7 +909,7 @@ void GL_InitCommands( void )
 	// make sure r_swapinterval is checked after vid_restart
 	gl_swapInterval->modified = true;
 
-	vid_gamma = Cvar_Get( "gamma", "1.0", CVAR_ARCHIVE|CVAR_LOCALONLY, "gamma amount" );
+	vid_gamma = Cvar_Get( "gamma", "1.5", CVAR_ARCHIVE|CVAR_LOCALONLY, "gamma amount" );
 	vid_texgamma = Cvar_Get( "texgamma", "2.2", CVAR_LOCALONLY, "texgamma amount (default Half-Life artwork gamma)" );
 	vid_mode = Cvar_Get( "vid_mode", VID_AUTOMODE, CVAR_RENDERINFO, "display resolution mode" );
 	vid_fullscreen = Cvar_Get( "fullscreen", "0", CVAR_RENDERINFO, "set in 1 to enable fullscreen mode" );
