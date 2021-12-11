@@ -53,7 +53,9 @@ extern "C" {
 //
 
 #if !defined(__i386__) && !defined(_M_X86) && !defined(__x86_64__) && !defined(_M_X64)
-	#if __BYTE_ORDER == __BIG_ENDIAN || defined(__ORDER_BIG_ENDIAN__) || defined(__BIG_ENDIAN_BITFIELD) || defined(__ARMEB__)
+	#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || \
+	defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ || \
+	defined(__ARMEB__) || defined(__AARCH64EB__) || defined(_MIPSEB) || defined(__MIPSEB) || defined(__MIPSEB__)
 		#define XASH_BIG_ENDIAN 1
 	#endif
 #endif
