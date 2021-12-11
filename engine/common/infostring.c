@@ -208,46 +208,54 @@ Info_IsValid
 Check infostring for potential problems
 ==============
 */
-qboolean Info_IsValid( const char *s )
+qboolean Info_IsValid(const char *s)
 {
-	char	key[MAX_KV_SIZE];
-	char	value[MAX_KV_SIZE];
-	int	count;
-	char	*o;
+	size_t len = 0, total = 0;
+	int c;
 
-	if( *s == '\\' ) s++;
-
-	while( *s )
+	while (1)
 	{
-		count = 0;
-		o = key;
-
-		while( count < (MAX_KV_SIZE - 1) && *s && *s != '\\' )
+		if (*s == '\\')
 		{
-			*o++ = *s++;
-			count++;
+			s++;
+			if (++total == MAX_INFO_STRING)
+				return false;
 		}
-		*o = 0;
-
-		if( !*s ) return false;
-
-		count = 0;
-		o = value;
-		s++;
-		while( count < (MAX_KV_SIZE - 1) && *s && *s != '\\' )
-		{
-			*o++ = *s++;
-			count++;
-		}
-		*o = 0;
-
-		if( !value[0] )
+		if (!*s)
 			return false;
 
-		if( *s ) s++;
+		len = 0;
+		while (*s != '\\')
+		{
+			c = *s++;
+			if (c == '\"' || c == ';')
+				return false;
+
+			if (++len == MAX_INFO_KEY || ++total == MAX_INFO_STRING || !*s)
+				return false;
+		}
+
+		s++;
+		if (++total == MAX_INFO_STRING || !*s)
+			return false;
+
+		len = 0;
+		while (*s != '\\')
+		{
+			c = *s++;
+			if (c == '\"' || c == ';')
+				return false;
+
+			if (++len == MAX_INFO_VALUE || ++total == MAX_INFO_STRING)
+				return false;
+
+			if (!*s)
+				return true;
+
+		}
 	}
 
-	return true;
+	return false;
 }
 
 /*
