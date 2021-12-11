@@ -157,9 +157,9 @@ void SV_DirectConnect( netadr_t from )
 	}
 
 
-	if( (Q_strlen( Cmd_Argv( 6 ) ) >= MAX_INFO_STRING) )
+	if( !Info_IsValid( Cmd_Argv( 6 ) ) )
 	{
-		MsgDev( D_INFO, "%s:connect rejected : info string out of bounds\n", NET_AdrToString( from ));
+		MsgDev( D_INFO, "%s:connect rejected : invalid useragent\n", NET_AdrToString( from ));
 		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
 		return;
 	}
