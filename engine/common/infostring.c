@@ -349,7 +349,7 @@ qboolean Info_SetValueForStarKey( char *s, const char *key, const char *value, i
 		return false;
 	}
 
-	if( Q_strstr( key, ";" ))
+	if( Q_strstr( key, ";" ) || Q_strstr( value, ";") )
 	{
 		MsgDev( D_ERROR, "SetValueForKey: can't use keys or values with a semicolon\n" );
 		return false;
