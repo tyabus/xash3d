@@ -155,7 +155,7 @@ qboolean GAME_EXPORT Info_RemoveKey( char *s, const char *key )
 
 		if( !Q_strcmp( key, pkey ))
 		{
-			Q_strcpy( start, s ); // remove this part
+			Q_memmove( start, s, Q_strlen(s) + 1 ); // remove this part
 			return true;
 		}
 		if( !*s ) return false;
