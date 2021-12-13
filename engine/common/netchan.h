@@ -28,10 +28,6 @@ GNU General Public License for more details.
 // 0 == regular, 1 == file stream
 #define MAX_STREAMS			2    
 
-// flow control bytes per second limits
-#define MAX_RATE			20000				
-#define MIN_RATE			1000
-
 // default data rate
 #define DEFAULT_RATE		(9999.0f)
 

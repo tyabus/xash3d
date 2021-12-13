@@ -25,6 +25,8 @@ convar_t	*sv_zmax;
 convar_t	*sv_novis;			// disable server culling entities by vis
 convar_t	*sv_unlag;
 convar_t	*sv_maxunlag;
+convar_t	*sv_maxrate;
+convar_t	*sv_minrate;
 convar_t	*sv_unlagpush;
 convar_t	*sv_unlagsamples;
 convar_t	*sv_pausable;
@@ -985,6 +987,8 @@ void SV_Init( void )
 	sv_failuretime = Cvar_Get( "sv_failuretime", "0.5", 0, "after this long without a packet from client, don't send any more until client starts sending again" );
 	sv_unlag = Cvar_Get( "sv_unlag", "1", 0, "allow lag compensation on server-side" );
 	sv_maxunlag = Cvar_Get( "sv_maxunlag", "0.5", 0, "max latency which can be interpolated" );
+	sv_maxrate = Cvar_Get( "sv_maxrate", "50000", 0, "maximum network bandwith rate, 0 = unlimited" );
+	sv_minrate = Cvar_Get( "sv_minrate", "5000", 0, "minimum network bandwith rate, 0 == unlimited" );
 	sv_unlagpush = Cvar_Get( "sv_unlagpush", "0.0", 0, "unlag push bias" );
 	sv_unlagsamples = Cvar_Get( "sv_unlagsamples", "1", 0, "max samples to interpolate" );
 	sv_allow_upload = Cvar_Get( "sv_allow_upload", "1", 0, "allow uploading custom resources from clients" );

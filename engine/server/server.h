@@ -435,6 +435,8 @@ extern	convar_t		*sv_failuretime;
 extern	convar_t		*sv_unlag;
 extern	convar_t		*sv_novis;
 extern	convar_t		*sv_maxunlag;
+extern	convar_t		*sv_maxrate;
+extern	convar_t		*sv_minrate;
 extern	convar_t		*sv_unlagpush;
 extern	convar_t		*sv_unlagsamples;
 extern	convar_t		*sv_allow_upload;

@@ -2265,7 +2265,7 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 	// rate command
 	val = Info_ValueForKey( cl->userinfo, "rate" );
 	if( Q_strlen( val ))
-		cl->netchan.rate = bound( MIN_RATE, Q_atoi( val ), MAX_RATE );
+		cl->netchan.rate = bound( sv_minrate->value, Q_atoi( val ), sv_maxrate->value );
 	else cl->netchan.rate = DEFAULT_RATE;
 
 	// msg command
