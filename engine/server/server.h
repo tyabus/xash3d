@@ -476,13 +476,18 @@ extern	convar_t		*sv_allow_split;
 extern	convar_t		*sv_allow_compress;
 extern	convar_t		*sv_maxpacket;
 extern	convar_t		*sv_forcesimulating;
-extern  convar_t		*sv_password;
-extern  convar_t		*sv_userinfo_enable_penalty;
-extern  convar_t		*sv_userinfo_penalty_time;
-extern  convar_t		*sv_userinfo_penalty_multiplier;
-extern  convar_t		*sv_userinfo_penalty_attempts;
-extern  convar_t		*sv_fullupdate_penalty_multiplier;
-extern  convar_t		*sv_fullupdate_penalty_time;
+extern	convar_t		*sv_nat;
+extern	convar_t		*sv_password;
+extern	convar_t		*sv_allow_touch;
+extern	convar_t		*sv_allow_mouse;
+extern	convar_t		*sv_allow_joystick;
+extern	convar_t		*sv_allow_vr;
+extern	convar_t		*sv_userinfo_enable_penalty;
+extern	convar_t		*sv_userinfo_penalty_time;
+extern	convar_t		*sv_userinfo_penalty_multiplier;
+extern	convar_t		*sv_userinfo_penalty_attempts;
+extern	convar_t		*sv_fullupdate_penalty_multiplier;
+extern	convar_t		*sv_fullupdate_penalty_time;
 
 //===========================================================
 //
@@ -502,7 +507,6 @@ void Master_Add( void );
 void Master_Heartbeat( void );
 void Master_Packet( void );
 void SV_AddToMaster( netadr_t from, sizebuf_t *msg );
-qboolean SV_ProcessUserAgent( netadr_t from, char *useragent );
 
 //
 // sv_init.c
@@ -572,7 +576,7 @@ void SV_ClientThink( sv_client_t *cl, usercmd_t *cmd );
 void SV_ExecuteClientMessage( sv_client_t *cl, sizebuf_t *msg );
 void SV_ConnectionlessPacket( netadr_t from, sizebuf_t *msg );
 edict_t *SV_FakeConnect( const char *netname );
- void SV_ExecuteClientCommand( sv_client_t *cl, char *s );
+void SV_ExecuteClientCommand( sv_client_t *cl, char *s );
 void SV_RunCmd( sv_client_t *cl, usercmd_t *ucmd, int random_seed );
 qboolean SV_IsPlayerIndex( int idx );
 void SV_InitClientMove( void );

@@ -909,6 +909,7 @@ void HPAK_FlushHostQueue( void );
 //
 // identification.c
 //
+qboolean ID_VerifyHEX( const char *hex );
 void ID_Init( void );
 const char *ID_GetMD5( void );
 void GAME_EXPORT ID_SetCustomClientID( const char *id );

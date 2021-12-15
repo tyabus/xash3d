@@ -125,7 +125,6 @@ convar_t	*sv_allow_joystick;
 convar_t	*sv_allow_vr;
 
 void Master_Shutdown( void );
-qboolean ID_VerifyHEX( const char *hex );
 
 char localinfo[MAX_LOCALINFO];
 
@@ -817,72 +816,6 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 	NET_SendPacket( NS_SERVER, Q_strlen( s ), s, from );
 }
 
-/*
-====================
-SV_ProcessUserAgent
-
-send error message and return false on wrong input devices
-====================
-*/
-qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
-{
-	char *input_devices_str = Info_ValueForKey( useragent, "d" );
-	char *id = Info_ValueForKey( useragent, "i" );
-
-	if( input_devices_str )
-	{
-		int input_devices = Q_atoi( input_devices_str );
-
-		if( !sv_allow_touch->integer && ( input_devices & INPUT_DEVICE_TOUCH ) )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow touch\nDisable it (touch_enable 0)\nto play on this server\n" );
-			return false;
-		}
-		if( !sv_allow_mouse->integer && ( input_devices & INPUT_DEVICE_MOUSE) )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow mouse\nDisable it(m_ignore 1)\nto play on this server\n" );
-			return false;
-		}
-		if( !sv_allow_joystick->integer && ( input_devices & INPUT_DEVICE_JOYSTICK) )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow joystick\nDisable it(joy_enable 0)\nto play on this server\n" );
-			return false;
-		}
-		if( !sv_allow_vr->integer && ( input_devices & INPUT_DEVICE_VR) )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow VR\n" );
-			return false;
-		}
-	}
-	else
-	{
-		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server does not allow\nconnect without input devices list.\nPlease update your engine.\n" );
-		return false;
-	}
-
-	if( id )
-	{
-		if( !ID_VerifyHEX( id ) && from.type != NA_LOOPBACK )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYour ID is bad!\n" );
-			return false;
-		}
-
-		if( SV_CheckID( id ) )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYou are banned!\n" );
-			return false;
-		}
-	}
-	else
-	{
-		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow\nconnect without ID.\n" );
-		return false;
-	}
-
-	return true;
-}
-
 //============================================================================
 
 /*
@@ -989,7 +922,7 @@ void SV_Init( void )
 	sv_unlagsamples = Cvar_Get( "sv_unlagsamples", "1", 0, "max samples to interpolate" );
 	sv_allow_upload = Cvar_Get( "sv_allow_upload", "1", 0, "allow uploading custom resources from clients" );
 	sv_allow_download = Cvar_Get( "sv_allow_download", "0", CVAR_ARCHIVE, "allow clients to download missing resources" );
-	sv_allow_fragment = Cvar_Get( "sv_allow_fragment", "0", CVAR_ARCHIVE, "allow direct download from server (unstable & unstable)" );
+	sv_allow_fragment = Cvar_Get( "sv_allow_fragment", "0", CVAR_ARCHIVE, "allow direct download from server (unstable & unsafe)" );
 	sv_downloadurl = Cvar_Get( "sv_downloadurl", "", CVAR_ARCHIVE, "custom fastdl server to pass to client" );
 	sv_send_logos = Cvar_Get( "sv_send_logos", "1", 0, "send custom player decals to other clients" );
 	sv_send_resources = Cvar_Get( "sv_send_resources", "1", 0, "send generic resources that are specified in 'mapname.res'" );
@@ -1007,13 +940,12 @@ void SV_Init( void )
 	sv_maxpacket = Cvar_Get( "sv_maxpacket", "2000", CVAR_ARCHIVE, "limit cl_maxpacket for all clients" );
 	sv_forcesimulating = Cvar_Get( "sv_forcesimulating", DEFAULT_SV_FORCESIMULATING, 0, "forcing world simulating when server don't have active players" );
 	sv_nat = Cvar_Get( "sv_nat", "0", 0, "enable NAT bypass for this server" );
+	sv_password = Cvar_Get( "sv_password", "", CVAR_PROTECTED, "server password. Leave blank if none" );
 
 	sv_allow_joystick = Cvar_Get( "sv_allow_joystick", "1", CVAR_ARCHIVE, "allow connect with joystick enabled" );
 	sv_allow_mouse = Cvar_Get( "sv_allow_mouse", "1", CVAR_ARCHIVE, "allow connect with mouse" );
 	sv_allow_touch = Cvar_Get( "sv_allow_touch", "1", CVAR_ARCHIVE, "allow connect with touch controls" );
 	sv_allow_vr = Cvar_Get( "sv_allow_vr", "1", CVAR_ARCHIVE, "allow connect from vr version" );
-
-	sv_password = Cvar_Get( "sv_password", "", CVAR_PROTECTED, "server password. Leave blank if none" );
 
 	sv_userinfo_enable_penalty = Cvar_Get( "sv_userinfo_enable_penalty", "1", CVAR_ARCHIVE, "enable penalty time for too fast userinfo updates(name, model, etc)" );
 	sv_userinfo_penalty_time = Cvar_Get( "sv_userinfo_penalty_time", "0.3", CVAR_ARCHIVE, "initial penalty time" );
