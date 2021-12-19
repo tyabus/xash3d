@@ -44,8 +44,6 @@ static int	g_userid = 1;
 
 static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo );
 
-extern convar_t	*sv_nat;
-
 /*
 =================
 SV_GetChallenge
@@ -60,9 +58,7 @@ challenge, they must give a valid IP address.
 void SV_GetChallenge( netadr_t from )
 {
 	int	i, oldest = 0;
-	double	oldestTime;
-
-	oldestTime = 0x7fffffff;
+	double	oldestTime = 0x7fffffff;
 
 	// see if we already have a challenge for this ip
 	for( i = 0; i < MAX_CHALLENGES; i++ )
@@ -92,6 +88,72 @@ void SV_GetChallenge( netadr_t from )
 }
 
 /*
+====================
+SV_ProcessUserAgent
+
+send error message and return false on wrong input devices
+====================
+*/
+qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
+{
+	char *input_devices_str = Info_ValueForKey( useragent, "d" );
+	char *id = Info_ValueForKey( useragent, "i" );
+
+	if( input_devices_str[0] )
+	{
+		int input_devices = Q_atoi( input_devices_str );
+
+		if( !sv_allow_touch->integer && ( input_devices & INPUT_DEVICE_TOUCH ) )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow touch\nDisable it (touch_enable 0)\nto play on this server\n" );
+			return false;
+		}
+		if( !sv_allow_mouse->integer && ( input_devices & INPUT_DEVICE_MOUSE) )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow mouse\nDisable it(m_ignore 1)\nto play on this server\n" );
+			return false;
+		}
+		if( !sv_allow_joystick->integer && ( input_devices & INPUT_DEVICE_JOYSTICK) )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow joystick\nDisable it(joy_enable 0)\nto play on this server\n" );
+			return false;
+		}
+		if( !sv_allow_vr->integer && ( input_devices & INPUT_DEVICE_VR) )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow VR\n" );
+			return false;
+		}
+	}
+	else
+	{
+		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server does not allow\nconnect without input devices list.\nPlease update your engine.\n" );
+		return false;
+	}
+
+	if( id[0] )
+	{
+		if( !ID_VerifyHEX( id ) && from.type != NA_LOOPBACK )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYour ID is bad!\n" );
+			return false;
+		}
+
+		if( SV_CheckID( id ) )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYou are banned!\n" );
+			return false;
+		}
+	}
+	else
+	{
+		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow\nconnect without ID.\n" );
+		return false;
+	}
+
+	return true;
+}
+
+/*
 ==================
 SV_DirectConnect
 
@@ -100,15 +162,14 @@ A connection request that did not come from the master
 */
 void SV_DirectConnect( netadr_t from )
 {
-	char		userinfo[MAX_INFO_STRING];
-	sv_client_t	temp, *cl, *newcl;
+	char		userinfo[MAX_INFO_STRING], *useragent;
+	sv_client_t	*cl, *newcl;
 	char		physinfostr[512];
 	int		i, edictnum;
 	int		qport, version;
 	int		count = 0;
 	int		challenge;
 	uint32_t requested_extensions, extensions = 0;
-	edict_t		*ent;
 	char *errorpacket = "print";
 
 	if( Cmd_Argc() > 6 )
@@ -137,6 +198,7 @@ void SV_DirectConnect( netadr_t from )
 	challenge = Q_atoi( Cmd_Argv( 3 ));
 	Q_strncpy( userinfo, Cmd_Argv( 4 ), sizeof( userinfo ));
 	requested_extensions = Q_atoi( Cmd_Argv( 5 ) );
+	useragent = Cmd_Argv( 6 );
 
 	// quick reject
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
@@ -156,14 +218,6 @@ void SV_DirectConnect( netadr_t from )
 		}
 	}
 
-
-	if( !Info_IsValid( Cmd_Argv( 6 ) ) )
-	{
-		MsgDev( D_INFO, "%s:connect rejected : invalid useragent\n", NET_AdrToString( from ));
-		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
-		return;
-	}
-
 	if( !Info_IsValid( userinfo ) )
 	{
 		MsgDev( D_INFO, "%s:connect rejected : invalid userinfo\n", NET_AdrToString( from ));
@@ -171,14 +225,21 @@ void SV_DirectConnect( netadr_t from )
 		return;
 	}
 
-	if( !SV_ProcessUserAgent( from, Cmd_Argv( 6 ) ) )
+	if( !Info_IsValid( useragent ) )
+	{
+		MsgDev( D_INFO, "%s:connect rejected : invalid useragent\n", NET_AdrToString( from ));
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
+	}
+
+	if( !SV_ProcessUserAgent( from, useragent ) )
 	{
 		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
 		return;
 	}
 
 	// see if the challenge is valid (LAN clients don't need to challenge)
-	if( !NET_IsLocalAddress( from ))
+	if( !NET_IsLocalAddress( from ) )
 	{
 		const char *password;
 
@@ -211,12 +272,6 @@ void SV_DirectConnect( netadr_t from )
 			return;
 		}
 	}
-
-	// force the IP key/value pair so the game can filter based on ip
-	Info_SetValueForKey( userinfo, "ip", NET_AdrToString( from ), sizeof( userinfo ) );
-
-	newcl = &temp;
-	Q_memset( newcl, 0, sizeof( sv_client_t ));
 
 	// if there is already a slot for this ip, reuse it
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
@@ -260,20 +315,17 @@ gotnewcl:
 	if( sv_maxclients->integer == 1 ) // save physinfo for singleplayer
 		Q_strncpy( physinfostr, newcl->physinfo, sizeof( physinfostr ));
 
-	*newcl = temp;
+	Q_memset( newcl, 0, sizeof( sv_client_t ));
 
 	if( sv_maxclients->integer == 1 ) // restore physinfo for singleplayer
 		Q_strncpy( newcl->physinfo, physinfostr, sizeof( physinfostr ));
 
-	if( Q_strncpy( newcl->useragent, Cmd_Argv( 6 ), MAX_INFO_STRING ) )
+	Q_strncpy( newcl->useragent, useragent, MAX_INFO_STRING );
+	char *id = Info_ValueForKey( newcl->useragent, "i" );
+
+	if( id[0] )
 	{
-		char *id = Info_ValueForKey( newcl->useragent, "i" );
-
-		if( *id )
-		{
-			sscanf( id, "%llx", &newcl->WonID );
-		}
-
+		sscanf( id, "%llx", &newcl->WonID );
 		Q_strncpy( cl->auth_id, id, sizeof( cl->auth_id ) );
 	}
 
@@ -281,8 +333,7 @@ gotnewcl:
 	svs.currentPlayerNum = (newcl - svs.clients);
 	edictnum = svs.currentPlayerNum + 1;
 
-	ent = EDICT_NUM( edictnum );
-	newcl->edict = ent;
+	newcl->edict = EDICT_NUM( edictnum );
 	newcl->challenge = challenge; // save challenge for checksumming
 	if( newcl->frames )
 		Mem_Free( newcl->frames );
@@ -293,31 +344,30 @@ gotnewcl:
 	// initailize netchan here because SV_DropClient will clear network buffer
 	Netchan_Setup( NS_SERVER, &newcl->netchan, from, qport );
 
-	if( sv_allow_compress->integer && ( requested_extensions & NET_EXT_HUFF ) )
+	if( sv_allow_split->integer && ( requested_extensions & NET_EXT_SPLIT ))
+	{
+		int maxpacket = Q_atoi( Info_ValueForKey( userinfo, "cl_maxpacket") );
+
+		if( maxpacket > sv_maxpacket->integer )
+			newcl->netchan.maxpacket = sv_maxpacket->integer;
+		else
+			newcl->netchan.maxpacket = bound(100, maxpacket, NET_MAX_PAYLOAD / 2);
+
+		newcl->netchan.split = true, extensions |= NET_EXT_SPLIT;
+
+		if( sv_allow_compress->integer && sv_allow_split->integer && ( requested_extensions & NET_EXT_SPLITHUFF ) )
+			newcl->netchan.splitcompress = true, extensions |= NET_EXT_SPLITHUFF;
+	} else if( sv_allow_compress->integer && ( requested_extensions & NET_EXT_HUFF ) )
 	{
 		extensions |= NET_EXT_HUFF;
 		newcl->netchan.compress = true;
 	}
 
-	if( sv_allow_split->integer && ( requested_extensions & NET_EXT_SPLIT ) )
-	{
-		uint32_t maxpacket = Q_atoi( Info_ValueForKey( userinfo, "cl_maxpacket") );
-		extensions |= NET_EXT_SPLIT;
-		newcl->netchan.split = true;
-		if( maxpacket < 100 || maxpacket >= NET_MAX_PAYLOAD / 2 )
-			maxpacket = 1400;
-		if( maxpacket > sv_maxpacket->integer )
-			maxpacket = sv_maxpacket->integer;
-		newcl->netchan.maxpacket = maxpacket;
-
-		if( sv_allow_compress->integer && sv_allow_split->integer
-				&& !( requested_extensions & NET_EXT_HUFF )
-				&& ( requested_extensions & NET_EXT_SPLITHUFF ) )
-			newcl->netchan.splitcompress = true, extensions |= NET_EXT_SPLITHUFF;
-	}
-
 	BF_Init( &newcl->datagram, "Datagram", newcl->datagram_buf, sizeof( newcl->datagram_buf )); // datagram buf
 	newcl->cl_updaterate = 0.05;	// 20 fps as default
+
+	// force the IP key/value pair so the game can filter based on ip
+	Info_SetValueForKey( userinfo, "ip", NET_AdrToString( from ), sizeof( userinfo ) );
 
 	// parse some info from the info strings (this can override cl_updaterate)
 	SV_UserinfoChanged( newcl, userinfo );
@@ -2110,7 +2160,7 @@ void SV_Pause_f( sv_client_t *cl )
 {
 	string	message;
 
-	if( UI_CreditsActive( )) return;
+	if( UI_CreditsActive( ) ) return;
 
 	if( !sv_pausable->integer )
 	{
@@ -2298,7 +2348,7 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 
 	val = Info_ValueForKey( cl->userinfo, "cl_updaterate" );
 
-	if( Q_strlen( val ))
+	if( Q_strlen( val ) )
 	{
 		i = bound( 10, Q_atoi( val ), 300 );
 		cl->cl_updaterate = 1.0f / i;
