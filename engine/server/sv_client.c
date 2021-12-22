@@ -154,6 +154,44 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 }
 
 /*
+=====================
+SV_CleanupClient
+
+Prepares the client for a new connection or disconnection
+=====================
+*/
+void SV_CleanupClient( sv_client_t *cl, qboolean full )
+{
+	if( cl->frames )
+		Mem_Free( cl->frames );	// fakeclients doesn't have frames
+
+	SV_ClearCustomizationList( &cl->customization );
+
+	if( full )
+	{
+		Q_memset( cl, '\0', sizeof( sv_client_t ) );
+	} else {
+
+	cl->frames = NULL;
+	cl->fakeclient = false;
+	cl->hltv_proxy = false;
+	cl->state = cs_zombie; // become free in a few seconds
+	cl->name[0] = '\0';
+
+	// throw away any residual garbage in the channel.
+	Netchan_Clear( &cl->netchan );
+
+	// Clean client data on disconnect
+	Q_memset( cl->userinfo, 0, MAX_INFO_STRING );
+	Q_memset( cl->physinfo, 0, MAX_INFO_STRING );
+	//drop->edict = 0;
+	//Q_memset( &drop->edict->v, 0, sizeof( drop->edict->v ) );
+	if( cl->edict )
+		cl->edict->v.frags = 0;
+	}
+}
+
+/*
 ==================
 SV_DirectConnect
 
@@ -162,9 +200,9 @@ A connection request that did not come from the master
 */
 void SV_DirectConnect( netadr_t from )
 {
-	char		userinfo[MAX_INFO_STRING], *useragent;
+	char		*userinfo = NULL, *useragent = NULL;
 	sv_client_t	*cl, *newcl;
-	char		physinfostr[512];
+	char		physinfostr[MAX_INFO_STRING];
 	int		i, edictnum;
 	int		qport, version;
 	int		count = 0;
@@ -196,7 +234,7 @@ void SV_DirectConnect( netadr_t from )
 
 	qport = Q_atoi( Cmd_Argv( 2 ));
 	challenge = Q_atoi( Cmd_Argv( 3 ));
-	Q_strncpy( userinfo, Cmd_Argv( 4 ), sizeof( userinfo ));
+	userinfo = Cmd_Argv( 4 );
 	requested_extensions = Q_atoi( Cmd_Argv( 5 ) );
 	useragent = Cmd_Argv( 6 );
 
@@ -311,11 +349,10 @@ void SV_DirectConnect( netadr_t from )
 	// accept the new client
 gotnewcl:
 	// this is the only place a sv_client_t is ever initialized
-
 	if( sv_maxclients->integer == 1 ) // save physinfo for singleplayer
 		Q_strncpy( physinfostr, newcl->physinfo, sizeof( physinfostr ));
 
-	Q_memset( newcl, 0, sizeof( sv_client_t ));
+	SV_CleanupClient( newcl, true );
 
 	if( sv_maxclients->integer == 1 ) // restore physinfo for singleplayer
 		Q_strncpy( newcl->physinfo, physinfostr, sizeof( physinfostr ));
@@ -335,8 +372,6 @@ gotnewcl:
 
 	newcl->edict = EDICT_NUM( edictnum );
 	newcl->challenge = challenge; // save challenge for checksumming
-	if( newcl->frames )
-		Mem_Free( newcl->frames );
 	newcl->frames = (client_frame_t *)Z_Malloc( sizeof( client_frame_t ) * SV_UPDATE_BACKUP );
 	newcl->userid = g_userid++;	// create unique userid
 	newcl->authentication_method = 2;
@@ -344,7 +379,13 @@ gotnewcl:
 	// initailize netchan here because SV_DropClient will clear network buffer
 	Netchan_Setup( NS_SERVER, &newcl->netchan, from, qport );
 
-	if( sv_allow_split->integer && ( requested_extensions & NET_EXT_SPLIT ))
+	if( sv_allow_compress->integer && ( requested_extensions & NET_EXT_HUFF ) )
+	{
+		extensions |= NET_EXT_HUFF;
+		newcl->netchan.compress = true;
+	}
+
+	if( sv_allow_split->integer && ( requested_extensions & NET_EXT_SPLIT ) )
 	{
 		int maxpacket = Q_atoi( Info_ValueForKey( userinfo, "cl_maxpacket") );
 
@@ -355,19 +396,13 @@ gotnewcl:
 
 		newcl->netchan.split = true, extensions |= NET_EXT_SPLIT;
 
-		if( sv_allow_compress->integer && sv_allow_split->integer && ( requested_extensions & NET_EXT_SPLITHUFF ) )
+		if( sv_allow_compress->integer && sv_allow_split->integer &&
+			 ( requested_extensions & NET_EXT_SPLITHUFF ) && !( requested_extensions & NET_EXT_HUFF ) )
 			newcl->netchan.splitcompress = true, extensions |= NET_EXT_SPLITHUFF;
-	} else if( sv_allow_compress->integer && ( requested_extensions & NET_EXT_HUFF ) )
-	{
-		extensions |= NET_EXT_HUFF;
-		newcl->netchan.compress = true;
 	}
 
 	BF_Init( &newcl->datagram, "Datagram", newcl->datagram_buf, sizeof( newcl->datagram_buf )); // datagram buf
 	newcl->cl_updaterate = 0.05;	// 20 fps as default
-
-	// force the IP key/value pair so the game can filter based on ip
-	Info_SetValueForKey( userinfo, "ip", NET_AdrToString( from ), sizeof( userinfo ) );
 
 	// parse some info from the info strings (this can override cl_updaterate)
 	SV_UserinfoChanged( newcl, userinfo );
@@ -433,8 +468,7 @@ edict_t *GAME_EXPORT SV_FakeConnect( const char *netname )
 {
 	int		i, edictnum;
 	char		userinfo[MAX_INFO_STRING];
-	sv_client_t	temp, *cl, *newcl;
-	edict_t		*ent;
+	sv_client_t	*cl, *newcl = NULL;
 
 	if( !netname ) netname = "";
 	userinfo[0] = '\0';
@@ -449,8 +483,6 @@ edict_t *GAME_EXPORT SV_FakeConnect( const char *netname )
 	Info_SetValueForKey( userinfo, "ip", "127.0.0.1", sizeof( userinfo ) );
 
 	// find a client slot
-	newcl = &temp;
-	Q_memset( newcl, 0, sizeof( sv_client_t ));
 
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
 	{
@@ -461,33 +493,27 @@ edict_t *GAME_EXPORT SV_FakeConnect( const char *netname )
 		}
 	}
 
-	if( i == sv_maxclients->integer )
+	if( !newcl )
 	{
 		MsgDev( D_INFO, "SV_DirectConnect: rejected a connection.\n");
 		return NULL;
 	}
 
-	// build a new connection
-	// accept the new client
 	// this is the only place a sv_client_t is ever initialized
-	*newcl = temp;
+	SV_CleanupClient( newcl, true );
+
 	svs.currentPlayer = newcl;
 	svs.currentPlayerNum = (newcl - svs.clients);
 	edictnum = svs.currentPlayerNum + 1;
 
-	if( newcl->frames )
-		Mem_Free( newcl->frames );	// fakeclients doesn't have frames
-	newcl->frames = NULL;
-
-	ent = EDICT_NUM( edictnum );
-	newcl->edict = ent;
+	newcl->edict = EDICT_NUM( edictnum );
 	newcl->challenge = -1;		// fake challenge
 	newcl->fakeclient = true;
 	newcl->delta_sequence = -1;
 	newcl->userid = g_userid++;		// create unique userid
 
 	// get the game a chance to reject this connection or modify the userinfo
-	if( !SV_ClientConnect( ent, userinfo ))
+	if( !SV_ClientConnect( cl->edict, userinfo ) )
 	{
 		MsgDev( D_ERROR, "SV_DirectConnect: game rejected a connection.\n" );
 		return NULL;
@@ -498,18 +524,18 @@ edict_t *GAME_EXPORT SV_FakeConnect( const char *netname )
 
 	MsgDev( D_NOTE, "Bot %i connecting with challenge %x\n", i, -1 );
 
-	ent->v.flags |= FL_FAKECLIENT;	// mark it as fakeclient
+	newcl->edict->v.flags |= FL_FAKECLIENT;	// mark it as fakeclient
 	newcl->state = cs_spawned;
 	newcl->lastmessage = host.realtime;	// don't timeout
 	newcl->lastconnect = host.realtime;
 	newcl->sendinfo = true;
 
-	return ent;
+	return newcl->edict;
 }
 
 /*
 =====================
-SV_ClientCconnect
+SV_ClientConnect
 
 QC code can rejected a connection for some reasons
 e.g. ipban
@@ -517,7 +543,7 @@ e.g. ipban
 */
 qboolean SV_ClientConnect( edict_t *ent, char *userinfo )
 {
-	qboolean	result = true;
+	qboolean	result = false;
 	char	*pszName, *pszAddress;
 	char	szRejectReason[MAX_INFO_STRING];
 
@@ -560,30 +586,11 @@ void SV_DropClient( sv_client_t *drop )
 	// let the game known about client state
 	SV_DisconnectClient( drop->edict );
 
-	drop->fakeclient = false;
-	drop->hltv_proxy = false;
-	drop->state = cs_zombie; // become free in a few seconds
-	drop->name[0] = 0;
-
-	if( drop->frames )
-		Mem_Free( drop->frames );	// fakeclients doesn't have frames
-	drop->frames = NULL;
-
 	if( NET_CompareBaseAdr( drop->netchan.remote_address, host.rd.address ) )
 		SV_EndRedirect();
 
-	SV_ClearCustomizationList( &drop->customization );
-
-	// throw away any residual garbage in the channel.
-	Netchan_Clear( &drop->netchan );
-
-	// Clean client data on disconnect
-	Q_memset( drop->userinfo, 0, MAX_INFO_STRING );
-	Q_memset( drop->physinfo, 0, MAX_INFO_STRING );
-	//drop->edict = 0;
-	//Q_memset( &drop->edict->v, 0, sizeof( drop->edict->v ) );
-	if( drop->edict )
-		drop->edict->v.frags = 0;
+	// prepare client
+	SV_CleanupClient( drop, false );
 
 	// send notification to all other clients
 	SV_FullClientUpdate( drop, &sv.reliable_datagram );
@@ -990,9 +997,9 @@ Rcon_Validate
 */
 qboolean Rcon_Validate( void )
 {
-	if( !Q_strlen( rcon_password->string ))
+	if( !Q_strlen( rcon_password->string ) )
 		return false;
-	if( Q_strcmp( Cmd_Argv( 1 ), rcon_password->string ))
+	if( Q_strcmp( Cmd_Argv( 1 ), rcon_password->string ) )
 		return false;
 	return true;
 }
@@ -1015,7 +1022,7 @@ void SV_RemoteCommand( netadr_t from, sizebuf_t *msg )
 	MsgDev( D_INFO, "Rcon from %s:\n%s\n", NET_AdrToString( from ), BF_GetData( msg ) + 4 );
 	SV_BeginRedirect( from, RD_PACKET, outputbuf, sizeof( outputbuf ), SV_FlushRedirect );
 
-	if( Rcon_Validate( ))
+	if( Rcon_Validate( ) )
 	{
 		remaining[0] = 0;
 		for( i = 2; i < Cmd_Argc(); i++ )
@@ -1284,17 +1291,9 @@ Called when a player connects to a server or respawns in
 a deathmatch.
 ============
 */
-void SV_PutClientInServer( edict_t *ent )
+void SV_PutClientInServer( sv_client_t *cl )
 {
-	sv_client_t	*client;
-
-	client = SV_ClientFromEdict( ent, false );
-
-	if( client == NULL )
-	{
-		MsgDev( D_ERROR, "SV_PutClientInServer: you have broken clients!\n");
-		return;
-	}
+	edict_t *ent = cl->edict;
 
 	if( !sv.loadgame )
 	{
@@ -1315,11 +1314,11 @@ void SV_PutClientInServer( edict_t *ent )
 		Q_memset( &ent->v, 0, sizeof( ent->v ) );
 
 		ent->v.colormap = NUM_FOR_EDICT( ent );
-		if( client->hltv_proxy )
+		if( cl->hltv_proxy )
 			ent->v.flags |= FL_PROXY;
 		else ent->v.flags = 0;
 
-		ent->v.netname = MAKE_STRING( client->name );
+		ent->v.netname = MAKE_STRING( cl->name );
 
 		// fisrt entering
 		svgame.globals->time = sv.time;
@@ -1330,57 +1329,57 @@ void SV_PutClientInServer( edict_t *ent )
 		if( sv.background )	// don't attack player in background mode
 			ent->v.flags |= (FL_GODMODE|FL_NOTARGET);
 
-		client->pViewEntity = NULL; // reset pViewEntity
+		cl->pViewEntity = NULL; // reset pViewEntity
 
 	}
 	else
 	{
 		// enable dev-mode to prevent crash cheat-protecting from Invasion mod
 		if( ent->v.flags & (FL_GODMODE|FL_NOTARGET) && !Q_stricmp( GI->gamefolder, "invasion" ))
-			SV_ExecuteClientCommand( client, "test\n" );
+			SV_ExecuteClientCommand( cl, "test\n" );
 
 		// NOTE: we needs to setup angles on restore here
 		if( ent->v.fixangle == 1 )
 		{
-			BF_WriteByte( &client->netchan.message, svc_setangle );
-			BF_WriteBitAngle( &client->netchan.message, ent->v.angles[0], 16 );
-			BF_WriteBitAngle( &client->netchan.message, ent->v.angles[1], 16 );
-			BF_WriteBitAngle( &client->netchan.message, ent->v.angles[2], 16 );
+			BF_WriteByte( &cl->netchan.message, svc_setangle );
+			BF_WriteBitAngle( &cl->netchan.message, ent->v.angles[0], 16 );
+			BF_WriteBitAngle( &cl->netchan.message, ent->v.angles[1], 16 );
+			BF_WriteBitAngle( &cl->netchan.message, ent->v.angles[2], 16 );
 			ent->v.fixangle = 0;
 		}
 		ent->v.effects |= EF_NOINTERP;
 
 		// reset weaponanim
-		BF_WriteByte( &client->netchan.message, svc_weaponanim );
-		BF_WriteByte( &client->netchan.message, 0 );
-		BF_WriteByte( &client->netchan.message, 0 );
+		BF_WriteByte( &cl->netchan.message, svc_weaponanim );
+		BF_WriteByte( &cl->netchan.message, 0 );
+		BF_WriteByte( &cl->netchan.message, 0 );
 
 		// trigger_camera restored here
 		if( sv.viewentity > 0 && sv.viewentity < GI->max_edicts )
-			client->pViewEntity = EDICT_NUM( sv.viewentity );
-		else client->pViewEntity = NULL;
+			cl->pViewEntity = EDICT_NUM( sv.viewentity );
+		else cl->pViewEntity = NULL;
 	}
 
 	// reset client times
-	client->last_cmdtime = 0.0;
-	client->last_movetime = 0.0;
-	client->next_movetime = 0.0;
+	cl->last_cmdtime = 0.0;
+	cl->last_movetime = 0.0;
+	cl->next_movetime = 0.0;
 
-	client->state = cs_spawned;
+	cl->state = cs_spawned;
 
-	if( !client->fakeclient )
+	if( !cl->fakeclient )
 	{
 		int	viewEnt;
 
 		// resend the signon
-		BF_WriteBits( &client->netchan.message, BF_GetData( &sv.signon ), BF_GetNumBitsWritten( &sv.signon ));
+		BF_WriteBits( &cl->netchan.message, BF_GetData( &sv.signon ), BF_GetNumBitsWritten( &sv.signon ));
 
-		if( client->pViewEntity )
-			viewEnt = NUM_FOR_EDICT( client->pViewEntity );
-		else viewEnt = NUM_FOR_EDICT( client->edict );
+		if( cl->pViewEntity )
+			viewEnt = NUM_FOR_EDICT( cl->pViewEntity );
+		else viewEnt = NUM_FOR_EDICT( ent );
 
-		BF_WriteByte( &client->netchan.message, svc_setview );
-		BF_WriteWord( &client->netchan.message, viewEnt );
+		BF_WriteByte( &cl->netchan.message, svc_setview );
+		BF_WriteWord( &cl->netchan.message, viewEnt );
 	}
 
 	// clear any temp states
@@ -2128,7 +2127,7 @@ void SV_Begin_f( sv_client_t *cl )
 		return;
 	}
 
-	SV_PutClientInServer( cl->edict );
+	SV_PutClientInServer( cl );
 
 	// if we are paused, tell the client
 	if( sv.paused )
@@ -2281,6 +2280,7 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 	}
 
 	// some players try to fake it by setting it by themselves, so update it for every userinfo update
+	// force the IP key/value pair so the game can filter based on ip
 	if( !cl->fakeclient )
 		Info_SetValueForKey( cl->userinfo, "ip", NET_BaseAdrToString( cl->netchan.remote_address ), sizeof( cl->userinfo ) );
 
