@@ -132,7 +132,7 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 
 	if( id[0] )
 	{
-		if( !ID_VerifyHEX( id ) && from.type != NA_LOOPBACK )
+		if( !ID_VerifyHEX( id ) )
 		{
 			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYour ID is bad!\n" );
 			return false;
@@ -144,7 +144,8 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 			return false;
 		}
 	}
-	else
+	// Local clients do not send id
+	else if ( from.type != NA_LOOPBACK )
 	{
 		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server does not allow\nconnect without ID.\n" );
 		return false;
