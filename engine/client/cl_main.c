@@ -1747,8 +1747,13 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 	}
 	else if( !Q_strcmp( c, "print" ))
 	{
-		// print command from somewhere
-		char *str = BF_ReadString( msg );
+		// print command from connecting server or rcon_address
+		char *str;
+
+		if( !CL_IsFromConnectingServer( from ) || !Q_strcmp( NET_AdrToString( from ), rcon_address->string ) )
+			return;
+
+		str = BF_ReadString( msg );
 		Msg("^5r:^7%s", str );
 
 		if( str[0] == 0 || str[ Q_strlen( str ) - 1 ] != '\n' )
