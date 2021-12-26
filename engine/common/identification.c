@@ -108,16 +108,17 @@ void ID_BloomFilter_f( void )
 	//	Msg( "%s: %d\n", Cmd_Argv( i ), BloomFilter_ContainsString( value, Cmd_Argv( i ) ) );
 }
 
-qboolean ID_VerifyHEX( const char *hex )
+qboolean ID_Verify( const char *hex )
 {
 	uint32_t chars = 0;
 	char prev = 0;
 	qboolean monotonic = true; // detect 11:22...
 	int weight = 0;
+	size_t lenght = 0;
 
-	while( *hex++ )
+	while( *hex )
 	{
-		char ch = Q_tolower( *hex );
+		char ch = Q_tolower( *hex++ );
 
 		if( ( ch >= 'a' && ch <= 'f') || ( ch >= '0' && ch <= '9' ) )
 		{
@@ -130,11 +131,51 @@ qboolean ID_VerifyHEX( const char *hex )
 				chars |= 1 << (ch - '0');
 
 			prev = ch;
-		}
+		} else
+			return false;
+
+		lenght++;
 	}
 
 	if( monotonic )
 		return false;
+
+	// md5 16 byte * 2 char/byte = 32 chars
+	if( lenght != 32 )
+		return false;
+
+	while( chars )
+	{
+		if( chars & 1 )
+			weight++;
+
+		chars = chars >> 1;
+
+		if( weight > 2 )
+			return true;
+	}
+
+	return false;
+}
+
+qboolean ID_VerifyHEX( const char *hex )
+{
+	uint32_t chars = 0;
+	int weight = 0;
+
+	while( *hex )
+	{
+		char ch = Q_tolower( *hex++ );
+
+		if( (ch >= 'a' && ch <= 'f') || ( ch >= '0' && ch <= '9' )  )
+		{
+			if( ch >= 'a' )
+				chars |= 1 << (ch - 'a' + 10);
+			else
+				chars |= 1 << (ch - '0');
+		} else
+			return false;
+	}
 
 	while( chars )
 	{

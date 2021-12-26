@@ -132,7 +132,7 @@ qboolean SV_ProcessUserAgent( netadr_t from, char *useragent )
 
 	if( id[0] )
 	{
-		if( !ID_VerifyHEX( id ) )
+		if( !ID_Verify( id ) )
 		{
 			Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nYour ID is bad!\n" );
 			return false;
@@ -1573,6 +1573,12 @@ void SV_ContinueLoading_f( sv_client_t *cl )
 	// begin fetching modellist
 	BF_WriteByte( &cl->netchan.message, svc_stufftext );
 	BF_WriteString( &cl->netchan.message, va( "cmd modellist %i %i\n", svs.spawncount, 0 ));
+}
+
+void SV_PurgeResourceListCache( void )
+{
+	sv.resourcelistcache = false;
+	sv.reslist.rescount = 0;
 }
 
 void SV_AppendToResourceList( resourcelist_t *reslist, const resourcetype_t type, const char *file )
