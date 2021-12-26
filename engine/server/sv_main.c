@@ -125,6 +125,7 @@ convar_t	*sv_allow_touch;
 convar_t	*sv_allow_mouse;
 convar_t	*sv_allow_joystick;
 convar_t	*sv_allow_vr;
+convar_t	*sv_allow_hltv;
 
 void Master_Shutdown( void );
 
@@ -950,6 +951,7 @@ void SV_Init( void )
 	sv_allow_mouse = Cvar_Get( "sv_allow_mouse", "1", CVAR_ARCHIVE, "allow connect with mouse" );
 	sv_allow_touch = Cvar_Get( "sv_allow_touch", "1", CVAR_ARCHIVE, "allow connect with touch controls" );
 	sv_allow_vr = Cvar_Get( "sv_allow_vr", "1", CVAR_ARCHIVE, "allow connect from vr version" );
+	sv_allow_hltv = Cvar_Get( "sv_allow_hltv", "0", CVAR_ARCHIVE, "allow hltv proxies to connect" );
 
 	sv_userinfo_enable_penalty = Cvar_Get( "sv_userinfo_enable_penalty", "1", CVAR_ARCHIVE, "enable penalty time for too fast userinfo updates(name, model, etc)" );
 	sv_userinfo_penalty_time = Cvar_Get( "sv_userinfo_penalty_time", "0.3", CVAR_ARCHIVE, "initial penalty time" );

@@ -484,6 +484,7 @@ extern	convar_t		*sv_allow_touch;
 extern	convar_t		*sv_allow_mouse;
 extern	convar_t		*sv_allow_joystick;
 extern	convar_t		*sv_allow_vr;
+extern	convar_t		*sv_allow_hltv;
 extern	convar_t		*sv_userinfo_enable_penalty;
 extern	convar_t		*sv_userinfo_penalty_time;
 extern	convar_t		*sv_userinfo_penalty_multiplier;

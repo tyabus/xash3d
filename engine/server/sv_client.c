@@ -277,6 +277,14 @@ void SV_DirectConnect( netadr_t from )
 		return;
 	}
 
+	if( !sv_allow_hltv->integer && Q_atoi( Info_ValueForKey( userinfo, "hltv" ) ) )
+	{
+		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nThis server dosent allow HLTV proxies.\n");
+		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server dosent allow HLTV proxies.\n");
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
+	}
+
 	// see if the challenge is valid (LAN clients don't need to challenge)
 	if( !NET_IsLocalAddress( from ) )
 	{
