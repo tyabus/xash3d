@@ -14,7 +14,10 @@ GNU General Public License for more details.
 */
 
 #ifdef SINGLE_BINARY
-
+#if (!defined(__HAIKU__) && !defined(TARGET_OS_IPHONE) && !defined(_WIN32) && !defined(__SAILFISH__))
+#include <stdio.h> // printf
+#include <unistd.h> // getuid
+#endif
 #include <stdlib.h>
 #include <string.h>
 #ifdef XASH_SDLMAIN
@@ -61,6 +64,14 @@ int main( int argc, char** argv )
 {
 	char gamedir_buf[32] = "";
 	const char *gamedir = getenv("XASH3D_GAMEDIR");
+
+	#if (!defined(__HAIKU__) && !defined(TARGET_OS_IPHONE) && !defined(_WIN32) && !defined(__SAILFISH__))
+	if( !getuid() )
+	{
+		printf( "You shouldn't run Xash3D as root!\n" );
+		return 1;
+	}
+	#endif
 
 	if(!gamedir)
 		gamedir = "valve";
