@@ -28,10 +28,6 @@ BRUSH MODELS
 // header
 #define Q1BSP_VERSION	29	// quake1 regular version (beta is 28)
 #define HLBSP_VERSION	30	// half-life regular version
-#define XTBSP_VERSION	31	// extended lightmaps and expanded clipnodes limit
-
-#define IDEXTRAHEADER	(('H'<<24)+('S'<<16)+('A'<<8)+'X') // little-endian "XASH"
-#define EXTRA_VERSION	2 // because version 1 was occupied by old versions of XashXT
 
 #define DELUXEMAP_VERSION	1
 #define IDDELUXEMAPHEADER	(('T'<<24)+('I'<<16)+('L'<<8)+'Q') // little-endian "QLIT"
@@ -132,19 +128,6 @@ typedef struct
 	int	fileofs;
 	int	filelen;
 } dlump_t;
-
-typedef struct
-{
-	int	version;
-	dlump_t	lumps[HEADER_LUMPS_31];
-} dheader31_t;
-
-typedef struct
-{
-	int	id; // must be little endian XASH
-	int	version;
-	dlump_t lumps[EXTRA_LUMPS];
-} dextrahdr_t;
 
 typedef struct
 {

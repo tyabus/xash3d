@@ -343,9 +343,8 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 		int		ver = -1, mapver = -1, lumpofs = 0, lumplen = 0;
 		const char	*ext = FS_FileExtension( t->filenames[i] ); 
 		char		*ents = NULL, *pfile;
-		qboolean		paranoia = false;
 		qboolean		gearbox = false;
-			
+		
 		if( Q_stricmp( ext, "bsp" )) continue;
 		Q_strncpy( message, "^1error^7", sizeof( message ));
 		f = FS_Open( t->filenames[i], "rb", con_gamemaps->integer );
@@ -353,7 +352,6 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 		if( f )
 		{
 			dheader_t	*header;
-			dextrahdr_t	*hdrext;
 
 			Q_memset( buf, 0, sizeof( buf ));
 			FS_Read( f, buf, sizeof( buf ));
@@ -364,7 +362,6 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 			{
 			case Q1BSP_VERSION:
 			case HLBSP_VERSION:
-			case XTBSP_VERSION:
 				if( header->lumps[LUMP_ENTITIES].fileofs <= 1024 && !(header->lumps[LUMP_ENTITIES].filelen % sizeof(dplane_t)))
 				{
 					lumpofs = header->lumps[LUMP_PLANES].fileofs;
@@ -379,13 +376,6 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 				}
 				break;
 			}
-
-			if( ver == XTBSP_VERSION )
-				hdrext = (dextrahdr_t *)((byte *)buf + sizeof( dheader31_t ));
-			else hdrext = (dextrahdr_t *)((byte *)buf + sizeof( dheader_t ));
-
-			if( hdrext->id == IDEXTRAHEADER && hdrext->version == EXTRA_VERSION )
-				paranoia = true;
 
 			Q_strncpy( entfilename, t->filenames[i], sizeof( entfilename ));
 			FS_StripExtension( entfilename );
@@ -439,12 +429,7 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 			break;
 		case HLBSP_VERSION:
 			if( gearbox ) Q_strncpy( (char *)buf, "Blue-Shift", sizeof( buf ));
-			else if( paranoia ) Q_strncpy( (char *)buf, "Paranoia 2", sizeof( buf ));
 			else Q_strncpy( (char *)buf, "Half-Life", sizeof( buf ));
-			break;
-		case XTBSP_VERSION:
-			if( paranoia ) Q_strncpy( (char *)buf, "Paranoia 2", sizeof( buf ));
-			else Q_strncpy( (char *)buf, "Xash3D", sizeof( buf ));
 			break;
 		default:
 			Q_strncpy( (char *)buf, "??", sizeof( buf ));
@@ -1069,7 +1054,6 @@ qboolean Cmd_CheckMapsList_R( qboolean fRefresh, qboolean onlyingamedir )
 			{
 			case Q1BSP_VERSION:
 			case HLBSP_VERSION:
-			case XTBSP_VERSION:
 				header = (dheader_t *)buf;
 				if( header->lumps[LUMP_ENTITIES].fileofs <= 1024 )
 				{

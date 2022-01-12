@@ -143,10 +143,7 @@ void Mod_PrintBSPFileSizes_f( void )
 	totalmemory += Mod_ArrayUsage( "nodes",		w->numnodes,	MAX_MAP_NODES,		sizeof( dnode_t ));
 	totalmemory += Mod_ArrayUsage( "texinfos",	w->numtexinfo,	MAX_MAP_TEXINFO,		sizeof( dtexinfo_t ));
 	totalmemory += Mod_ArrayUsage( "faces",		w->numsurfaces,	MAX_MAP_FACES,		sizeof( dface_t ));
-	if( world.version == XTBSP_VERSION )
-		totalmemory += Mod_ArrayUsage( "clipnodes", w->numclipnodes, MAX_MAP_CLIPNODES * 3,	sizeof( dclipnode_t ));
-	else
-		totalmemory += Mod_ArrayUsage( "clipnodes", w->numclipnodes, MAX_MAP_CLIPNODES,		sizeof( dclipnode_t ));
+	totalmemory += Mod_ArrayUsage( "clipnodes",	w->numclipnodes, MAX_MAP_CLIPNODES,		sizeof( dclipnode_t ));
 	totalmemory += Mod_ArrayUsage( "leaves",	w->numleafs,	MAX_MAP_LEAFS,		sizeof( dleaf_t ));
 	totalmemory += Mod_ArrayUsage( "marksurfaces",	w->nummarksurfaces,	MAX_MAP_MARKSURFACES,	sizeof( dmarkface_t ));
 	totalmemory += Mod_ArrayUsage( "surfedges",	w->numsurfedges,	MAX_MAP_SURFEDGES,		sizeof( dsurfedge_t ));
@@ -1295,7 +1292,6 @@ static void Mod_LoadLighting( const dlump_t *l )
 		}
 		break;
 	case HLBSP_VERSION:
-	case XTBSP_VERSION:
 		// load colored lighting
 		loadmodel->lightdata = Mem_Alloc( loadmodel->mempool, l->filelen );
 		Q_memcpy( loadmodel->lightdata, in, l->filelen );
@@ -2425,86 +2421,6 @@ static void Mod_LoadClipnodes( const dlump_t *l )
 
 /*
 =================
-Mod_LoadClipnodes31
-=================
-*/
-static void Mod_LoadClipnodes31( const dlump_t *l, const dlump_t *l2, const dlump_t *l3 )
-{
-	dclipnode_t	*in, *in2, *in3, *out, *out2, *out3;
-	int		i, count, count2, count3;
-	hull_t		*hull;
-
-	in = (void *)(mod_base + l->fileofs);
-	if( l->filelen % sizeof( *in )) Host_Error( "Mod_LoadClipnodes: funny lump size\n" );
-	count = l->filelen / sizeof( *in );
-	out = Mem_Alloc( loadmodel->mempool, count * sizeof( *out ));	
-
-	in2 = (void *)(mod_base + l2->fileofs);
-	if( l2->filelen % sizeof( *in2 )) Host_Error( "Mod_LoadClipnodes2: funny lump size\n" );
-	count2 = l2->filelen / sizeof( *in2 );
-	out2 = Mem_Alloc( loadmodel->mempool, count2 * sizeof( *out2 ));
-
-	in3 = (void *)(mod_base + l3->fileofs);
-	if( l3->filelen % sizeof( *in3 )) Host_Error( "Mod_LoadClipnodes3: funny lump size\n" );
-	count3 = l3->filelen / sizeof( *in3 );
-	out3 = Mem_Alloc( loadmodel->mempool, count3 * sizeof( *out3 ));
-
-	loadmodel->clipnodes = out;
-	loadmodel->numclipnodes = count + count2 + count3;
-
-	// hulls[0] is a point hull, always zeroed
-
-	hull = &loadmodel->hulls[1];
-	hull->clipnodes = out;
-	hull->firstclipnode = 0;
-	hull->lastclipnode = count - 1;
-	hull->planes = loadmodel->planes;
-	VectorCopy( GI->client_mins[1], hull->clip_mins ); // copy human hull
-	VectorCopy( GI->client_maxs[1], hull->clip_maxs );
-	VectorSubtract( hull->clip_maxs, hull->clip_mins, world.hull_sizes[1] );
-
-	hull = &loadmodel->hulls[2];
-	hull->clipnodes = out2;
-	hull->firstclipnode = 0;
-	hull->lastclipnode = count2 - 1;
-	hull->planes = loadmodel->planes;
-	VectorCopy( GI->client_mins[2], hull->clip_mins ); // copy large hull
-	VectorCopy( GI->client_maxs[2], hull->clip_maxs );
-	VectorSubtract( hull->clip_maxs, hull->clip_mins, world.hull_sizes[2] );
-
-	hull = &loadmodel->hulls[3];
-	hull->clipnodes = out3;
-	hull->firstclipnode = 0;
-	hull->lastclipnode = count3 - 1;
-	hull->planes = loadmodel->planes;
-	VectorCopy( GI->client_mins[3], hull->clip_mins ); // copy head hull
-	VectorCopy( GI->client_maxs[3], hull->clip_maxs );
-	VectorSubtract( hull->clip_maxs, hull->clip_mins, world.hull_sizes[3] );
-
-	for( i = 0; i < count; i++, out++, in++ )
-	{
-		out->planenum = LittleLong(in->planenum);
-		out->children[0] = LittleShort(in->children[0]);
-		out->children[1] = LittleShort(in->children[1]);
-	}
-
-	for( i = 0; i < count2; i++, out2++, in2++ )
-	{
-		out2->planenum = LittleLong(in2->planenum);
-		out2->children[0] = LittleShort(in2->children[0]);
-		out2->children[1] = LittleShort(in2->children[1]);
-	}
-
-	for( i = 0; i < count3; i++, out3++, in3++ )
-	{
-		out3->planenum = LittleLong(in3->planenum);
-		out3->children[0] = LittleShort(in3->children[0]);
-		out3->children[1] = LittleShort(in3->children[1]);
-	}
-}
-
-/*
-=================
 Mod_FindModelOrigin
 
 routine to detect bmodels with origin-brush
@@ -2795,9 +2711,6 @@ static void Mod_LoadBrushModel( model_t *mod, const void *buffer, qboolean *load
 	case HLBSP_VERSION:
 		sample_size = 16;
 		break;
-	case XTBSP_VERSION:
-		sample_size = 8;
-		break;
 	default:
 		MsgDev( D_ERROR, "%s has wrong version number (%i should be %i)\n", loadmodel->name, i, HLBSP_VERSION );
 		return;
@@ -2855,10 +2768,7 @@ static void Mod_LoadBrushModel( model_t *mod, const void *buffer, qboolean *load
 	Mod_LoadMarkSurfaces( &header->lumps[LUMP_MARKSURFACES] );
 	Mod_LoadLeafs( &header->lumps[LUMP_LEAFS] );
 	Mod_LoadNodes( &header->lumps[LUMP_NODES] );
-
-	if( bmodel_version == XTBSP_VERSION )
-		Mod_LoadClipnodes31( &header->lumps[LUMP_CLIPNODES], &header->lumps[LUMP_CLIPNODES2], &header->lumps[LUMP_CLIPNODES3] );
-	else Mod_LoadClipnodes( &header->lumps[LUMP_CLIPNODES] );
+	Mod_LoadClipnodes( &header->lumps[LUMP_CLIPNODES] );
 	Mod_LoadSubmodels( &header->lumps[LUMP_MODELS] );
 
 	Mod_MakeHull0 ();
@@ -3054,7 +2964,6 @@ model_t *Mod_LoadModel( model_t *mod, qboolean crash )
 		break;
 	case Q1BSP_VERSION:
 	case HLBSP_VERSION:
-	case XTBSP_VERSION:
 		Mod_LoadBrushModel( mod, buf, &loaded );
 		break;
 	default:

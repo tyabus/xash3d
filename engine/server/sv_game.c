@@ -649,7 +649,6 @@ void SV_WriteEntityPatch( const char *filename )
 	{
 	case Q1BSP_VERSION:
 	case HLBSP_VERSION:
-	case XTBSP_VERSION:
 		header = (dheader_t *)buf;
 		if( header->lumps[LUMP_ENTITIES].fileofs <= 1024 && (header->lumps[LUMP_ENTITIES].filelen % sizeof( dplane_t )) == 0 )
 		{
@@ -717,7 +716,6 @@ char *SV_ReadEntityScript( const char *filename, int *flags )
 	{
 	case Q1BSP_VERSION:
 	case HLBSP_VERSION:
-	case XTBSP_VERSION:
 		header = (dheader_t *)buf;
 
 #ifdef XASH_BIG_ENDIAN
