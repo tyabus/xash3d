@@ -1630,6 +1630,7 @@ void CL_ParseServerMessage( sizebuf_t *msg )
 					SCR_BeginLoadingPlaque( cl.background );
 					cls.changedemo = true;
 				}
+				else Key_ClearStates();
 			}
 			else MsgDev( D_INFO, "Server disconnected, reconnecting\n" );
 
