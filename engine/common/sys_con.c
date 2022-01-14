@@ -18,11 +18,6 @@ GNU General Public License for more details.
 #include <android/log.h>
 #endif
 
-#ifdef USE_SELECT
-// non-blocking console input
-#include <sys/select.h>
-#endif
-
 typedef struct {
 	char		title[64];
 	qboolean		log_active;
@@ -33,48 +28,6 @@ typedef struct {
 
 static LogData s_ld;
 
-char *Sys_Input( void )
-{
-#ifdef USE_SELECT
-	{
-		fd_set rfds;
-		static char line[1024];
-		static int len;
-		struct timeval tv;
-		tv.tv_sec = 0;
-		tv.tv_usec = 0;
-		FD_ZERO(&rfds);
-		FD_SET(0, &rfds); // stdin
-		while( select(1, &rfds, NULL, NULL, &tv ) > 0 )
-		{
-			if( read( 0, &line[len], 1 ) != 1 )
-				break;
-			if( line[len] == '\n' || len > 1022 )
-			{
-				line[ ++len ] = 0;
-				len = 0;
-				return line;
-			}
-			len++;
-			tv.tv_sec = 0;
-			tv.tv_usec = 0;
-		}
-	}
-#endif
-#ifdef XASH_W32CON
-	return Wcon_Input();
-#endif
-	return NULL;
-}
-
-void Sys_DestroyConsole( void )
-{
-	// last text message into console or log
-	MsgDev( D_NOTE, "Sys_DestroyConsole: Exiting!\n" );
-#ifdef XASH_W32CON
-	Wcon_DestroyConsole();
-#endif
-}
 
 void Sys_CloseLog( void )
 {

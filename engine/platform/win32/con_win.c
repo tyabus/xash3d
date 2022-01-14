@@ -18,9 +18,6 @@ GNU General Public License for more details.
 #include "common.h"
 
 #define SYSCONSOLE		"XashConsole"
-#define COMMAND_HISTORY	64	// system console keep more commands than game console
-
-
 
 // console defines
 #define SUBMIT_ID		1	// "submit" button

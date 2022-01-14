@@ -220,6 +220,8 @@ typedef enum
 #define MAX_DECALS		512	// touching TE_DECAL messages, etc
 #define MAX_STATIC_ENTITIES	512	// static entities that moved on the client when level is spawn
 
+#define COMMAND_HISTORY 64      // system console keep more commands than game console
+
 #define GI              SI.GameInfo
 #define FS_Gamedir()	SI.GameInfo->gamefolder
 #define FS_Title()		SI.GameInfo->title
@@ -974,7 +976,6 @@ struct pmtrace_s;
 
 void IN_EngineAppendMove( float frametime, usercmd_t *cmd, qboolean active );
 //void IN_JoyAppendMove( usercmd_t *cmd, float forwardmove, float sidemove );
-
 
 // shared calls
 qboolean CL_IsInGame( void );

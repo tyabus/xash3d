@@ -127,6 +127,11 @@ void Sys_PrintLog( const char *pMsg );
 int Sys_LogFileNo( void );
 
 //
+// inputcon.c
+//
+void CON_Init( void );
+
+//
 // con_win.c
 //
 void Wcon_ShowConsole( qboolean show );

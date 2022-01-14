@@ -1158,6 +1158,8 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 #ifdef XASH_W32CON
 	Wcon_Init();
 	Wcon_CreateConsole();
+#else
+	CON_Init(); // ttycon
 #endif
 
 	// first text message into console or log 
