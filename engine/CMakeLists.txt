@@ -191,7 +191,7 @@ else()
 		message(STATUS "git hash: ${SHORT_HASH}")
 		add_definitions(-DXASH_BUILD_COMMIT="${SHORT_HASH}")
 	else()
-		message(STATUS "git hash: not set")
+		message(AUTHOR_WARNING "git hash: not set")
 	endif()
 endif()
 
