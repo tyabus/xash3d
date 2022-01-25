@@ -1337,11 +1337,6 @@ void Cmd_Null_f( void )
 {
 }
 
-void Cmd_Test_f( void )
-{
-	Cbuf_AddFilterText( Cmd_Argv( 1 ) );
-}
-
 /*
 ============
 Cmd_Init
@@ -1368,7 +1363,6 @@ void Cmd_Init( void )
 	Cmd_AddRestrictedCommand( "unalias", Cmd_UnAlias_f, "remove a script function" );
 	Cmd_AddCommand( "if", Cmd_If_f, "compare and set condition bits" );
 	Cmd_AddCommand( "else", Cmd_Else_f, "invert condition bit" );
-	Cmd_AddCommand( "testfilter", Cmd_Test_f, "" );
 }
 
 void Cmd_Shutdown( void )
