@@ -1362,7 +1362,7 @@ void Cmd_Init( void )
 	Cmd_AddCommand( "wait", Cmd_Wait_f, "make script execution wait until next rendered frame" );
 	Cmd_AddCommand( "cmdlist", Cmd_List_f, "display all console commands beginning with the specified prefix or matching the specified wildcard pattern" );
 	Cmd_AddCommand( "apropos", Cmd_Apropos_f, "lists all console variables/commands/aliases containing the specified string in the name or description" );
-	Cmd_AddCommand( "stuffcmds", Cmd_StuffCmds_f, va( "execute commandline parameters (must be present in %s.rc script)", SI.ModuleName ));
+	Cmd_AddRestrictedCommand( "stuffcmds", Cmd_StuffCmds_f, va( "execute commandline parameters (must be present in %s.rc script)", SI.ModuleName ));
 	Cmd_AddCommand( "cmd", Cmd_ForwardToServer, "send a console commandline to the server" );
 	Cmd_AddRestrictedCommand( "alias", Cmd_Alias_f, "create a script function, without arguments show the list of all aliases" );
 	Cmd_AddRestrictedCommand( "unalias", Cmd_UnAlias_f, "remove a script function" );
