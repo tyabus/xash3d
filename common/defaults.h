@@ -135,6 +135,13 @@ Default build-depended cvar and constant values
 	#define DEFAULT_SV_FORCESIMULATING "0"
 #endif
 
+// Big endian cpus are mostly low end and cant keep up with this on
+#ifdef XASH_BIG_ENDIAN
+	#define DEFAULT_SV_ALLOWCOMPRESSION "0"
+#else
+	#define DEFAULT_SV_ALLOWCOMPRESSION "1"
+#endif
+
 // allow override for developer/debug builds
 #ifndef DEFAULT_DEV
 	#define DEFAULT_DEV 0
