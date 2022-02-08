@@ -29,7 +29,7 @@ GNU General Public License for more details.
 #define MAX_TOTAL_CMDS		16
 #define MIN_CMD_RATE		10.0
 #define MAX_CMD_BUFFER		4000
-#define CONNECTION_PROBLEM_TIME	15.0	// 15 seconds
+#define CONNECTION_PROBLEM_TIME	10.0	// 10 seconds
 
 void CL_InternetServers_f( void );
 
@@ -587,7 +587,8 @@ void CL_WritePacket( void )
 	{
 		if(( host.realtime - cls.netchan.last_received ) > CONNECTION_PROBLEM_TIME )
 		{
-			Con_NPrintf( 1, "^3Warning:^1 Connection Problem^7\n" );
+			Con_NPrintf( 1, "^3Warning:^1 Connection Problem^7\n");
+			Con_NPrintf( 2, "Timing out in: ^1%1.1f^7\n", (float)cl_timeout->value - host.realtime - (float)cls.netchan.last_received );
 			cl.validsequence = 0;
 		}
 	}
