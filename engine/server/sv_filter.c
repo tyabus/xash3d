@@ -37,6 +37,7 @@ typedef struct cidfilter_s
 	float endTime;
 	struct cidfilter_s *next;
 	string id;
+	string reason;
 } cidfilter_t;
 
 cidfilter_t *cidfilter = NULL;
@@ -154,6 +155,7 @@ void SV_BanID_f( void )
 {
 	float time = Q_atof( Cmd_Argv( 1 ) );
 	char *id = Cmd_Argv( 2 );
+	char *reason = Cmd_Argv( 3 );
 	sv_client_t *cl = NULL;
 	cidfilter_t *filter;
 
@@ -162,7 +164,7 @@ void SV_BanID_f( void )
 
 	if( !id[0] )
 	{
-		Msg( "Usage: banid <minutes> <#userid or unique id>\n0 minutes for permanent ban\n");
+		Msg( "Usage: banid <minutes> <#userid or unique id> <reason>\n0 minutes for permanent ban\n");
 		return;
 	}
 
@@ -207,10 +209,15 @@ void SV_BanID_f( void )
 		}
 	}
 
-	if( !id[0] || id[0] == '#' )
+	if( !id[0] || id[0] == '#' || !ID_Verify( id ) )
 	{
 		MsgDev( D_ERROR, "banid: bad id\n");
 		return;
+	}
+
+	if( !reason[0] )
+	{
+		reason = "Unspecified";
 	}
 
 	SV_RemoveID( id );
@@ -218,19 +225,20 @@ void SV_BanID_f( void )
 	filter = Mem_Alloc( host.mempool, sizeof( cidfilter_t ) );
 	filter->endTime = time;
 	filter->next = cidfilter;
+	Q_strncpy( filter->reason, reason, sizeof( filter->reason ) );
 	Q_strncpy( filter->id, id, sizeof( filter->id ) );
 	cidfilter = filter;
 
 	if( cl && !Q_stricmp( Cmd_Argv( Cmd_Argc() - 1 ), "kick" ) )
-		Cbuf_AddText( va( "kick #%d \"Kicked and banned\"\n", cl->userid ) );
+		Cbuf_AddText( va( "kick #%d \"Kicked and banned for %s\"\n", cl->userid, reason ) );
 }
 
 void SV_ListID_f( void )
 {
 	cidfilter_t *filter;
 
-	Msg( "id ban list\n" );
-	Msg( "-----------\n" );
+	Msg( "id time reason\n" );
+	Msg( "--------------\n" );
 
 	for( filter = cidfilter; filter; filter = filter->next )
 	{
@@ -238,9 +246,9 @@ void SV_ListID_f( void )
 			continue; // no negative time
 
 		if( filter->endTime )
-			Msg( "%s expries in %f minutes\n", filter->id, ( filter->endTime - host.realtime ) / 60.0f );
+			Msg( "%s %f minutes for %s\n", filter->id, ( filter->endTime - host.realtime ) / 60.0f, filter->reason );
 		else
-			Msg( "%s permanent\n", filter->id );
+			Msg( "%s permanent for %s\n", filter->id, filter->reason );
 	}
 }
 void SV_RemoveID_f( void )
@@ -276,11 +284,11 @@ void SV_WriteID_f( void )
 		return;
 	}
 
-	FS_Printf( f, "//\t\t    %s - archive of id blacklist\n", Cvar_VariableString( "bannedcfgfile" ) );
+	FS_Printf( f, "// %s - archive of id blacklist\n", Cvar_VariableString( "bannedcfgfile" ) );
 
 	for( filter = cidfilter; filter; filter = filter->next )
 		if( !filter->endTime ) // only permanent
-			FS_Printf( f, "banid 0 %s\n", filter->id );
+			FS_Printf( f, "banid 0 %s \"%s\"\n", filter->id, filter->reason );
 
 	FS_Close( f );
 }
