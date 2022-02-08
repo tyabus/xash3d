@@ -816,7 +816,7 @@ void R_DecalShoot( int textureIndex, int entityIndex, int modelIndex, vec3_t pos
 
 	if( textureIndex <= 0 || textureIndex >= MAX_TEXTURES )
 	{
-		MsgDev( D_ERROR, "Decal has invalid texture!\n" );
+		MsgDev( D_ERROR, "Decal has invalid texture (%i)!\n", textureIndex );
 		return;
 	}
 
@@ -1226,7 +1226,7 @@ void R_DecalRemoveAll( int textureIndex )
 
 	if( textureIndex < 0 || textureIndex >= MAX_TEXTURES )
 	{
-		MsgDev( D_ERROR, "Decal has invalid texture!\n" );
+		MsgDev( D_ERROR, "Decal has invalid texture (%i)!\n", textureIndex );
 		return;
 	}
 
