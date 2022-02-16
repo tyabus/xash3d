@@ -4459,21 +4459,13 @@ pfnGetPlayerUserId
 int GAME_EXPORT pfnGetPlayerUserId( edict_t *e )
 {
 	sv_client_t	*cl;
-	int		i;
-		
+
 	if( sv.state != ss_active )
 		return -1;
 
-	if( !SV_ClientFromEdict( e, false ))
-		return -1;
+	if( (cl = SV_ClientFromEdict( e, false )) != NULL)
+		return cl->userid;
 
-	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
-	{
-		if( cl->edict == e )
-			return cl->userid;
-	}
-
-	// couldn't find it
 	return -1;
 }
 
@@ -4608,38 +4600,28 @@ const char *GAME_EXPORT pfnGetPlayerAuthId( edict_t *e )
 
 	sv_client_t	*cl;
 	char *result;
-	int i;
 
 	count = (count + 1) & 7;
 
 	result = authIds[count];
 	result[0] = '\0';
 
-	if( sv.state != ss_active || !SV_IsValidEdict( e ))
+	if( sv.state != ss_active )
 		return result;
 
-	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
+	if((cl = SV_ClientFromEdict( e, false )) != NULL )
 	{
-		if( cl->edict == e )
+		if( cl->fakeclient )
 		{
-			if( cl->fakeclient )
-			{
-				Q_strncat( result, "BOT", MAX_STRING );
-			}
-			else if( cl->hltv_proxy )
-			{
-				Q_strncat( result, "HLTV", MAX_STRING );
-			}
-			else if( cl->authentication_method == 0 )
-			{
-				Q_snprintf( result, MAX_STRING, "%u", (uint)cl->WonID );
-			}
-			else
-			{
-				Q_snprintf( result, MAX_STRING, "%s", SV_GetClientIDString( cl ));
-			}
-
-			return result;
+			Q_strncat( result, "BOT", MAX_STRING );
+		}
+		else if( cl->hltv_proxy )
+		{
+			Q_strncat( result, "HLTV", MAX_STRING );
+		}
+		else // real player
+		{
+			Q_strncpy( result, SV_GetClientIDString(cl), MAX_STRING);
 		}
 	}
 
