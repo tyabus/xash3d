@@ -526,11 +526,6 @@ int ID_CheckWMIC( bloomfilter_t value, const char *cmdline )
 }
 #endif
 
-
-#if TARGET_OS_IOS
-char *IOS_GetUDID( void );
-#endif
-
 bloomfilter_t ID_GenerateRawId( void )
 {
 	bloomfilter_t value = 0;
@@ -555,12 +550,7 @@ bloomfilter_t ID_GenerateRawId( void )
 	count += ID_ProcessWMIC( &value, "wmic path win32_physicalmedia get SerialNumber " );
 	count += ID_ProcessWMIC( &value, "wmic bios get serialnumber " );
 #endif
-#if TARGET_OS_IOS
-	{
-		value |= BloomFilter_ProcessStr(IOS_GetUDID());
-		count ++;
-	}
-#endif
+
 	return value;
 }
 
@@ -592,13 +582,6 @@ uint32_t ID_CheckRawId( bloomfilter_t filter )
 	count += ID_CheckWMIC( filter, "wmic bios get serialnumber" );
 #endif
 
-#if TARGET_OS_IOS
-	{
-		value = BloomFilter_ProcessStr(IOS_GetUDID());
-		count += (filter & value) == value;
-		value = 0;
-	}
-#endif
 #if 0
 	Msg( "ID_CheckRawId: %d\n", count );
 #endif

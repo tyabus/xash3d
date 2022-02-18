@@ -6,10 +6,6 @@
 
 Enabled by default in xash3d-android-project
 
-### iOS
-
-dependency of xash3d-ios project
-
 ### Linux
 
 ```

@@ -1030,10 +1030,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	}
 	else
 	{
-#if TARGET_OS_IOS
-		const char *IOS_GetDocsDir();
-		Q_strncpy( host.rootdir, IOS_GetDocsDir(), sizeof( host.rootdir ));
-#elif defined(__SAILFISH__)
+#if defined(__SAILFISH__)
 		Q_strncpy( host.rootdir, GAMEPATH, sizeof( host.rootdir ));
 #elif defined(XASH_SDL)
 		if( !( baseDir = SDL_GetBasePath() ) )
@@ -1125,7 +1122,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 		host.type = HOST_DEDICATED;
 	}
 	SDL_SetHint(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0");
-#if defined XASH_GLES && !TARGET_OS_IOS && defined SDL_HINT_OPENGL_ES_DRIVER
+#if defined XASH_GLES && defined SDL_HINT_OPENGL_ES_DRIVER
 	SDL_SetHint( SDL_HINT_OPENGL_ES_DRIVER, "1" );
 #endif
 #endif

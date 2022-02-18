@@ -101,7 +101,7 @@ Default build-depended cvar and constant values
 =========================================================================
 */
 
-#if defined __ANDROID__ || TARGET_OS_IPHONE || defined __SAILFISH__
+#if defined __ANDROID__ || defined __SAILFISH__
 	#define DEFAULT_TOUCH_ENABLE "1"
 	#define DEFAULT_M_IGNORE "1"
 #else
@@ -109,7 +109,7 @@ Default build-depended cvar and constant values
 	#define DEFAULT_M_IGNORE "0"
 #endif
 
-#if defined __ANDROID__ || TARGET_OS_IPHONE || defined __SAILFISH__
+#if defined __ANDROID__ || defined __SAILFISH__
 // this means that libraries are provided with engine, but not in game data
 // You need add library loading code to library.c when adding new platform
 #define XASH_INTERNAL_GAMELIBS
@@ -151,10 +151,6 @@ Default build-depended cvar and constant values
 #define DEFAULT_FULLSCREEN 1
 #endif
 
-#if TARGET_OS_IPHONE
-	#define DEFAULT_CON_MAXFRAC "0.5"
-#else
-	#define DEFAULT_CON_MAXFRAC "1"
-#endif
+#define DEFAULT_CON_MAXFRAC "1"
 
 #endif // DEFAULTS_H

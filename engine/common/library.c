@@ -93,64 +93,10 @@ int dladdr( const void *addr, Dl_info *info )
 	return 0;
 }
 
-
-
 #endif
+
 #ifdef XASH_SDL
 #include <SDL_filesystem.h>
-#endif
-
-#if TARGET_OS_IPHONE
-
-static void *IOS_LoadLibraryInternal( const char *dllname )
-{
-	void *pHandle;
-	string errorstring = "";
-	char path[MAX_SYSPATH];
-	
-	// load frameworks from Documents directory
-	// frameworks should be signed with same key with application
-	// Useful for debug to prevent rebuilding app on every library update
-	// NOTE: Apple polices forbids loading code from shared places
-#ifdef ENABLE_FRAMEWORK_SIDELOAD
-	Q_snprintf( path, MAX_SYSPATH, "%s.framework/lib", dllname );
-	if( pHandle = dlopen( path, RTLD_NOW ) )
-		return pHandle;
-	Q_snprintf( errorstring, MAX_STRING, dlerror() );
-#endif
-	
-#ifdef DLOPEN_FRAMEWORKS
-	// load frameworks as it should be located in Xcode builds
-	Q_snprintf( path, MAX_SYSPATH, "%s%s.framework/lib", SDL_GetBasePath(), dllname );
-#else
-	// load libraries from app root to allow re-signing ipa with custom utilities
-	Q_snprintf( path, MAX_SYSPATH, "%s%s", SDL_GetBasePath(), dllname );
-#endif
-	pHandle = dlopen( path, RTLD_NOW );
-	if( !pHandle )
-	{
-		Com_PushLibraryError(errorstring);
-		Com_PushLibraryError(dlerror());
-	}
-	return pHandle;
-}
-extern char *g_szLibrarySuffix;
-static void *IOS_LoadLibrary( const char *dllname )
-{
-
-	string name;
-	char *postfix = g_szLibrarySuffix;
-	char *pHandle;
-
-	if( !postfix ) postfix = GI->gamefolder;
-
-	Q_snprintf( name, MAX_STRING, "%s_%s", dllname, postfix );
-	pHandle = IOS_LoadLibraryInternal( name );
-	if( pHandle )
-		return pHandle;
-	return IOS_LoadLibraryInternal( dllname );
-}
-
 #endif
 
 void *Com_LoadLibrary( const char *dllname, int build_ordinals_table )
@@ -160,11 +106,7 @@ void *Com_LoadLibrary( const char *dllname, int build_ordinals_table )
 
 	// platforms where gameinfo mechanism is impossible
 	// or not implemented
-#if TARGET_OS_IPHONE
-	{
-		return IOS_LoadLibrary( dllname );
-	}
-#elif defined( __ANDROID__ )
+#if defined( __ANDROID__ )
 	{
 		char path[MAX_SYSPATH];
 		const char *libdir[2];

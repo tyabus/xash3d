@@ -14,7 +14,7 @@ GNU General Public License for more details.
 */
 
 #ifdef SINGLE_BINARY
-#if (!defined(__HAIKU__) && !defined(TARGET_OS_IPHONE) && !defined(_WIN32) && !defined(__SAILFISH__))
+#if (!defined(__HAIKU__) && !defined(_WIN32) && !defined(__SAILFISH__))
 #include <stdio.h> // printf
 #include <unistd.h> // getuid
 #endif
@@ -65,7 +65,7 @@ int main( int argc, char** argv )
 	char gamedir_buf[32] = "";
 	const char *gamedir = getenv("XASH3D_GAMEDIR");
 
-	#if (!defined(__HAIKU__) && !defined(TARGET_OS_IPHONE) && !defined(_WIN32) && !defined(__SAILFISH__))
+	#if (!defined(__HAIKU__) && !defined(_WIN32) && !defined(__SAILFISH__))
 	if( !getuid() )
 	{
 		printf( "You shouldn't run Xash3D as root!\n" );
@@ -83,12 +83,7 @@ int main( int argc, char** argv )
 
 	g_iArgc = argc;
 	g_pszArgv = argv;
-#if TARGET_OS_IPHONE
-	{
-		void IOS_LaunchDialog( void );
-		IOS_LaunchDialog();
-	}
-#endif
+
 	return Host_Main( g_iArgc, g_pszArgv, gamedir, 0, &Launcher_ChangeGame );
 }
 
