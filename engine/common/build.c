@@ -82,7 +82,8 @@ const char *Q_buildos( void )
 #elif defined(__OpenBSD__)
 	osname = "OpenBSD";
 #else
-#error "Place your operating system name here! If this is a mistake, try to fix conditions above and report a bug"
+	#warning "We couldnt determine the target operating system, please add its define to Q_buildarch in build.c"
+	osname = "WTF!?";
 #endif
 
 	return osname;
@@ -110,9 +111,10 @@ const char *Q_buildarch( void )
 #elif defined __mips__
 	archname = "mips";
 #else
-#error "Place your architecture name here! If this is a mistake, try to fix conditions above and report a bug"
+	#warning "We couldnt determine the target architecture, please add its define to Q_buildarch in build.c"
+	archname = "WTF!?";
 #endif
-	
+
 	return archname;
 }
 
