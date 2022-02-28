@@ -689,7 +689,7 @@ void SCR_Init( void )
 	cl_allow_levelshots = Cvar_Get( "allow_levelshots", "0", CVAR_ARCHIVE, "allow engine to use indivdual levelshots instead of 'loading' image" );
 	scr_loading = Cvar_Get( "scr_loading", "0", 0, "loading bar progress" );
 	scr_download = Cvar_Get( "scr_download", "0", 0, "downloading bar progress" );
-	cl_testlights = Cvar_Get( "cl_testlights", "0", 0, "test dynamic lights" );
+	cl_testlights = Cvar_Get( "cl_testlights", "0", CVAR_CHEAT, "test dynamic lights" );
 	cl_envshot_size = Cvar_Get( "cl_envshot_size", "256", CVAR_ARCHIVE, "envshot size of cube side" );
 	scr_dark = Cvar_Get( "v_dark", "0", 0, "starts level from dark screen" );
 	scr_viewsize = Cvar_Get( "viewsize", "120", CVAR_ARCHIVE|CVAR_LOCALONLY, "screen size" );
