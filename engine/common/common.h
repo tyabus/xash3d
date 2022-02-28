@@ -201,6 +201,8 @@ typedef enum
 #define MAX_FRAMETIME	0.1
 #define MIN_FRAMETIME	0.000001
 
+#define MAX_SLEEPTIME	10
+
 #define MAX_CMD_TOKENS	80		// cmd tokens
 #define MAX_ENTNUMBER	99999		// for server and client parsing
 #define MAX_HEARTBEAT	-99999		// connection time
