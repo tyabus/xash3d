@@ -692,13 +692,13 @@ void SCR_Init( void )
 	cl_testlights = Cvar_Get( "cl_testlights", "0", 0, "test dynamic lights" );
 	cl_envshot_size = Cvar_Get( "cl_envshot_size", "256", CVAR_ARCHIVE, "envshot size of cube side" );
 	scr_dark = Cvar_Get( "v_dark", "0", 0, "starts level from dark screen" );
-	scr_viewsize = Cvar_Get( "viewsize", "120", CVAR_ARCHIVE, "screen size" );
+	scr_viewsize = Cvar_Get( "viewsize", "120", CVAR_ARCHIVE|CVAR_LOCALONLY, "screen size" );
 	// register our commands
 	Cmd_AddCommand( "timerefresh", SCR_TimeRefresh_f, "turn quickly and print rendering statistcs" );
 	Cmd_AddCommand( "skyname", CL_SetSky_f, "set new skybox by basename" );
 	Cmd_AddCommand( "viewpos", SCR_Viewpos_f, "prints current player origin" );
-	Cmd_AddCommand( "sizeup", SCR_SizeUp_f, "screen size up to 10 points" );
-	Cmd_AddCommand( "sizedown", SCR_SizeDown_f, "screen size down to 10 points" );
+	Cmd_AddRestrictedCommand( "sizeup", SCR_SizeUp_f, "screen size up to 10 points" );
+	Cmd_AddRestrictedCommand( "sizedown", SCR_SizeDown_f, "screen size down to 10 points" );
 
 	Com_ResetLibraryError();
 
