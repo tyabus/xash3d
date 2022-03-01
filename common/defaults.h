@@ -142,6 +142,12 @@ Default build-depended cvar and constant values
 	#define DEFAULT_SV_ALLOWCOMPRESSION "1"
 #endif
 
+#ifdef XASH_DEDICATED
+	#define DEFAULT_SLEEPTIME "0"
+#else
+	#define DEFAULT_SLEEPTIME "1"
+#endif
+
 // allow override for developer/debug builds
 #ifndef DEFAULT_DEV
 	#define DEFAULT_DEV 0
