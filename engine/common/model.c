@@ -1337,7 +1337,7 @@ static void Mod_CalcSurfaceExtents( msurface_t *surf )
 
 		for( j = 0; j < 2; j++ )
 		{
-			val = DotProduct( v->position, surf->texinfo->vecs[j] ) + surf->texinfo->vecs[j][3];
+			val = DotProductPrecise( v->position, surf->texinfo->vecs[j] ) + surf->texinfo->vecs[j][3];
 			if( val < mins[j] ) mins[j] = val;
 			if( val > maxs[j] ) maxs[j] = val;
 		}
