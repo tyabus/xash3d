@@ -25,6 +25,7 @@
 #define FCVAR_PRINTABLEONLY	(1<<7)	// This cvar's string cannot contain unprintable characters ( e.g., used for player name etc ).
 #define FCVAR_UNLOGGED	(1<<8)	// If this is a FCVAR_SERVER, don't log changes to the log file / console if we are creating a log
 #define FCVAR_NOEXTRAWHITESPACE	(1<<9)	// strip trailing/leading white space from this cvar
+#define FCVAR_LOCALONLY (1<<20) // can be set only from local buffers
 
 typedef struct cvar_s
 {
