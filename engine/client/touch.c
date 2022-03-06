@@ -1509,7 +1509,12 @@ static qboolean Touch_ButtonPress( touchbuttonlist_t *list, touchEventType type,
 
 					// command down: just execute command
 					Q_snprintf( command, sizeof( command ), "%s\n", button->command );
-					Cbuf_AddText( command );
+
+					// execute server buttons with checks
+					if( B(flags) & TOUCH_FL_CLIENT )
+						Cbuf_AddFilterText( command );
+					else
+						Cbuf_AddText( command );
 
 					// increase precision
 					if( B(flags) & TOUCH_FL_PRECISION )
