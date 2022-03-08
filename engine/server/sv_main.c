@@ -880,7 +880,7 @@ void SV_Init( void )
 	sv_footsteps = Cvar_Get ("mp_footsteps", "1", CVAR_PHYSICINFO, "can hear footsteps from other players" );
 	sv_wateralpha = Cvar_Get ("sv_wateralpha", "1", CVAR_PHYSICINFO, "world surfaces water transparency factor. 1.0 - solid, 0.0 - fully transparent" );
 
-	rcon_password = Cvar_Get( "rcon_password", "", CVAR_PROTECTED, "remote connect password" );
+	rcon_password = Cvar_Get( "rcon_password", "", 0, "remote connect password" );
 	sv_stepsize = Cvar_Get( "sv_stepsize", "18", CVAR_ARCHIVE|CVAR_PHYSICINFO, "how high you can step up" );
 	sv_newunit = Cvar_Get( "sv_newunit", "0", 0, "sets to 1 while new unit is loading" );
 	hostname = Cvar_Get( "hostname", "unnamed", CVAR_SERVERNOTIFY|CVAR_ARCHIVE, "host name" );

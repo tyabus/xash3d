@@ -2134,8 +2134,8 @@ void CL_InitLocal( void )
 	cl_timeout = Cvar_Get( "cl_timeout", "60", 0, "connect timeout (in seconds)" );
 	cl_charset = Cvar_Get( "cl_charset", "utf-8", CVAR_ARCHIVE, "1-byte charset to use (iconv style)" );
 
-	rcon_client_password = Cvar_Get( "rcon_password", "", 0, "remote control client password" );
-	rcon_address = Cvar_Get( "rcon_address", "", 0, "remote control address" );
+	rcon_client_password = Cvar_Get( "rcon_password", "", CVAR_PROTECTED, "remote control client password" );
+	rcon_address = Cvar_Get( "rcon_address", "", CVAR_PROTECTED, "remote control address" );
 
 	r_oldparticles = Cvar_Get("r_oldparticles", "0", CVAR_ARCHIVE, "make some particle textures a simple square, like with software rendering");
 
