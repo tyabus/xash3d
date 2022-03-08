@@ -433,7 +433,7 @@ void Joy_Init( void )
 	// change by +set joy_index in cmdline
 	joy_index   = Cvar_Get( "joy_index", "0", CVAR_READ_ONLY, "current active joystick" );
 
-	joy_enable = Cvar_Get( "joy_enable", "1", CVAR_ARCHIVE, "enable joystick" );
+	joy_enable = Cvar_Get( "joy_enable", "1", CVAR_ARCHIVE|CVAR_LOCALONLY, "enable joystick" );
 
 	if( Sys_CheckParm("-nojoy" ) )
 	{

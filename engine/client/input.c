@@ -431,7 +431,7 @@ void IN_StartupMouse( void )
 {
 	if( Host_IsDedicated() ) return;
 
-	m_ignore = Cvar_Get( "m_ignore", DEFAULT_M_IGNORE, CVAR_ARCHIVE , "ignore mouse events" );
+	m_ignore = Cvar_Get( "m_ignore", DEFAULT_M_IGNORE, CVAR_ARCHIVE|CVAR_LOCALONLY, "ignore mouse events" );
 
 	m_enginemouse = Cvar_Get( "m_enginemouse", "0", CVAR_ARCHIVE, "read mouse events in engine instead of client" );
 	m_enginesens = Cvar_Get( "m_enginesens", "0.3", CVAR_ARCHIVE, "mouse sensitivity, when m_enginemouse enabled" );
