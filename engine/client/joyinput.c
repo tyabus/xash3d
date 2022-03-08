@@ -64,7 +64,6 @@ static struct joy_axis_s
 	short prevval;
 } joyaxis[MAX_AXES] = { 0 };
 static qboolean initialized = false, forcedisable = false;
-static convar_t *joy_enable;
 static byte currentbinding; // add posibility to remap keys, to place it in joykeys[]
 
 float IN_TouchDrawText( float x1, float y1, float x2, float y2, const char *s, byte *color, float size );
@@ -74,6 +73,7 @@ convar_t *joy_pitch;
 convar_t *joy_yaw;
 convar_t *joy_forward;
 convar_t *joy_side;
+convar_t *joy_enable;
 convar_t *joy_found;
 convar_t *joy_index;
 convar_t *joy_lt_threshold;

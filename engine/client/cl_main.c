@@ -22,6 +22,7 @@ GNU General Public License for more details.
 #include "gl_local.h"
 #include "input.h"
 #include "touch.h"
+#include "joyinput.h"
 #include "kbutton.h"
 #include "vgui_draw.h"
 #include "library.h"
@@ -835,20 +836,20 @@ void CL_SendConnectPacket( void )
 		if( touch_enable->integer )
 			input_devices |= INPUT_DEVICE_TOUCH;
 
-		if(  Cvar_VariableInteger( "joy_enable" ) && Cvar_VariableInteger( "joy_found" ) )
+		if( joy_enable->integer && joy_found->integer )
 			input_devices |= INPUT_DEVICE_JOYSTICK;
 
 		// lock input devices change
-		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags | CVAR_READ_ONLY );
-		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags | CVAR_READ_ONLY );
-		Cvar_FullSet( "joy_enable", va( "%s", Cvar_VariableString( "joy_enable" ) ), CVAR_ARCHIVE | CVAR_READ_ONLY );
+		Cvar_FullSet( "touch_enable", touch_enable->string, touch_enable->flags | CVAR_READ_ONLY );
+		Cvar_FullSet( "m_ignore", m_ignore->string, m_ignore->flags | CVAR_READ_ONLY );
+		Cvar_FullSet( "joy_enable", joy_enable->string, joy_enable->flags | CVAR_READ_ONLY );
 	}
 	else
 	{
 		// reset to writable state
-		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags & ~CVAR_READ_ONLY );
-		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags & ~CVAR_READ_ONLY );
-		Cvar_FullSet( "joy_enable", va( "%s", Cvar_VariableString( "joy_enable" ) ), CVAR_ARCHIVE );
+		Cvar_FullSet( "touch_enable", touch_enable->string, touch_enable->flags & ~CVAR_READ_ONLY );
+		Cvar_FullSet( "m_ignore", m_ignore->string, m_ignore->flags & ~CVAR_READ_ONLY );
+		Cvar_FullSet( "joy_enable", joy_enable->string, joy_enable->flags & ~CVAR_READ_ONLY );
 	}
 
 	Info_SetValueForKey( useragent, "d", va( "%d", input_devices ), sizeof( useragent ) );
