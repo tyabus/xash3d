@@ -923,27 +923,27 @@ void Touch_Init( void )
 	
 	Cmd_AddCommand( "touch_addbutton", Touch_AddButton_f, "add native touch button" );
 	Cmd_AddCommand( "touch_removebutton", IN_TouchRemoveButton_f, "remove native touch button" );
-	Cmd_AddCommand( "touch_enableedit", Touch_EnableEdit_f, "enable button editing mode" );
-	Cmd_AddCommand( "touch_disableedit", Touch_DisableEdit_f, "disable button editing mode" );
+	Cmd_AddRestrictedCommand( "touch_enableedit", Touch_EnableEdit_f, "enable button editing mode" );
+	Cmd_AddRestrictedCommand( "touch_disableedit", Touch_DisableEdit_f, "disable button editing mode" );
 	Cmd_AddCommand( "touch_settexture", Touch_SetTexture_f, "change button texture" );
 	Cmd_AddCommand( "touch_setcolor", Touch_SetColor_f, "change button color" );
 	Cmd_AddCommand( "touch_setcommand", Touch_SetCommand_f, "change button command" );
 	Cmd_AddCommand( "touch_setflags", Touch_SetFlags_f, "change button flags (be careful)" );
 	Cmd_AddCommand( "touch_show", Touch_Show_f, "show button" );
 	Cmd_AddCommand( "touch_hide", Touch_Hide_f, "hide button" );
-	Cmd_AddCommand( "touch_list", Touch_ListButtons_f, "list buttons" );
+	Cmd_AddRestrictedCommand( "touch_list", Touch_ListButtons_f, "list buttons" );
 	Cmd_AddRestrictedCommand( "touch_removeall", Touch_RemoveAll_f, "remove all buttons" );
-	Cmd_AddCommand( "touch_loaddefaults", Touch_LoadDefaults_f, "generate config from defaults" );
+	Cmd_AddRestrictedCommand( "touch_loaddefaults", Touch_LoadDefaults_f, "generate config from defaults" );
 	Cmd_AddCommand( "touch_roundall", Touch_RoundAll_f, "round all buttons coordinates to grid" );
 	Cmd_AddRestrictedCommand( "touch_exportconfig", Touch_ExportConfig_f, "export config keeping aspect ratio" );
 	Cmd_AddCommand( "touch_set_stroke", Touch_Stroke_f, "set global stroke width and color" );
 	Cmd_AddCommand( "touch_setclientonly", Touch_SetClientOnly_f, "when 1, only client buttons are shown" );
 	Cmd_AddCommand( "touch_reloadconfig", Touch_ReloadConfig_f, "load config, not saving changes" );
-	Cmd_AddCommand( "touch_writeconfig", Touch_WriteConfig, "save current config" );
-	Cmd_AddCommand( "touch_deleteprofile", Touch_DeleteProfile_f, "delete profile by name" );
-	Cmd_AddCommand( "touch_generate_code", Touch_GenetateCode_f, "create code sample for mobility API" );
+	Cmd_AddRestrictedCommand( "touch_writeconfig", Touch_WriteConfig, "save current config" );
+	Cmd_AddRestrictedCommand( "touch_deleteprofile", Touch_DeleteProfile_f, "delete profile by name" );
+	Cmd_AddRestrictedCommand( "touch_generate_code", Touch_GenetateCode_f, "create code sample for mobility API" );
 	Cmd_AddCommand( "touch_fade", Touch_Fade_f, "start fade animation for selected buttons" );
-	Cmd_AddCommand( "touch_toggleselection", Touch_ToggleSelection_f, "toggle vidibility on selected button in editor" );
+	Cmd_AddRestrictedCommand( "touch_toggleselection", Touch_ToggleSelection_f, "toggle vidibility on selected button in editor" );
 
 	// not saved, just runtime state for scripting
 	touch_in_menu = Cvar_Get( "touch_in_menu", "0", 0, "draw touch in menu (for internal use only)" );
