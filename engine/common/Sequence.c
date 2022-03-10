@@ -1246,7 +1246,7 @@ qboolean Sequence_ParseSentenceLine( void )
 	if( *c )
 		*c = 0;
 
-	strcpy( groupName, fullgroup );
+	Q_strcpy( groupName, fullgroup );
 
 	len = Sequence_GetLine( data, sizeof( data ) );
 	lastCharacterPos = len - 1;
