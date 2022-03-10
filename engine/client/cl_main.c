@@ -1177,13 +1177,15 @@ void CL_Disconnect( void )
 	cls.state = ca_disconnected;
 	Q_memset( &cls.serveradr, 0, sizeof( cls.serveradr ) );
 
+#if 0
 	// restore gamefolder here (in case client was connected to another game)
 	CL_ChangeGame( GI->gamefolder, true );
+#endif
 
 	// reset to writable state
-	Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags & ~CVAR_READ_ONLY );
-	Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags & ~CVAR_READ_ONLY );
-	Cvar_FullSet( "joy_enable", va( "%s", Cvar_VariableString( "joy_enable" ) ), CVAR_ARCHIVE );
+	Cvar_FullSet( "touch_enable", touch_enable->string, touch_enable->flags & ~CVAR_READ_ONLY );
+	Cvar_FullSet( "m_ignore", m_ignore->string, m_ignore->flags & ~CVAR_READ_ONLY );
+	Cvar_FullSet( "joy_enable", joy_enable->string, joy_enable->flags & ~CVAR_READ_ONLY );
 	Cbuf_InsertText( "menu_connectionprogress disconnect\n" );
 
 	// back to menu if developer mode set to "player" or "mapper"
