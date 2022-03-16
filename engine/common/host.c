@@ -377,7 +377,8 @@ void Host_Exec_f( void )
 			return;
 	}
 
-	Q_strncpy( cfgpath, Cmd_Argv( 1 ), sizeof( cfgpath )); 
+	Q_strncpy( cfgpath, Cmd_Argv( 1 ), sizeof( cfgpath ));
+	FS_StripExtension( cfgpath );
 	FS_DefaultExtension( cfgpath, ".cfg" ); // append as default
 
 	f = (char *)FS_LoadFile( cfgpath, NULL, false );
