@@ -2488,7 +2488,7 @@ SV_Fullupdate_f
 */
 void SV_Fullupdate_f( sv_client_t *cl )
 {
-	if( host.realtime < cl->fullupdate_next_calltime )
+	if( sv_fullupdate_enable_penalty->value && host.realtime < cl->fullupdate_next_calltime )
 	{
 		MsgDev( D_INFO, "SV_Fullupdate_f: ignore call from %s (%i) due delay\n", cl->name, cl->userid );
 		cl->fullupdate_next_calltime = cl->fullupdate_next_calltime * sv_fullupdate_penalty_multiplier->value;
@@ -2504,7 +2504,8 @@ void SV_Fullupdate_f( sv_client_t *cl )
 	// resend userinfo
 	SV_RefreshUserinfo();
 
-	cl->fullupdate_next_calltime = host.realtime + sv_fullupdate_penalty_time->value;
+	if( sv_fullupdate_enable_penalty->value )
+		cl->fullupdate_next_calltime = host.realtime + sv_fullupdate_penalty_time->value;
 }
 
 /*
