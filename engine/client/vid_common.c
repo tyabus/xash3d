@@ -1108,7 +1108,11 @@ qboolean R_Init( void )
 		R_Free_OpenGL();
 
 		// can't initialize video subsystem
+#ifndef XASH_MOBILE_PLATFORM
 		Host_NewInstance( va("#%s", GI->gamefolder ), "fallback to dedicated mode\n" );
+#else
+		Sys_Error("Failed to initialize OpenGL renderer\n");
+#endif
 		return false;
 	}
 
