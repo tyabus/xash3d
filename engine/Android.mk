@@ -27,7 +27,7 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/client			    \
 	$(LOCAL_PATH)/client/vgui		    \
 	$(LOCAL_PATH)/server			    \
-	$(LOCAL_PATH)/common/imagelib		    \
+	$(LOCAL_PATH)/client/imagelib		    \
 	$(LOCAL_PATH)/platform/android		    \
 	$(LOCAL_PATH)/platform/posix		    \
 	$(LOCAL_PATH)/common/soundlib		    \
@@ -142,13 +142,13 @@ LOCAL_SRC_FILES := \
            server/sv_save.c \
            server/sv_world.c \
            client/vgui/vgui_draw.c \
-           common/imagelib/img_bmp.c \
-           common/imagelib/img_main.c \
-           common/imagelib/img_quant.c \
-           common/imagelib/img_tga.c \
-           common/imagelib/img_utils.c \
-           common/imagelib/img_wad.c \
-	   common/imagelib/img_dds.c \
+           client/imagelib/img_bmp.c \
+           client/imagelib/img_main.c \
+           client/imagelib/img_quant.c \
+           client/imagelib/img_tga.c \
+           client/imagelib/img_utils.c \
+           client/imagelib/img_wad.c \
+           client/imagelib/img_dds.c \
            common/soundlib/snd_main.c \
            common/soundlib/snd_mp3.c \
            common/soundlib/snd_utils.c \

@@ -1184,7 +1184,9 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	cmd_scripting = Cvar_Get( "cmd_scripting", "0", CVAR_ARCHIVE, "enable simple condition checking and variable operations" );
 	
 	FS_Init();
+#ifndef XASH_DEDICATED
 	Image_Init();
+#endif
 	Sound_Init();
 
 	FS_LoadGameInfo( NULL );
@@ -1209,7 +1211,9 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 
 void Host_FreeCommon( void )
 {
+#ifndef XASH_DEDICATED
 	Image_Shutdown();
+#endif
 	Sound_Shutdown();
 	Netchan_Shutdown();
 	FS_Shutdown();
