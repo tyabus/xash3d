@@ -6,11 +6,6 @@
 #ifndef _INCLUDE_SEQUENCE_H_
 #define _INCLUDE_SEQUENCE_H_
 
-
-#ifndef _DEF_BYTE_
-//typedef unsigned char byte;
-#endif
-
 #ifndef CDLL_INT_H
 //---------------------------------------------------------------------------
 // client_textmessage_t
