@@ -387,12 +387,10 @@ typedef struct
 	short		flags;
 } TYPEDESCRIPTION;
 
-#ifdef ARRAYSIZE
-#undef ARRAYSIZE
+#ifndef ARRAYSIZE
+#define ARRAYSIZE(p)	(sizeof(p)/sizeof(p[0]))
 #endif
-#define ARRAYSIZE(p)	(sizeof(p)/sizeof(p[0]))
 
-#define ARRAYSIZE(p)	(sizeof(p)/sizeof(p[0]))
 typedef struct 
 {
 	// Initialize/shutdown the game (one-time call after loading of game .dll )
