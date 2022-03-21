@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 #include "common.h"
 #include "eiface.h"
-#include "Sequence.h"
+#include "sequence.h"
 
 sequenceCommandLine_s g_fileScopeDefaults;
 sequenceCommandLine_s g_blockScopeDefaults;

@@ -18,7 +18,7 @@ GNU General Public License for more details.
 #include "net_encode.h"
 
 #include "errno.h"
-#include "Sequence.h"
+#include "sequence.h"
 #define HEARTBEAT_SECONDS	(sv_nat->integer?60.0f:300.0f) 		// 1 or 5 minutes
 
 convar_t	*sv_zmax;

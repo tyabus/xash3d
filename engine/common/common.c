@@ -19,7 +19,7 @@ GNU General Public License for more details.
 #include "const.h"
 #include "client.h"
 #include "library.h"
-#include "Sequence.h"
+#include "sequence.h"
 
 /*
 ==============

@@ -165,7 +165,7 @@ LOCAL_SRC_FILES := \
 	   common/soundlib/libmpg/reader.c \
 	   common/soundlib/libmpg/synth.c \
 	   common/soundlib/libmpg/tabinit.c \
-	   common/Sequence.c \
+	   common/sequence.c \
            platform/android/vid_android.c \
            platform/android/android_nosdl.c \
            platform/posix/crashhandler.c

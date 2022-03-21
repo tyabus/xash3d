@@ -18,7 +18,7 @@ GNU General Public License for more details.
 #include "common.h"
 #include "sound.h"
 #include "const.h"
-#include "Sequence.h"
+#include "sequence.h"
 
 sentence_t	g_Sentences[MAX_SENTENCES];
 static uint	g_numSentences;
