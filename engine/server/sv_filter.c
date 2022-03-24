@@ -36,8 +36,8 @@ typedef struct cidfilter_s
 {
 	float endTime;
 	struct cidfilter_s *next;
-	string id;
-	string reason;
+	char	id[64];
+	char	reason[64];
 } cidfilter_t;
 
 cidfilter_t *cidfilter = NULL;
