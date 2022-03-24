@@ -844,13 +844,6 @@ void CL_SendConnectPacket( void )
 		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags | CVAR_READ_ONLY );
 		Cvar_FullSet( "joy_enable", va( "%s", joy_enable->string ), joy_enable->flags | CVAR_READ_ONLY );
 	}
-	else
-	{
-		// reset to writable state
-		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags & ~CVAR_READ_ONLY );
-		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags & ~CVAR_READ_ONLY );
-		Cvar_FullSet( "joy_enable", va( "%s", joy_enable->string ), joy_enable->flags & ~CVAR_READ_ONLY );
-	}
 
 	Info_SetValueForKey( useragent, "d", va( "%d", input_devices ), sizeof( useragent ) );
 	Info_SetValueForKey( useragent, "v", XASH_VERSION, sizeof( useragent ) );
