@@ -840,16 +840,16 @@ void CL_SendConnectPacket( void )
 			input_devices |= INPUT_DEVICE_JOYSTICK;
 
 		// lock input devices change
-		Cvar_FullSet( "touch_enable", touch_enable->string, touch_enable->flags | CVAR_READ_ONLY );
-		Cvar_FullSet( "m_ignore", m_ignore->string, m_ignore->flags | CVAR_READ_ONLY );
-		Cvar_FullSet( "joy_enable", joy_enable->string, joy_enable->flags | CVAR_READ_ONLY );
+		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags | CVAR_READ_ONLY );
+		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags | CVAR_READ_ONLY );
+		Cvar_FullSet( "joy_enable", va( "%s", joy_enable->string ), joy_enable->flags | CVAR_READ_ONLY );
 	}
 	else
 	{
 		// reset to writable state
-		Cvar_FullSet( "touch_enable", touch_enable->string, touch_enable->flags & ~CVAR_READ_ONLY );
-		Cvar_FullSet( "m_ignore", m_ignore->string, m_ignore->flags & ~CVAR_READ_ONLY );
-		Cvar_FullSet( "joy_enable", joy_enable->string, joy_enable->flags & ~CVAR_READ_ONLY );
+		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags & ~CVAR_READ_ONLY );
+		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags & ~CVAR_READ_ONLY );
+		Cvar_FullSet( "joy_enable", va( "%s", joy_enable->string ), joy_enable->flags & ~CVAR_READ_ONLY );
 	}
 
 	Info_SetValueForKey( useragent, "d", va( "%d", input_devices ), sizeof( useragent ) );
@@ -1183,9 +1183,9 @@ void CL_Disconnect( void )
 #endif
 
 	// reset to writable state
-	Cvar_FullSet( "touch_enable", touch_enable->string, touch_enable->flags & ~CVAR_READ_ONLY );
-	Cvar_FullSet( "m_ignore", m_ignore->string, m_ignore->flags & ~CVAR_READ_ONLY );
-	Cvar_FullSet( "joy_enable", joy_enable->string, joy_enable->flags & ~CVAR_READ_ONLY );
+	Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string ), touch_enable->flags & ~CVAR_READ_ONLY );
+	Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string ), m_ignore->flags & ~CVAR_READ_ONLY );
+	Cvar_FullSet( "joy_enable", va( "%s", joy_enable->string ), joy_enable->flags & ~CVAR_READ_ONLY );
 	Cbuf_InsertText( "menu_connectionprogress disconnect\n" );
 
 	// back to menu if developer mode set to "player" or "mapper"
