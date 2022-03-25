@@ -981,3 +981,31 @@ void Host_InputFrame( void )
 	IN_MouseMove();
 }
 #endif
+
+/*
+================
+IN_LockInputCvars
+================
+*/
+void IN_LockInputCvars( void )
+{
+	qboolean lock;
+
+	if( touch_enable->flags & CVAR_READ_ONLY || m_ignore->flags & CVAR_READ_ONLY || joy_enable->flags & CVAR_READ_ONLY )
+		lock = false;
+	else
+		lock = true;
+
+	if( lock )
+	{
+		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string), touch_enable->flags | CVAR_READ_ONLY );
+		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string), m_ignore->flags | CVAR_READ_ONLY );
+		Cvar_FullSet( "joy_enable", va( "%s", joy_enable->string), joy_enable->flags | CVAR_READ_ONLY );
+	}
+	else
+	{
+		Cvar_FullSet( "touch_enable", va( "%s", touch_enable->string), touch_enable->flags & ~CVAR_READ_ONLY );
+		Cvar_FullSet( "m_ignore", va( "%s", m_ignore->string), m_ignore->flags & ~CVAR_READ_ONLY );
+		Cvar_FullSet( "joy_enable", va( "%s", joy_enable->string), joy_enable->flags & ~CVAR_READ_ONLY );
+	}
+}
