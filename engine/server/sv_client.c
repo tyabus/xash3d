@@ -2824,10 +2824,14 @@ void SV_EntInfo_f( sv_client_t *cl )
 	SV_ClientPrintf( cl, PRINT_LOW, "renderamt: %f\n", ent->v.renderamt );
 	SV_ClientPrintf( cl, PRINT_LOW, "rendercolor: %f %f %f\n", ent->v.rendercolor[0], ent->v.rendercolor[1], ent->v.rendercolor[2] );
 
-	SV_ClientPrintf( cl, PRINT_LOW, "maxspeed: %f\n", ent->v.maxspeed );
+	SV_ClientPrintf( cl, PRINT_LOW, "velocity: x: %.4f y: %.4f z: %.4f\n", ent->v.velocity[0], ent->v.velocity[1], ent->v.velocity[2] );
+
+	if( ent->v.maxspeed )
+		SV_ClientPrintf( cl, PRINT_LOW, "maxspeed: %f\n", ent->v.maxspeed );
 
 	if( ent->v.solid )
 		SV_ClientPrintf( cl, PRINT_LOW, "solid: %d\n", ent->v.solid );
+
 	SV_ClientPrintf( cl, PRINT_LOW, "flags: 0x%x\n", ent->v.flags );
 	SV_ClientPrintf( cl, PRINT_LOW, "spawnflags: 0x%x\n", ent->v.spawnflags );
 }
