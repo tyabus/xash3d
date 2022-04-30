@@ -881,14 +881,15 @@ Delta_ClampIntegerField
 prevent data to out of range
 =====================
 */
+
 int Delta_ClampIntegerField( int iValue, qboolean bSigned, int bits )
 {
-	if( bits < 32 )
+	if( bits <= 16 )
 	{
 		int signbits = bSigned ? (bits - 1) : bits;
 		int maxnum = BIT( signbits ) - 1;
 		int minnum = bSigned ? ( -maxnum - 1 ) : 0;
-		iValue = bound( minnum, iValue, maxnum );
+		iValue = bound( minnum, (short)iValue, maxnum );
 	}
 
 	return iValue; // clamped;
