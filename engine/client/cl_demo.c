@@ -318,8 +318,8 @@ void CL_WriteDemoHeader( const char *name )
 	fs_offset_t	copysize;
 	fs_offset_t	savepos;
 	fs_offset_t	curpos;
-	
-	MsgDev( D_INFO, "recording to %s.\n", name );
+
+	Msg( "Recording %s.\n", name );
 	cls.demofile = FS_Open( name, "wb", false );
 	cls.demotime = 0.0;
 
@@ -439,8 +439,7 @@ void CL_StopRecord( void )
 	cls.demoname[0] = '\0';
 	menu.globals->demoname[0] = '\0';
 
-	Msg( "Completed demo\n" );
-	MsgDev( D_INFO, "Recording time %.2f\n", cls.demotime );
+	Msg( "Completed demo, time %.2f.\n", cls.demotime );
 	cls.demotime = 0.0;
 }
 
