@@ -922,6 +922,24 @@ qboolean CL_NextDemo( void )
 	return true;
 }
 
+/*
+=================
+CL_DemoAborted
+=================
+*/
+void CL_DemoAborted( void )
+{
+	if( cls.demofile )
+		FS_Close( cls.demofile );
+
+	cls.demoplayback = false;
+	cls.changedemo = false;
+	cls.timedemo = false;
+	demo.framecount = 0;
+	cls.demofile = NULL;
+	cls.demonum = -1;
+}
+
 /* 
 ================== 
 CL_DemoGetName
@@ -1035,6 +1053,7 @@ void CL_PlayDemo_f( void )
 	string	filename;
 	string	demoname;
 	int	i;
+	delta_info_t *dt; // funny hack
 
 	if( Cmd_Argc() != 2 )
 	{
@@ -1059,7 +1078,7 @@ void CL_PlayDemo_f( void )
 	if( !FS_FileExists( filename, true ))
 	{
 		MsgDev( D_ERROR, "couldn't open %s\n", filename );
-		cls.demonum = -1; // stop demo loop
+		CL_DemoAborted();
 		return;
 	}
 
@@ -1073,26 +1092,20 @@ void CL_PlayDemo_f( void )
 	if( demo.header.id != IDEMOHEADER )
 	{
 		MsgDev( D_ERROR, "%s is not a demo file\n", filename );
-		FS_Close( cls.demofile );
-		cls.demofile = NULL;
-		cls.demonum = -1; // stop demo loop
+		CL_DemoAborted();
 		return;
 	}
 
 	if( demo.header.net_protocol != PROTOCOL_VERSION || demo.header.dem_protocol != DEMO_PROTOCOL )
 	{
 		MsgDev( D_ERROR, "demo protocol outdated\n"
-			"Demo file protocols Network(%i), Demo(%i)\n"
+			"Demo protocol Network(%i), Demo(%i)\n"
 			"Server protocol is at Network(%i), Demo(%i)\n",
 			demo.header.net_protocol, 
 			demo.header.dem_protocol,
 			PROTOCOL_VERSION,
-			DEMO_PROTOCOL
-		);
-
-		FS_Close( cls.demofile );
-		cls.demofile = NULL;
-		cls.demonum = -1; // stop demo loop
+			DEMO_PROTOCOL );
+		CL_DemoAborted();
 		return;
 	}
 
@@ -1103,10 +1116,7 @@ void CL_PlayDemo_f( void )
 	if( demo.directory.numentries < 1 || demo.directory.numentries > 1024 )
 	{
 		MsgDev( D_ERROR, "demo had bogus # of directory entries: %i\n", demo.directory.numentries );
-		FS_Close( cls.demofile );
-		cls.demofile = NULL;
-		cls.demonum = -1; // stop demo loop
-		cls.changedemo = false;
+		CL_DemoAborted();
 		return;
 	}
 
@@ -1144,6 +1154,13 @@ void CL_PlayDemo_f( void )
 	cls.demoplayback = true;
 	cls.state = ca_connected;
 	cl.background = (cls.demonum != -1) ? true : false;
+
+	// funny hack
+	dt = Delta_FindStruct( "movevars_t" );
+	if( !dt || !dt->bInitialized )
+	{
+		Delta_Init();
+	}
 
 	demo.starttime = CL_GetDemoPlaybackClock(); // for determining whether to read another message
 
