@@ -889,7 +889,7 @@ int Delta_ClampIntegerField( int iValue, qboolean bSigned, int bits )
 		int signbits = bSigned ? (bits - 1) : bits;
 		int maxnum = BIT( signbits ) - 1;
 		int minnum = bSigned ? ( -maxnum - 1 ) : 0;
-		iValue = bound( minnum, (short)iValue, maxnum );
+		iValue = bSigned ? bound( minnum, (short)iValue, maxnum ) : bound( minnum, (word)iValue, maxnum );
 	}
 
 	return iValue; // clamped;
