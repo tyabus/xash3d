@@ -17,7 +17,7 @@ GNU General Public License for more details.
 #include "server.h"
 #include "net_encode.h"
 
-#include "errno.h"
+#include <errno.h>
 #include <time.h>
 
 convar_t *mp_logfile;
@@ -106,7 +106,7 @@ void Log_Open( void )
 
 	int i;
 	file_t *fp;
-	char *temp;
+	char *logsdir;
 
 	if ( !svs.log.active || ( sv_log_onefile->integer != 0 && svs.log.file ) )
 		return;
@@ -119,12 +119,12 @@ void Log_Open( void )
 		time( &ltime );
 		today = localtime( &ltime );
 
-		temp = Cvar_VariableString( "logsdir" );
+		logsdir = Cvar_VariableString( "logsdir" );
 
-		if ( !temp || Q_strlen(temp) <= 0 || Q_strstr( temp, ":" ) || Q_strstr( temp, ".." ) )
+		if ( Q_strlen(logsdir) == 0 || (FS_CheckNastyPath( logsdir, true ) != 0) )
 			Q_snprintf( file_base, sizeof( file_base ), "logs/L%02i%02i", today->tm_mon + 1, today->tm_mday );
 
-		else Q_snprintf( file_base , sizeof( file_base ), "%s/L%02i%02i", temp, today->tm_mon + 1, today->tm_mday );
+		else Q_snprintf( file_base, sizeof( file_base ), "%s/L%02i%02i", logsdir, today->tm_mon + 1, today->tm_mday );
 
 		for (i = 0; i < 1000; i++)
 		{
@@ -204,7 +204,6 @@ void SV_ServerLog_f(void)
 
 		if ( svs.log.active )
 			Con_Printf( "currently logging\n" );
-
 		else
 			Con_Printf( "not currently logging\n" );
 
