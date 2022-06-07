@@ -683,8 +683,8 @@ qboolean NET_IsLanAddress( netadr_t adr )
 		// 127.x.x.x and 10.x.x.x networks
 		if( adr.ip.u8[0] == 127 || adr.ip.u8[0] == 10 )
 			return true;
-		// 192.168.x.x and 172.16.x.x networks
-		if( (adr.ip.u8[0] == 192 && adr.ip.u8[1] == 168) || (adr.ip.u8[0] == 172 && adr.ip.u8[1] == 16) )
+		// 192.168.x.x and 172.16.x.x - 172.31.x.x networks
+		if( (adr.ip.u8[0] == 192 && adr.ip.u8[1] == 168) || (adr.ip.u8[0] == 172 && (adr.ip.u8[1] >= 16 && adr.ip.u8[1] <= 31)) )
 			return true;
 	}
 
