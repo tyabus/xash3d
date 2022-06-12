@@ -482,6 +482,7 @@ void FS_Init( void );
 void FS_Path( void );
 void FS_Shutdown( void );
 void FS_ClearSearchPath( void );
+int FS_CheckNastyPath( const char *path, qboolean isgamedir );
 void FS_AllowDirectPaths( qboolean enable );
 void FS_AddGameDirectory( const char *dir, int flags );
 void FS_AddGameHierarchy( const char *dir, int flags );
