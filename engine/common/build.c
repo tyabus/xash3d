@@ -82,7 +82,7 @@ const char *Q_buildos( void )
 #elif defined(__OpenBSD__)
 	osname = "OpenBSD";
 #else
-	#warning "We couldnt determine the target operating system, please add its define to Q_buildarch in build.c"
+	#warning "We couldnt determine the target operating system, please add its define to Q_buildos in build.c"
 	osname = "WTF!?";
 #endif
 
