@@ -2052,7 +2052,7 @@ before allowing the client into the server
 */
 void CL_Precache_f( void )
 {
-	int spawncount;
+	int spawncount, svCheatState;
 
 	if( cls.state != ca_connected )
 	{
@@ -2067,7 +2067,7 @@ void CL_Precache_f( void )
 
 	if( Cmd_Argc() > 2 )
 	{
-		int svCheatState = Q_atoi( Cmd_Argv( 2 ) );
+		svCheatState = Q_atoi( Cmd_Argv( 2 ) );
 
 		// don't let server send other values than 1 or 0
 		Cvar_SetFloat("sv_cheats", svCheatState ? 1.0f : 0.0f );
@@ -2076,9 +2076,12 @@ void CL_Precache_f( void )
 	{
 		// disable just in case for old servers.
 		// TODO: move to a part of new protocol
+		svCheatState = 0;
 		Cvar_SetFloat("sv_cheats", 0.0f );
 	}
-	Cvar_SetCheatState( false );
+
+	if( !svCheatState )
+		Cvar_SetCheatState( false );
 
 	BF_WriteByte( &cls.netchan.message, clc_stringcmd );
 	BF_WriteString( &cls.netchan.message, va( "begin %i\n", spawncount ));
