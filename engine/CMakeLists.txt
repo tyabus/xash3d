@@ -28,14 +28,29 @@ fwgs_fix_default_msvc_settings()
 file(GLOB_RECURSE XASH_ENGINE_SOURCES         common/*.c server/*.c ) # Minimal sources
 file(GLOB_RECURSE XASH_ENGINE_WIN32_SOURCES   platform/win32/*.c) # Win32 only sources
 file(GLOB_RECURSE XASH_ENGINE_SDL_SOURCES     platform/sdl/*.c) # SDL version sources
-file(GLOB_RECURSE XASH_ENGINE_POSIX_SOURCES     platform/posix/*.c) # Posix sources
-file(GLOB_RECURSE XASH_ENGINE_STUB_SOURCES     platform/sdl/*.c) # Stub sources
+#file(GLOB_RECURSE XASH_ENGINE_POSIX_SOURCES     platform/posix/*.c) # Posix sources
+file(GLOB_RECURSE XASH_ENGINE_STUB_SOURCES     platform/stub/*.c) # Stub sources
 file(GLOB_RECURSE XASH_ENGINE_ANDROID_SOURCES platform/android/*.c) # Android sources
 file(GLOB_RECURSE XASH_ENGINE_CLIENT_SOURCES  client/*.c) # Client sources
 
+find_package (Libunwind)
+
+if(LIBUNWIND_FOUND AND UNIX)
+	message(STATUS "libunwind found")
+	include_directories(${LIBUNWIND_INCLUDE_DIRS})
+	file(GLOB XASH_ENGINE_POSIX_SOURCES platform/posix/crashhandler_libunwind.c)
+elseif(UNIX)
+	message(STATUS "libunwind not found")
+	file(GLOB XASH_ENGINE_POSIX_SOURCES platform/posix/crashhandler.c)
+	set(LIBUNWIND_INCLUDE_DIR "")
+	set(LIBUNWIND_LIBRARIES "")
+elseif(NOT WIN32)
+#	file(GLOB XASH_ENGINE_POSIX_SOURCES platform/stub/crashhandler.c)
+endif()
+
 cond_list_append(WIN32        XASH_ENGINE_SOURCES XASH_ENGINE_WIN32_SOURCES)
 cond_list_append(UNIX        XASH_ENGINE_SOURCES XASH_ENGINE_POSIX_SOURCES)
-cond_list_append("NOT UNIX"        XASH_ENGINE_SOURCES XASH_ENGINE_STUB_SOURCES)
+cond_list_append("NOT UNIX AND NOT WIN32"        XASH_ENGINE_SOURCES XASH_ENGINE_STUB_SOURCES)
 cond_list_append(XASH_SDL     XASH_ENGINE_SOURCES XASH_ENGINE_SDL_SOURCES)
 cond_list_append(ANDROID      XASH_ENGINE_SOURCES XASH_ENGINE_ANDROID_SOURCES)
 cond_list_append("NOT XASH_DEDICATED" XASH_ENGINE_SOURCES XASH_ENGINE_CLIENT_SOURCES)
@@ -95,6 +110,10 @@ if(XASH_SINGLE_BINARY) # Set executable or library
 	add_executable(${XASH_ENGINE} ${XASH_ENGINE_SOURCES})
 else()
 	add_library(${XASH_ENGINE} SHARED ${XASH_ENGINE_SOURCES})
+endif()
+
+if(LIBUNWIND_FOUND)
+	target_link_libraries(${XASH_ENGINE} ${LIBUNWIND_LIBRARIES})
 endif()
 
 if(MSVC)
