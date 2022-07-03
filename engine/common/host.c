@@ -1117,6 +1117,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 
 	host.con_showalways = true;
 	host.mouse_visible = false;
+	host.write_to_clipboard = false;
 
 #ifdef XASH_SDL
 	// should work even if it failed

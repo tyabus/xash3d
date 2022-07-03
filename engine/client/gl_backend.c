@@ -562,7 +562,6 @@ qboolean VID_ScreenShot( const char *filename, int shot_type )
 
 	// write image
 	result = FS_SaveImage( filename, r_shot );
-	host.write_to_clipboard = false;		// disable write to clipboard
 	FS_AllowDirectPaths( false );			// always reset after store screenshot
 	FS_FreeImage( r_shot );
 
