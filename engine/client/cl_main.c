@@ -1786,11 +1786,6 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 				Cbuf_AddText( va( "menu_updatedialog %s\n", preferStore ? "store" : "nostore" ) );
 			}
 		}
-		else
-		{
-			// in case we don't have master anymore
-			Cbuf_AddText( va( "menu_updatedialog %s\n", preferStore ? "store" : "nostore" ) );
-		}
 	}
 	else if( !Q_strcmp( c, "ping" ))
 	{
