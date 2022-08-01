@@ -19,6 +19,7 @@ GNU General Public License for more details.
 #include "client.h"
 #include "const.h"
 #include "gl_local.h"
+#include "gl_menu.h"
 #include "library.h"
 #include "input.h"
 #include "server.h" // !!svgame.hInstance
@@ -1041,7 +1042,18 @@ static ui_enginefuncs_t gEngfuncs =
 	pfnIsMapValid,
 	GL_ProcessTexture,
 	(void*)COM_CompareFileTime,
-	VID_GetModeString
+	VID_GetModeString,
+
+	pfnDrawLine,
+	pfnDrawTriangle,
+	pfnDrawFillTriangle,
+	pfnDrawFillGradientTriangle,
+	pfnDrawRectangle,
+	pfnDrawFillRectangle,
+	pfnDrawFillGradientRectangle,
+	pfnDrawCircle,
+	pfnDrawFillCircle,
+	Con_DrawCharacterLen
 };
 
 static ui_textfuncs_t gTextfuncs =
