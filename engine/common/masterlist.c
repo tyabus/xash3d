@@ -30,6 +30,34 @@ struct masterlist_s
 
 /*
 ========================
+NET_IsFromMasters
+
+Determines if source matches
+one of the master servers
+========================
+*/
+qboolean NET_IsFromMasters(netadr_t from)
+{
+	master_t *list;
+	netadr_t adr;
+	qboolean found = false;
+
+	for (list = ml.list; list; list = list->next)
+	{
+		if (NET_StringToAdr(list->address, &adr))
+		{
+			if (NET_CompareAdr(from, adr))
+			{
+				found = true;
+			}
+		}
+	}
+
+	return found;
+}
+
+/*
+========================
 NET_SendToMasters
 
 Send request to all masterservers list

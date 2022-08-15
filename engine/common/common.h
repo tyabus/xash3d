@@ -560,6 +560,7 @@ void NET_InitMasters();
 void NET_SaveMasters();
 void NET_ClearMasters();
 qboolean NET_SendToMasters( netsrc_t sock, size_t len, const void *data );
+qboolean NET_IsFromMasters(netadr_t adr);
 
 
 /*

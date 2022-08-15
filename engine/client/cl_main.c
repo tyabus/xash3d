@@ -1817,8 +1817,14 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 		CL_Disconnect();
 		CL_ClearEdicts();
 	}
-	else if( !Q_strcmp( c, "f") )
+	else if( !Q_strcmp( c, "f" ))
 	{
+		if( !NET_IsFromMasters( from ))
+		{
+			MsgDev(D_ERROR, "Bad f packet from %s:\n%s\n", NET_AdrToString(from), args);
+			return;
+		}
+
 		// serverlist got from masterserver
 		while( !msg->bOverflow )
 		{
