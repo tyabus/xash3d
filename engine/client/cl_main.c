@@ -1406,8 +1406,14 @@ void CL_ParseStatusMessage( netadr_t from, sizebuf_t *msg )
 	char	*s;
 
 	s = BF_ReadString( msg );
-	MsgDev( D_NOTE, "Got info string: %s\n", s );
-	UI_AddServerToList( from, s );
+
+	if( Info_IsValid( s ) )
+	{
+		MsgDev(D_NOTE, "Got info string: %s\n", s);
+		UI_AddServerToList(from, s);
+	}
+	else
+		MsgDev(D_NOTE, "Got bad info string: %s\n", s);
 }
 
 /*
