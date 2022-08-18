@@ -20,6 +20,7 @@ typedef struct master_s
 	qboolean sent;
 	qboolean save;
 	string address;
+	netadr_t adr;
 } master_t;
 
 struct masterlist_s
@@ -39,21 +40,16 @@ one of the master servers
 qboolean NET_IsFromMasters(netadr_t from)
 {
 	master_t *list;
-	netadr_t adr;
-	qboolean found = false;
 
 	for (list = ml.list; list; list = list->next)
 	{
-		if (NET_StringToAdr(list->address, &adr))
+		if (NET_CompareAdr(list->adr, from))
 		{
-			if (NET_CompareAdr(from, adr))
-			{
-				found = true;
-			}
+			return true;
 		}
 	}
 
-	return found;
+	return false;
 }
 
 /*
@@ -71,18 +67,18 @@ qboolean NET_SendToMasters( netsrc_t sock, size_t len, const void *data )
 
 	for( list = ml.list; list; list = list->next )
 	{
-		netadr_t adr;
 		int res;
 
 		if( list->sent )
 			continue;
 
-		res = NET_StringToAdrNB( list->address, &adr );
+		res = NET_StringToAdrNB( list->address, &list->adr );
 
 		if( !res )
 		{
 			MsgDev( D_INFO, "Can't resolve adr: %s\n", list->address );
 			list->sent = true;
+			list->adr.type = 0;
 			continue;
 		}
 
@@ -90,12 +86,13 @@ qboolean NET_SendToMasters( netsrc_t sock, size_t len, const void *data )
 		{
 			list->sent = false;
 			wait = true;
+			list->adr.type = 0;
 			continue;
 		}
 
 		list->sent = true;
 
-		NET_SendPacket( sock, len, data, adr );
+		NET_SendPacket( sock, len, data, list->adr );
 	}
 
 	if( !wait )
