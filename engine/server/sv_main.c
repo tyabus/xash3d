@@ -778,6 +778,12 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 	int clients = 0, bots = 0, index;
 	qboolean havePassword;
 
+	if( !NET_IsFromMasters( from ) )
+	{
+		MsgDev(D_ERROR, "Unexpected master server packet from %s\n", NET_AdrToString(from));
+		return;
+	}
+
 	if( svs.clients )
 	{
 		for( index = 0; index < sv_maxclients->integer; index++ )
