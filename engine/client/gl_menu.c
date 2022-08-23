@@ -111,28 +111,18 @@ void R_DrawFillGradientRectangle( float x, float y, float w, float h, byte color
 	pglShadeModel( GL_SMOOTH );
 
 	pglBegin(GL_TRIANGLES);
-			//pglColor4ub(colors[0], colors[1], colors[2], colors[3]);
-			pglColor3ub(colors[0], colors[1], colors[2]);
-			pglVertex2f( x, y );
-
-	        //pglColor4ub(colors[8], colors[9], colors[10], colors[11]);
-			pglColor3ub(colors[8], colors[9], colors[10]);
-			pglVertex2f( x + w, y );
-
-	        //pglColor4ub(colors[12], colors[13], colors[14], colors[15]);
-			pglColor3ub(colors[12], colors[13], colors[14]);
+		pglColor4ub(colors[8], colors[9], colors[10], colors[11]);
+		pglVertex2f( x, y );
+		pglColor4ub(colors[0], colors[1], colors[2], colors[3]);
+		pglVertex2f( x + w, y );
+		pglColor4ub(colors[12], colors[13], colors[14], colors[15]);
 	        pglVertex2f( x + w, y + h );
 
-	        //pglColor4ub(colors[4], colors[5], colors[6], colors[7]);
-	        pglColor3ub(colors[4], colors[5], colors[6]);
+	        pglColor4ub(colors[4], colors[5], colors[6], colors[7]);
 	        pglVertex2f( x, y + h );
-
-	        //pglColor4ub(colors[12], colors[13], colors[14], colors[15]);
-	        pglColor3ub(colors[12], colors[13], colors[14]);
+	        pglColor4ub(colors[12], colors[13], colors[14], colors[15]);
 	        pglVertex2f( x + w, y + h );
-
-	        //pglColor4ub(colors[8], colors[9], colors[10], colors[11]);
-	        pglColor3ub(colors[8], colors[9], colors[10]);
+	        pglColor4ub(colors[8], colors[9], colors[10], colors[11]);
 	        pglVertex2f( x, y );
 	pglEnd();
 
@@ -147,33 +137,20 @@ R_DrawCircle
 
 void R_DrawCircle(int x, int y, int w, int h)
 {
-	//float r = (float)(w/2);
-
 	float r = (float)(w/2);
 
-	/*
-	pglBegin( GL_TRIANGLE_FAN );
-		pglVertex2f(x, y);
-
-		for( int i = 0; i < 360; i++ )
-		{
-			printf("%f %f\n", r*cos(M_PI * i / 180.0) + x, r*sin(M_PI * i / 180.0) + y);
-			pglVertex2f(r*cos(M_PI * i / 180.0) + x, r*sin(M_PI * i / 180.0) + y);
-		}
-
-	pglEnd();
-	*/
+	pglEnable( GL_LINE_SMOOTH );
 
 	pglBegin( GL_LINE_LOOP );
 		//pglVertex2f(x - r, y);
-
-		for( int i = 0; i < 180; i++ )
+		for( int i = 0; i < 16; i++ )
 		{
-			float theta = M_PI2 * i / 180.0;
-			pglVertex2f(r*cos(theta) + (x + r), r*sin(theta) + (y+r));
+			float theta = M_PI2 * (float)i / (float)16;
+			pglVertex2f((x + r) + r*cos(theta), (y + r) + r * sin(theta));
 		}
-
 	pglEnd();
+
+	pglDisable( GL_LINE_SMOOTH );
 }
 
 /*
@@ -188,13 +165,11 @@ void R_DrawFillCircle(int x, int y, int w, int h)
 
 	pglBegin( GL_TRIANGLE_FAN );
 		//pglVertex2f(x, y);
-
-		for( int i = 0; i < 180; i++ )
+		for( int i = 0; i < 16; i++ )
 		{
-			float theta = M_PI2 * i / 180.0;
+			float theta = M_PI2 * (float)i / (float)16;
 			pglVertex2f(r*cos(theta) + (x + r), r*sin(theta) + (y+r));
 		}
-
 	pglEnd();
 }
 
@@ -300,6 +275,7 @@ void pfnDrawFillRectangle( int x, int y, int width, int height, int r, int g, in
 	g = bound( 0, g, 255 );
 	b = bound( 0, b, 255 );
 	a = bound( 0, a, 255 );
+
 	pglColor4ub( r, g, b, a );
 	GL_SetRenderMode( kRenderTransTexture );
 	R_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, cls.fillImage );
@@ -334,7 +310,7 @@ void pfnDrawCircle( int x, int y, int width, int height, int r, int g, int b, in
 	a = bound( 0, a, 255 );
 
 	pglColor4ub( r, g, b, a );
-	GL_SetRenderMode( kRenderTransColor );
+	GL_SetRenderMode( kRenderNormal );
 	R_DrawCircle( x, y, width, height );
 	pglColor4ub( 255, 255, 255, 255 );
 }
@@ -351,8 +327,9 @@ void pfnDrawFillCircle( int x, int y, int width, int height, int r, int g, int b
 	g = bound( 0, g, 255 );
 	b = bound( 0, b, 255 );
 	a = bound( 0, a, 255 );
+
 	pglColor4ub( r, g, b, a );
-	GL_SetRenderMode( kRenderTransTexture );
+	GL_SetRenderMode( kRenderTransColor );
 	R_DrawFillCircle( x, y, width, height );
 	pglColor4ub( 255, 255, 255, 255 );
 }

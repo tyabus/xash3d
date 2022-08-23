@@ -96,7 +96,7 @@ typedef struct ui_enginefuncs_s
 	void	(*pfnDrawCharacter)( int x, int y, int width, int height, int ch, int ulRGBA, HIMAGE hFont );
 	int	(*pfnDrawConsoleString)( int x, int y, const char *string );
 	void	(*pfnDrawSetTextColor)( int r, int g, int b, int alpha );
-	void	(*pfnDrawConsoleStringLen)(  const char *string, int *length, int *height );
+	void	(*pfnDrawConsoleStringLen)(  const char *string, int *width, int *height );
 	void	(*pfnSetConsoleDefaultColor)( int r, int g, int b ); // color must came from colors.lst
 
 	// custom rendering (for playermodel preview)
@@ -163,6 +163,17 @@ typedef struct ui_enginefuncs_s
 	int	(*pfnCompareFileTime)( char *filename1, char *filename2, int *iCompare );
 
 	const char *(*pfnGetModeString)( int vid_mode );
+
+	// addantional draw api because uncle mike is shitposter
+	void (*pfnDrawLine)( int x, int y, int x2, int y2, int r, int g, int b, int a );
+	void (*pfnDrawTriangle)( int x, int y, int x2, int y2, int x3, int y3, int r, int g, int b, int a );
+	void (*pfnDrawFillTriangle)( int x, int y, int x2, int y2, int x3, int y3, int r, int g, int b, int a );
+	void (*pfnDrawFillGradientTriangle)( int x, int y, int x2, int y2, int x3, int y3, byte colors[12] );
+	void (*pfnDrawRectangle)( int x, int y, int width, int height, int r, int g, int b, int a );
+	void (*pfnDrawFillRectangle)( int x, int y, int width, int height, int r, int g, int b, int a );
+	void (*pfnDrawFillGradientRectangle)( int x, int y, int width, int height, unsigned char color[16] );
+	void (*pfnDrawCircle)( int x, int y, int width, int height, int r, int g, int b, int a );
+	void (*pfnDrawFillCircle)( int x, int y, int width, int height, int r, int g, int b, int a );
 } ui_enginefuncs_t;
 
 typedef struct ui_textfuncs_s {
