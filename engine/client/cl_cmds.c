@@ -339,13 +339,13 @@ void CL_SkyShot_f( void )
 	cls.envshot_viewsize = 0;
 }
 
-/* 
-================== 
+/*
+==================
 CL_LevelShot_f
 
 splash logo while map is loading
-================== 
-*/ 
+==================
+*/
 void CL_LevelShot_f( void )
 {
 	size_t	ft1, ft2;
@@ -364,7 +364,7 @@ void CL_LevelShot_f( void )
 		ft1 = FS_FileTime( filename, false );
 		ft2 = FS_FileTime( cls.shotname, true );
 	}
-	else if( cl.worldmodel->name )
+	else if( cl.worldmodel->name[0] )
 	{
 		Q_sprintf( cls.shotname, "levelshots/%s_%s.bmp", clgame.mapname, glState.wideScreen ? "16x9" : "4x3" );
 
