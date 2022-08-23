@@ -2796,10 +2796,13 @@ byte *FS_LoadFile( const char *path, fs_offset_t *filesizeptr, qboolean gamediro
 	}
 
 	// Try to load
-	filesize = file->real_length;
-	buf = (byte *)Mem_Alloc( fs_mempool, filesize + 1 );
-	buf[filesize] = '\0';
-	FS_Read( file, buf, filesize );
+	if( file->real_length > 0 )
+	{
+		filesize = file->real_length;
+		buf = (byte *)Mem_Alloc( fs_mempool, filesize + 1 );
+		buf[filesize] = '\0';
+		FS_Read( file, buf, filesize );
+	}
 	FS_Close( file );
 
 	if( filesizeptr )
