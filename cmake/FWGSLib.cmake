@@ -286,6 +286,8 @@ macro(fwgs_fix_default_msvc_settings)
 	        # CRT libraries, so we override that default here.
 			string(REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
 		endforeach()
+		# Build with Multiple Processes (/MP)
+		add_definitions("/MP")
 	endif()
 endmacro()
 
