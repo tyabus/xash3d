@@ -6,16 +6,19 @@ branches:
 
 environment:
   matrix:
-    - os: Visual Studio 2013
+    - image: Visual Studio 2013
       GENERATOR_NAME: "Visual Studio 12 2013"
-    - os: Visual Studio 2015
+    - image: Visual Studio 2015
       GENERATOR_NAME: "Visual Studio 14 2015"
+    - image: Visual Studio 2017
+      GENERATOR_NAME: "Visual Studio 15 2017"
 
 clone_folder: c:\projects\xash\xash3d
 
 build:
   project: INSTALL.vcxproj
   verbosity: normal
+  parallel: true
 
 configuration:
   - Debug
