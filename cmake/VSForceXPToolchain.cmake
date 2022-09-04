@@ -18,10 +18,6 @@ if(WIN32)
 			# Visual Studio 14 2015
 			set(CMAKE_GENERATOR_TOOLSET "v140_xp" CACHE STRING "CMAKE_GENERATOR_TOOLSET" FORCE)
 			set(CMAKE_VS_PLATFORM_TOOLSET "v140_xp" CACHE STRING "CMAKE_VS_PLATFORM_TOOLSET" FORCE)
-		elseif (${CMAKE_MATCH_1} EQUAL 15)
-			# Visual Studio 15 2017
-			set(CMAKE_GENERATOR_TOOLSET "v141_xp" CACHE STRING "CMAKE_GENERATOR_TOOLSET" FORCE)
-			set(CMAKE_VS_PLATFORM_TOOLSET "v141_xp" CACHE STRING "CMAKE_VS_PLATFORM_TOOLSET" FORCE)
 		else()
 			message(WARNING "WARNING: You maybe building without Windows XP compatibility. See which toolchain version Visual Studio provides, and say cmake to use it: cmake -G \"Visual Studio XX\" -T \"vXXX_xp\"")
 		endif()
