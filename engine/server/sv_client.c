@@ -871,7 +871,7 @@ void SV_Info( netadr_t from, int version )
 	char	string[MAX_INFO_STRING];
 	int	i, count = 0;
 	char *gamedir = GI->gamefolder;
-	qboolean havePassword;
+	qboolean havePassword = false;
 
 	// ignore in single player
 	if( sv_maxclients->integer == 1 || !svs.initialized )
@@ -889,7 +889,8 @@ void SV_Info( netadr_t from, int version )
 			if( svs.clients[i].state >= cs_connected && !svs.clients[i].fakeclient )
 				count++;
 
-		havePassword = sv_password->string[0];
+		if( sv_password->string[0] )
+			havePassword = true;
 
 		Info_SetValueForKey( string, "host", hostname->string, sizeof( string ) );
 		Info_SetValueForKey( string, "map", sv.name, sizeof( string ) );
@@ -963,13 +964,14 @@ void SV_BuildNetAnswer( netadr_t from )
 	}
 	else if( type == NETAPI_REQUEST_DETAILS )
 	{
-		qboolean havePassword;
+		qboolean havePassword = false;
 
 		for( i = 0; i < sv_maxclients->integer; i++ )
 			if( svs.clients[i].state >= cs_connected )
 				count++;
 
-		havePassword = sv_password->string[0];
+		if( sv_password->string[0] )
+			havePassword = true;
 
 		string[0] = '\0';
 		Info_SetValueForKey( string, "hostname", hostname->string, sizeof( string ) );
@@ -3426,7 +3428,7 @@ void SV_TSourceEngineQuery( netadr_t from )
 	char answer[1024] = "";
 	sizebuf_t buf;
 	int count = 0, bots = 0, index;
-	int havePassword;
+	qboolean havePassword = false;
 
 	if( svs.clients )
 	{
@@ -3441,7 +3443,9 @@ void SV_TSourceEngineQuery( netadr_t from )
 		}
 	}
 
-	havePassword = sv_password->string[0];
+	if( sv_password->string[0] )
+		havePassword = true;
+
 
 	BF_Init( &buf, "TSourceEngineQuery", answer, sizeof( answer ));
 
