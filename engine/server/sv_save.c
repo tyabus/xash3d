@@ -2254,16 +2254,16 @@ void SV_SaveGame( const char *pName )
 	SV_SaveGameSlot( savename, comment );
 
 	// HACKHACK: send usermessage from engine
-	if( Q_stricmp( pName, "autosave" ) && svgame.gmsgHudText != -1 )
+	if( Q_stricmp( pName, "autosave" ) )
 	{
 		const char *pMsg = "GAMESAVED"; // defined in titles.txt
 		sv_client_t *cl;
 
 		if(( cl = SV_ClientFromEdict( EDICT_NUM( 1 ), true )) != NULL )
 		{
-			BF_WriteByte( &cl->netchan.message, svgame.gmsgHudText );
-			BF_WriteByte( &cl->netchan.message, Q_strlen( pMsg ) + 1 );
-			BF_WriteString( &cl->netchan.message, pMsg );
+			pfnMessageBegin( MSG_ONE, pfnRegUserMsg("HudText", -1), NULL, &svgame.edicts[1] );
+			pfnWriteString( pMsg );
+			pfnMessageEnd();
 		}
 	}
 }
