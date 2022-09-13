@@ -1009,7 +1009,7 @@ SV_ConSay_f
 */
 void SV_ConSay_f( void )
 {
-	char		*p, text[MAX_SYSPATH];
+	char		*p, text[MAX_STRING];
 	sv_client_t	*client;
 	int		i;
 
@@ -1030,17 +1030,24 @@ void SV_ConSay_f( void )
 		p[Q_strlen(p) - 1] = 0;
 	}
 
-	Q_strncat( text, p, MAX_SYSPATH );
+	Q_strncat( text, p, MAX_STRING - 4 );
+	Q_strncat( text, "\n", MAX_STRING - 3 );
 
 	for( i = 0, client = svs.clients; i < sv_maxclients->integer; i++, client++ )
 	{
 		if( client->state != cs_spawned )
 			continue;
 
-		SV_ClientPrintf( client, PRINT_CHAT, "%s\n", text );
+		if( client->fakeclient )
+			continue;
+
+		pfnMessageBegin( MSG_ONE, pfnRegUserMsg("SayText", -1), NULL, &svgame.edicts[i + 1] );
+		pfnWriteByte( 0 ); // worldspawn
+		pfnWriteString( text );
+		pfnMessageEnd();
 	}
 
-	Msg( "%s\n", text );
+	Msg( text );
 }
 
 /*

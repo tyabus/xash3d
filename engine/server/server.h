@@ -659,6 +659,11 @@ int pfnPrecacheModel( const char *s );
 int pfnNumberOfEntities( void );
 int pfnDropToFloor( edict_t *e );
 void SV_RestartStaticEnts( void );
+int GAME_EXPORT pfnRegUserMsg( const char *pszName, int iSize );
+void GAME_EXPORT pfnMessageBegin( int msg_dest, int msg_num, const float *pOrigin, edict_t *ed );
+void GAME_EXPORT pfnMessageEnd( void );
+void GAME_EXPORT pfnWriteByte( int iValue );
+void GAME_EXPORT pfnWriteString( const char *src );
 
 _inline edict_t *SV_EDICT_NUM( int n, const char * file, const int line )
 {
