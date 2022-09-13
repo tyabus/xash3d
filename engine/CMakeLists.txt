@@ -33,7 +33,9 @@ file(GLOB_RECURSE XASH_ENGINE_STUB_SOURCES     platform/stub/*.c) # Stub sources
 file(GLOB_RECURSE XASH_ENGINE_ANDROID_SOURCES platform/android/*.c) # Android sources
 file(GLOB_RECURSE XASH_ENGINE_CLIENT_SOURCES  client/*.c) # Client sources
 
-find_package (Libunwind)
+if(NOT WIN32)
+	find_package (Libunwind)
+endif()
 
 if(LIBUNWIND_FOUND AND UNIX)
 	message(STATUS "libunwind found")
