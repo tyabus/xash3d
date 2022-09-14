@@ -1013,7 +1013,11 @@ void SV_ConSay_f( void )
 	sv_client_t	*client;
 	int		i;
 
-	if( Cmd_Argc() < 2 ) return;
+	if( Cmd_Argc() < 2 )
+	{
+		Msg( "Usage: say <message>\n" );
+		return;
+	}
 
 	if( !svs.clients || sv.background )
 	{
@@ -1041,13 +1045,13 @@ void SV_ConSay_f( void )
 		if( client->fakeclient )
 			continue;
 
-		pfnMessageBegin( MSG_ONE, pfnRegUserMsg("SayText", -1), NULL, &svgame.edicts[i + 1] );
+		pfnMessageBegin( MSG_ONE, pfnRegUserMsg( "SayText", -1 ), NULL, &svgame.edicts[i + 1] );
 		pfnWriteByte( 0 ); // worldspawn
 		pfnWriteString( text );
 		pfnMessageEnd();
 	}
 
-	Msg( text );
+	Msg( "%s", text );
 }
 
 /*
