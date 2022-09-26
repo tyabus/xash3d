@@ -773,7 +773,7 @@ Master will validate challenge and this server to public list
 */
 void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 {
-	uint32_t challenge;
+	uint32_t challenge = 0;
 	char s[4096] = "0\n"; // skip 2 bytes of header
 	int clients = 0, bots = 0, index;
 	qboolean havePassword = false;
