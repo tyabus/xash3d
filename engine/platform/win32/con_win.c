@@ -20,8 +20,6 @@ GNU General Public License for more details.
 #define SYSCONSOLE		"XashConsole"
 #define COMMAND_HISTORY	64	// system console keep more commands than game console
 
-
-
 // console defines
 #define SUBMIT_ID		1	// "submit" button
 #define QUIT_ON_ESCAPE_ID	2	// escape event
@@ -264,27 +262,18 @@ void Wcon_CreateConsole( void )
 	wc.lpszClassName = SYSCONSOLE;
 	wc.lpszMenuName  = 0;
 
+	rect.left = 0;
+	rect.right = 640;
+	rect.top = 0;
+	rect.bottom = 392;
 
 	if( host.type == HOST_NORMAL )
-	{
-		rect.left = 0;
-		rect.right = 536;
-		rect.top = 0;
-		rect.bottom = 364;
-		Q_strncpy( FontName, "Fixedsys", sizeof( FontName ));
-		Q_strncpy( s_wcd.title, va( "Xash3D FWGS %s", XASH_VERSION ), sizeof( s_wcd.title ));
-		fontsize = 8;
-	}
-	else // dedicated console
-	{
-		rect.left = 0;
-		rect.right = 640;
-		rect.top = 0;
-		rect.bottom = 392;
-		Q_strncpy( FontName, "System", sizeof( FontName ));
-		Q_strncpy( s_wcd.title, "Xash3D FWGS Dedicated Server", sizeof( s_wcd.title ));
-		fontsize = 14;
-	}
+		Q_strncpy( s_wcd.title, va( "Xash3D FWGS %s-%s", XASH_VERSION, XASH_BUILD_COMMIT ), sizeof( s_wcd.title ) );
+	else
+		Q_strncpy( s_wcd.title, "Xash3D FWGS Dedicated Server", sizeof( s_wcd.title ) );
+
+	Q_strncpy( FontName, "Arial", sizeof( FontName ) );
+	fontsize = 12;
 
 	if( !RegisterClass( &wc ))
 	{
