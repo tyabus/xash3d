@@ -105,6 +105,7 @@ convar_t	*sv_userinfo_penalty_attempts;
 convar_t	*sv_fullupdate_enable_penalty;
 convar_t	*sv_fullupdate_penalty_multiplier;
 convar_t	*sv_fullupdate_penalty_time;
+convar_t	*sv_master_response_timeout;
 
 // sky variables
 convar_t	*sv_skycolor_r;
@@ -784,6 +785,12 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 		return;
 	}
 
+	if( svs.last_heartbeat + sv_master_response_timeout->value < host.realtime )
+	{
+		MsgDev( D_ERROR, "unexpected master server info query packet (too late? try increasing sv_master_response_timeout value)\n");
+		return;
+	}
+
 	if( svs.clients )
 	{
 		for( index = 0; index < sv_maxclients->integer; index++ )
@@ -969,6 +976,8 @@ void SV_Init( void )
 	sv_fullupdate_enable_penalty = Cvar_Get( "sv_fullupdate_enable_penalty", "1", CVAR_ARCHIVE, "enable penalty time for too fast fullupdate command execution" );
 	sv_fullupdate_penalty_multiplier = Cvar_Get( "sv_fullupdate_penalty_multiplier", "2", CVAR_ARCHIVE, "penalty time multiplier" );
 	sv_fullupdate_penalty_time = Cvar_Get( "sv_fullupdate_penalty_time", "1", CVAR_ARCHIVE, "inital penalty time" );
+
+	sv_master_response_timeout = Cvar_Get( "sv_master_response_timeout", "4", CVAR_ARCHIVE, "master server heartbeat response timeout in seconds" );
 
 	Cmd_AddCommand( "download_resources", SV_DownloadResources_f, "try to download missing resources to server");
 
