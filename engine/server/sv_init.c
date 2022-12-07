@@ -378,12 +378,6 @@ void SV_ActivateServer( void )
 			if( *plservercfgfile )
 				Cbuf_AddText( va( "exec %s\n", plservercfgfile ) );
 		}
-
-		if( public_server->integer )
-		{
-			MsgDev( D_INFO, "Adding your server to master server list\n" );
-			Master_Add( );
-		}
 	}
 
 	// mapchangecfgfile
