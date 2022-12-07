@@ -401,6 +401,7 @@ typedef struct
 
 	double		last_heartbeat;
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
+	uint		heartbeat_challenge;
 } server_static_t;
 
 //=============================================================================
@@ -507,9 +508,6 @@ void SV_KillOperatorCommands( void );
 void SV_PrepWorldFrame( void );
 void SV_ProcessFile( sv_client_t *cl, char *filename );
 void SV_SendResourceList_f( sv_client_t *cl );
-void Master_Add( void );
-void Master_Heartbeat( void );
-void Master_Packet( void );
 void SV_AddToMaster( netadr_t from, sizebuf_t *msg );
 
 //
