@@ -35,6 +35,7 @@ GNU General Public License for more details.
 void CL_InternetServers_f( void );
 
 convar_t	*r_oldparticles;
+extern convar_t *host_cheats;
 extern convar_t *rcon_password;
 convar_t	*rcon_address;
 
@@ -843,6 +844,10 @@ void CL_SendConnectPacket( void )
 		IN_LockInputCvars();
 	}
 
+	// lock cheats for remote games only
+	if ( adr.type != NA_LOOPBACK )
+		Cvar_FullSet( "sv_cheats", va( "%s", host_cheats->string ), host_cheats->flags | CVAR_READ_ONLY );
+
 	Info_SetValueForKey( useragent, "d", va( "%d", input_devices ), sizeof( useragent ) );
 	Info_SetValueForKey( useragent, "v", XASH_VERSION, sizeof( useragent ) );
 	Info_SetValueForKey( useragent, "b", va( "%d", Q_buildnum() ), sizeof( useragent ) );
@@ -1175,6 +1180,10 @@ void CL_Disconnect( void )
 
 	// reset to writable state
 	IN_LockInputCvars();
+
+	// unlock cheats
+	Cvar_FullSet( "sv_cheats", va( "%s", host_cheats->string ), host_cheats->flags & ~CVAR_READ_ONLY );
+
 	Cbuf_InsertText( "menu_connectionprogress disconnect\n" );
 
 	// back to menu if developer mode set to "player" or "mapper"
