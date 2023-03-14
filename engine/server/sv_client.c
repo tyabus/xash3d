@@ -214,6 +214,14 @@ void SV_DirectConnect( netadr_t from )
 	if( Cmd_Argc() > 6 )
 		errorpacket = "errormsg";
 
+	// Bogus connection packet
+	if( Cmd_Argc() < 5 )
+	{
+		MsgDev( D_ERROR, "SV_DirectConnect: rejected connect from %s, too few (%i) connect packet args!\n", NET_AdrToString( from ), Cmd_Argc() );
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" ); // silently disconnect
+		return;
+	}
+
 	if( !svs.initialized )
 	{
 		Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nServer not running any map!\n", errorpacket );
@@ -257,6 +265,41 @@ void SV_DirectConnect( netadr_t from )
 		}
 	}
 
+	// see if the challenge is valid (LAN clients don't need to challenge)
+	if( !NET_IsLocalAddress( from ) )
+	{
+		const char *password;
+
+		for( i = 0; i < MAX_CHALLENGES; i++ )
+		{
+			if( NET_CompareAdr( from, svs.challenges[i].adr ) )
+			{
+				if( challenge == svs.challenges[i].challenge )
+					break; // valid challenge
+			}
+		}
+
+		if( i == MAX_CHALLENGES )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nNo or bad challenge for address.\n", errorpacket );
+			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+			return;
+		}
+
+		MsgDev( D_NOTE, "Client %i connecting with challenge %x\n", i, challenge );
+		svs.challenges[i].connected = true;
+
+		password = sv_password->string;
+
+		if( password[0] &&                                                    // does server have password
+		     Q_stricmp( password, Info_ValueForKey( userinfo, "password" ) ) ) // does user have match it
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nInvalid server password.\n", errorpacket );
+			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+			return;
+		}
+	}
+
 	if( !Info_IsValid( userinfo ) )
 	{
 		MsgDev( D_INFO, "%s:connect rejected : invalid userinfo\n", NET_AdrToString( from ));
@@ -283,41 +326,6 @@ void SV_DirectConnect( netadr_t from )
 		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server dosent allow HLTV proxies.\n");
 		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
 		return;
-	}
-
-	// see if the challenge is valid (LAN clients don't need to challenge)
-	if( !NET_IsLocalAddress( from ) )
-	{
-		const char *password;
-
-		for( i = 0; i < MAX_CHALLENGES; i++ )
-		{
-			if( NET_CompareAdr( from, svs.challenges[i].adr ))
-			{
-				if( challenge == svs.challenges[i].challenge )
-					break; // valid challenge
-			}
-		}
-
-		if( i == MAX_CHALLENGES )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nNo or bad challenge for address.\n", errorpacket );
-			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
-			return;
-		}
-
-		MsgDev( D_NOTE, "Client %i connecting with challenge %x\n", i, challenge );
-		svs.challenges[i].connected = true;
-
-		password = sv_password->string;
-
-		if( password[0] && // does server have password
-			Q_stricmp( password, Info_ValueForKey( userinfo, "password" ) ) ) // does user have match it
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nInvalid server password.\n", errorpacket );
-			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
-			return;
-		}
 	}
 
 	// if there is already a slot for this ip, reuse it
