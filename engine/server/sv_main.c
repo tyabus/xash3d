@@ -818,15 +818,21 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 	Info_SetValueForKey(s, "type",      Host_IsDedicated() ? "d" : "l", sizeof( s ) ); // dedicated
 	Info_SetValueForKey(s, "password",  havePassword       ? "1" : "0", sizeof( s ) ); // is password set
 
-#ifdef _WIN32
-	Info_SetValueForKey(s, "os",        "w", sizeof( s ) ); // Windows
+#if defined(_WIN32)
+	Info_SetValueForKey(s, "os",		"w", sizeof( s ) ); // Windows
+#elif defined(__ANDROID__)
+	Info_SetValueForKey(s, "os",		"a", sizeof( s ) ); // Android
+#elif defined(__APPLE__)
+	Info_SetValueForKey(s, "os",		"m", sizeof( s ) ); // Apple
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+	Info_SetValueForKey(s, "os",		"b", sizeof( s ) ); // Some BSD flavour
 #else
-	Info_SetValueForKey(s, "os",        "l", sizeof( s ) ); // Linux
+	Info_SetValueForKey(s, "os",		"l", sizeof( s ) ); // Linux (probably)
 #endif
 
 	Info_SetValueForKey(s, "secure",    "0", sizeof( s ) ); // server anti-cheat
 	Info_SetValueForKey(s, "lan",       "0", sizeof( s ) ); // LAN servers doesn't send info to master
-	Info_SetValueForKey(s, "version",   XASH_VERSION, sizeof( s ) ); // server region. 255 -- all regions
+	Info_SetValueForKey(s, "version",   XASH_VERSION, sizeof( s ) ); // Xash3D engine version
 	Info_SetValueForKey(s, "region",    "255", sizeof( s ) ); // server region. 255 -- all regions
 	Info_SetValueForKey(s, "product",   GI->gamefolder, sizeof( s ) ); // product? Where is the difference with gamedir?
 	Info_SetValueForKey(s, "nat",       sv_nat->string, sizeof( s ) ); // Server running under NAT, use reverse connection
