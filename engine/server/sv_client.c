@@ -929,8 +929,12 @@ void SV_BuildNetAnswer( netadr_t from )
 	int  version, context, type;
 	int  i, count = 0;
 
-	// ignore in single player
+	// ignore in single player or if no map is running
 	if( sv_maxclients->integer == 1 || !svs.initialized )
+		return;
+
+	// server is not public and request isnt from lan network 
+	if( !public_server->integer && !NET_IsLanAddress( from ) )
 		return;
 
 	version = Q_atoi( Cmd_Argv( 1 ));
