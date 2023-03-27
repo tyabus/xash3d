@@ -776,7 +776,7 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 {
 	uint32_t challenge = 0;
 	char s[4096] = "0\n"; // skip 2 bytes of header
-	int clients = 0, bots = 0, index;
+	int clients, bots; // initialized in SV_GetPlayerCount
 	qboolean havePassword = false;
 
 	if( !NET_IsFromMasters( from ) )
@@ -791,18 +791,7 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 		return;
 	}
 
-	if( svs.clients )
-	{
-		for( index = 0; index < sv_maxclients->integer; index++ )
-		{
-			if( svs.clients[index].state >= cs_connected )
-			{
-				if( svs.clients[index].fakeclient )
-					bots++;
-				else clients++;
-			}
-		}
-	}
+	SV_GetPlayerCount( &clients, &bots );
 
 	challenge = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
 	if( sv_password->string[0] )

@@ -46,6 +46,36 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo );
 
 /*
 =================
+SV_GetPlayerCount
+
+=================
+*/
+void SV_GetPlayerCount( int *players, int *bots )
+{
+	int index;
+
+	*players = 0;
+	*bots = 0;
+
+	// no clients
+	if( !svs.clients )
+		return;
+
+	for( index = 0; index < sv_maxclients->integer; index++ )
+	{
+		if( svs.clients[index].state >= cs_connected )
+		{
+			if( svs.clients[index].fakeclient )
+				(*bots)++;
+			else
+				(*players)++;
+		}
+
+	}
+}
+
+/*
+=================
 SV_GetChallenge
 
 Returns a challenge number that can be used
@@ -877,8 +907,8 @@ The second parameter should be the current protocol version number.
 void SV_Info( netadr_t from, int version )
 {
 	char	string[MAX_INFO_STRING];
-	int	i, count = 0;
-	char *gamedir = GI->gamefolder;
+	int		count, bots;
+	char	*gamedir = GI->gamefolder;
 	qboolean havePassword = false;
 
 	// ignore in single player
@@ -893,9 +923,7 @@ void SV_Info( netadr_t from, int version )
 	}
 	else
 	{
-		for( i = 0; i < sv_maxclients->integer; i++ )
-			if( svs.clients[i].state >= cs_connected && !svs.clients[i].fakeclient )
-				count++;
+		SV_GetPlayerCount( &count, &bots );
 
 		if( sv_password->string[0] )
 			havePassword = true;
@@ -978,8 +1006,8 @@ void SV_BuildNetAnswer( netadr_t from )
 	{
 		qboolean havePassword = false;
 
-		for( i = 0; i < sv_maxclients->integer; i++ )
-			if( svs.clients[i].state >= cs_connected )
+		for ( i = 0; i < sv_maxclients->integer; i++ )
+			if ( svs.clients[i].state >= cs_connected )
 				count++;
 
 		if( sv_password->string[0] )
@@ -3439,21 +3467,10 @@ void SV_TSourceEngineQuery( netadr_t from )
 	// A2S_INFO
 	char answer[1024] = "";
 	sizebuf_t buf;
-	int count = 0, bots = 0, index;
+	int count, bots; // initialized in SV_GetPlayerCount
 	qboolean havePassword = false;
 
-	if( svs.clients )
-	{
-		for( index = 0; index < sv_maxclients->integer; index++ )
-		{
-			if( svs.clients[index].state >= cs_connected )
-			{
-				if( svs.clients[index].fakeclient )
-					bots++;
-				else count++;
-			}
-		}
-	}
+	SV_GetPlayerCount( &count, &bots );
 
 	if( sv_password->string[0] )
 		havePassword = true;
