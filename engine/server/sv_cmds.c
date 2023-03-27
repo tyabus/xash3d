@@ -948,7 +948,7 @@ SV_Status_f
 */
 void SV_Status_f( void )
 {
-	int		i;
+	int			i, clients, bots, active;
 	float		fps;
 	sv_client_t	*cl;
 	edict_t		*ent;
@@ -961,9 +961,14 @@ void SV_Status_f( void )
 
 	ent = EDICT_NUM( 0 ); // worldspawn
 	fps = (1.0 / host.frametime);
+	active = pfnNumberOfEntities();
+
+	SV_GetPlayerCount( &clients, &bots );
 
 	Msg( "hostname: %s\n", hostname->string );
+	Msg( "players: %i (max %i)\n", clients, sv_maxclients->integer );
 	Msg( "fps: %.1f (max %.1f)\n", fps, host_maxfps->value );
+	Msg( "edicts: %i used (max %i)\n", active, GI->max_edicts  );
 	Msg( "map: %s (x %.f y %.f z %.f)\n", sv.name, ent->v.origin[0], ent->v.origin[1], ent->v.origin[2] );
 	Msg( "num score ping    name                             lastmsg   address               port  \n" );
 	Msg( "--- ----- ------- -------------------------------- --------- --------------------- ------\n" );
