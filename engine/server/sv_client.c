@@ -330,6 +330,15 @@ void SV_DirectConnect( netadr_t from )
 		}
 	}
 
+	// LAN servers are restricted to class C IP addresses
+	if( sv_lan->integer && !NET_IsLanAddress( from ))
+	{
+		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nLAN servers are restricted to local clients (class C)\n");
+		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nLAN servers are restricted to local clients (class C)\n");
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
+	}
+
 	if( !Info_IsValid( userinfo ) )
 	{
 		MsgDev( D_INFO, "%s:connect rejected : invalid userinfo\n", NET_AdrToString( from ));
@@ -3532,6 +3541,9 @@ void SV_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 
 	c = Cmd_Argv( 0 );
 	MsgDev( D_NOTE, "SV_ConnectionlessPacket: %s : %s\n", NET_AdrToString( from ), c );
+
+	if( sv_lan->integer && !NET_IsLanAddress( from ))
+		return; // dont do anything if sv_lan is on
 
 	if( !Q_strcmp( c, "ping" )) SV_Ping( from );
 	else if( !Q_strcmp( c, "ack" )) SV_Ack( from );

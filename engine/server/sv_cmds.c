@@ -1072,7 +1072,7 @@ void SV_Heartbeat_f( void )
 		return;
 	}
 
-	if( !public_server->integer || sv_maxclients->integer == 1 )
+	if( !public_server->integer || sv_maxclients->integer == 1 || sv_lan->integer == 1 )
 	{
 		Msg( "^3Your server isn't public.\n" );
 		return;

@@ -96,6 +96,7 @@ convar_t	*sv_allow_split;
 convar_t	*sv_allow_compress;
 convar_t	*sv_maxpacket;
 convar_t	*sv_forcesimulating;
+convar_t	*sv_lan;
 convar_t	*sv_nat;
 convar_t	*sv_password;
 convar_t	*sv_userinfo_enable_penalty;
@@ -736,7 +737,7 @@ let it know we are alive, and log information
 */
 void Master_Heartbeat( void )
 {
-	if( !public_server->integer || sv_maxclients->integer == 1 )
+	if( !public_server->integer || sv_maxclients->integer == 1 || sv_lan->integer == 1 )
 		return; // only public servers send heartbeats
 
 	// check for time wraparound
@@ -954,6 +955,7 @@ void SV_Init( void )
 	sv_maxpacket = Cvar_Get( "sv_maxpacket", "2000", CVAR_ARCHIVE, "limit cl_maxpacket for all clients" );
 	sv_forcesimulating = Cvar_Get( "sv_forcesimulating", DEFAULT_SV_FORCESIMULATING, 0, "forcing world simulating when server don't have active players" );
 	sv_nat = Cvar_Get( "sv_nat", "0", 0, "enable NAT bypass for this server" );
+	sv_lan = Cvar_Get( "sv_lan", "0", 0, "server is a lan server (no heartbeat, no authentication, no non-class C addresses, 9999.0 rate, etc.)" );
 	sv_password = Cvar_Get( "sv_password", "", CVAR_PROTECTED, "server password. Leave blank if none" );
 
 	sv_allow_joystick = Cvar_Get( "sv_allow_joystick", "1", CVAR_ARCHIVE, "allow connect with joystick enabled" );
@@ -1059,7 +1061,7 @@ void SV_Shutdown( qboolean reconnect )
 	if( svs.clients )
 		SV_FinalMessage( host.finalmsg, reconnect );
 
-	if( public_server->integer && sv_maxclients->integer != 1 )
+	if( public_server->integer && sv_maxclients->integer != 1 && sv_lan->integer != 1 )
 		Master_Shutdown();
 
 	Sequence_PurgeEntries( true ); // clear Sequence

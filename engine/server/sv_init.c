@@ -379,7 +379,7 @@ void SV_ActivateServer( void )
 				Cbuf_AddText( va( "exec %s\n", plservercfgfile ) );
 		}
 
-		if( public_server->integer )
+		if( public_server->integer && sv_lan->integer != 1 )
 		{
 			MsgDev( D_INFO, "Adding your server to master server list\n" );
 			Master_Add( );
