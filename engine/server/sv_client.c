@@ -947,7 +947,10 @@ void SV_Info( netadr_t from, int version )
 		Info_SetValueForKey( string, "gamedir", gamedir, sizeof( string ) );
 
 		// a1ba: extend to password
-		Info_SetValueForKey( string, "password", havePassword ? "1" : "0", sizeof( string ));
+		Info_SetValueForKey( string, "password", havePassword ? "1" : "0", sizeof( string ) );
+
+		// tyabus: extend to dedicated
+		Info_SetValueForKey( string, "dedicated", Host_IsDedicated() ? "1" : "0", sizeof( string ) );
 	}
 
 	Netchan_OutOfBandPrint( NS_SERVER, from, "info\n%s", string );
@@ -3483,7 +3486,6 @@ void SV_TSourceEngineQuery( netadr_t from )
 
 	if( sv_password->string[0] )
 		havePassword = true;
-
 
 	BF_Init( &buf, "TSourceEngineQuery", answer, sizeof( answer ));
 
