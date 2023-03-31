@@ -130,7 +130,7 @@ convar_t	*sv_allow_joystick;
 convar_t	*sv_allow_vr;
 convar_t	*sv_allow_hltv;
 
-void Master_Shutdown( void );
+static void Master_Heartbeat( void );
 
 char localinfo[MAX_LOCALINFO];
 
@@ -720,9 +720,19 @@ void Host_ServerFrame( void )
 Master_Add
 =================
 */
-void Master_Add( void )
+static void Master_Add( void )
 {
-	if( NET_SendToMasters( NS_SERVER, 2, "q\xFF" ) )
+	sizebuf_t msg;
+	char buf[16];
+	uint challenge;
+
+	svs.heartbeat_challenge = challenge = Com_RandomLong( 0, INT_MAX );
+
+	BF_Init( &msg, "Master Join", buf, sizeof( buf ));
+	BF_WriteBytes( &msg, "q\xFF", 2 );
+	BF_WriteUBitLong( &msg, challenge, sizeof( challenge ) << 3 );
+
+	if( NET_SendToMasters( NS_SERVER, BF_GetNumBytesWritten( &msg ), BF_GetData( &msg )))
 		svs.last_heartbeat = MAX_HEARTBEAT; // try next frame
 }
 
@@ -735,7 +745,7 @@ Send a message to the master every few minutes to
 let it know we are alive, and log information
 ================
 */
-void Master_Heartbeat( void )
+static void Master_Heartbeat( void )
 {
 	if( !public_server->integer || sv_maxclients->integer == 1 || sv_lan->integer == 1 )
 		return; // only public servers send heartbeats
@@ -759,7 +769,7 @@ Master_Shutdown
 Informs all masters that this server is going down
 =================
 */
-void Master_Shutdown( void )
+static void Master_Shutdown( void )
 {
 	NET_Config( true, false ); // allow remote
 	while( NET_SendToMasters( NS_SERVER, 2, "\x62\x0A" ) );
@@ -775,7 +785,7 @@ Master will validate challenge and this server to public list
 */
 void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 {
-	uint32_t challenge = 0;
+	uint32_t challenge = 0, challenge2;
 	char s[4096] = "0\n"; // skip 2 bytes of header
 	int clients, bots; // initialized in SV_GetPlayerCount
 	qboolean havePassword = false;
@@ -792,9 +802,16 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 		return;
 	}
 
+	challenge = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
+	challenge2 = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
+
+	if( challenge2 != svs.heartbeat_challenge )
+	{
+		MsgDev( D_ERROR, "unexpected master server info query packet (wrong challenge!)\n" );
+		return;
+	}
 	SV_GetPlayerCount( &clients, &bots );
 
-	challenge = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
 	if( sv_password->string[0] )
 		havePassword = true;
 
