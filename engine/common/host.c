@@ -1242,6 +1242,7 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 		Cmd_AddRestrictedCommand ( "net_error", Net_Error_f, "send network bad message from random place");
 	}
 
+	rcon_password = Cvar_Get( "rcon_password", "", CVAR_PROTECTED, "remote connect password" );
 	host_cheats = Cvar_Get( "sv_cheats", "0", CVAR_LATCH, "allow usage of cheat commands and variables" );
 	host_maxfps = Cvar_Get( "fps_max", "72", CVAR_ARCHIVE, "host fps upper limit" );
 	host_sleeptime = Cvar_Get( "sleeptime", DEFAULT_SLEEPTIME, CVAR_ARCHIVE|CVAR_LOCALONLY, "higher value means lower accuracy" );

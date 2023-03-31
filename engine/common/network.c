@@ -2279,8 +2279,8 @@ void HTTP_Init( void )
 	Cmd_AddCommand("http_list", &HTTP_List_f, "List all queued downloads");
 	Cmd_AddCommand("http_addcustomserver", &HTTP_AddCustomServer_f, "Add custom fastdl server");
 	http_useragent = Cvar_Get( "http_useragent",  va( "%s %s", "Xash3D FWGS", host_ver->string ), CVAR_ARCHIVE, "User-Agent string" );
-	http_autoremove = Cvar_Get( "http_autoremove", "1", CVAR_ARCHIVE, "Remove broken files" );
-	http_timeout = Cvar_Get( "http_timeout", "45", CVAR_ARCHIVE, "Timeout for http downloader" );
+	http_autoremove = Cvar_Get( "http_autoremove", "1", CVAR_ARCHIVE | CVAR_LOCALONLY, "Remove broken files" );
+	http_timeout = Cvar_Get( "http_timeout", "45", CVAR_ARCHIVE | CVAR_LOCALONLY, "Timeout for http downloader" );
 
 	// Read servers from fastdl.txt
 	line = serverfile = (char *)FS_LoadFile( "fastdl.txt", 0, false );

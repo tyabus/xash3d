@@ -96,6 +96,7 @@ convar_t	*sv_allow_split;
 convar_t	*sv_allow_compress;
 convar_t	*sv_maxpacket;
 convar_t	*sv_forcesimulating;
+convar_t	*sv_lan;
 convar_t	*sv_nat;
 convar_t	*sv_password;
 convar_t	*sv_userinfo_enable_penalty;
@@ -746,7 +747,7 @@ let it know we are alive, and log information
 */
 static void Master_Heartbeat( void )
 {
-	if( !public_server->integer || sv_maxclients->integer == 1 )
+	if( !public_server->integer || sv_maxclients->integer == 1 || sv_lan->integer == 1 )
 		return; // only public servers send heartbeats
 
 	// check for time wraparound
@@ -786,7 +787,7 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 {
 	uint32_t challenge = 0, challenge2;
 	char s[4096] = "0\n"; // skip 2 bytes of header
-	int clients = 0, bots = 0, index;
+	int clients, bots; // initialized in SV_GetPlayerCount
 	qboolean havePassword = false;
 
 	if( !NET_IsFromMasters( from ) )
@@ -809,19 +810,7 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 		MsgDev( D_ERROR, "unexpected master server info query packet (wrong challenge!)\n" );
 		return;
 	}
-
-	if( svs.clients )
-	{
-		for( index = 0; index < sv_maxclients->integer; index++ )
-		{
-			if( svs.clients[index].state >= cs_connected )
-			{
-				if( svs.clients[index].fakeclient )
-					bots++;
-				else clients++;
-			}
-		}
-	}
+	SV_GetPlayerCount( &clients, &bots );
 
 	if( sv_password->string[0] )
 		havePassword = true;
@@ -836,15 +825,21 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 	Info_SetValueForKey(s, "type",      Host_IsDedicated() ? "d" : "l", sizeof( s ) ); // dedicated
 	Info_SetValueForKey(s, "password",  havePassword       ? "1" : "0", sizeof( s ) ); // is password set
 
-#ifdef _WIN32
-	Info_SetValueForKey(s, "os",        "w", sizeof( s ) ); // Windows
+#if defined(_WIN32)
+	Info_SetValueForKey(s, "os",		"w", sizeof( s ) ); // Windows
+#elif defined(__ANDROID__)
+	Info_SetValueForKey(s, "os",		"a", sizeof( s ) ); // Android
+#elif defined(__APPLE__)
+	Info_SetValueForKey(s, "os",		"m", sizeof( s ) ); // Apple
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+	Info_SetValueForKey(s, "os",		"b", sizeof( s ) ); // Some BSD flavour
 #else
-	Info_SetValueForKey(s, "os",        "l", sizeof( s ) ); // Linux
+	Info_SetValueForKey(s, "os",		"l", sizeof( s ) ); // Linux (probably)
 #endif
 
 	Info_SetValueForKey(s, "secure",    "0", sizeof( s ) ); // server anti-cheat
 	Info_SetValueForKey(s, "lan",       "0", sizeof( s ) ); // LAN servers doesn't send info to master
-	Info_SetValueForKey(s, "version",   XASH_VERSION, sizeof( s ) ); // server region. 255 -- all regions
+	Info_SetValueForKey(s, "version",   XASH_VERSION, sizeof( s ) ); // Xash3D engine version
 	Info_SetValueForKey(s, "region",    "255", sizeof( s ) ); // server region. 255 -- all regions
 	Info_SetValueForKey(s, "product",   GI->gamefolder, sizeof( s ) ); // product? Where is the difference with gamedir?
 	Info_SetValueForKey(s, "nat",       sv_nat->string, sizeof( s ) ); // Server running under NAT, use reverse connection
@@ -913,7 +908,6 @@ void SV_Init( void )
 	sv_footsteps = Cvar_Get ("mp_footsteps", "1", CVAR_PHYSICINFO, "can hear footsteps from other players" );
 	sv_wateralpha = Cvar_Get ("sv_wateralpha", "1", CVAR_PHYSICINFO, "world surfaces water transparency factor. 1.0 - solid, 0.0 - fully transparent" );
 
-	rcon_password = Cvar_Get( "rcon_password", "", 0, "remote connect password" );
 	sv_stepsize = Cvar_Get( "sv_stepsize", "18", CVAR_ARCHIVE|CVAR_PHYSICINFO, "how high you can step up" );
 	sv_newunit = Cvar_Get( "sv_newunit", "0", 0, "sets to 1 while new unit is loading" );
 	hostname = Cvar_Get( "hostname", "unnamed", CVAR_SERVERNOTIFY|CVAR_ARCHIVE, "host name" );
@@ -978,6 +972,7 @@ void SV_Init( void )
 	sv_maxpacket = Cvar_Get( "sv_maxpacket", "2000", CVAR_ARCHIVE, "limit cl_maxpacket for all clients" );
 	sv_forcesimulating = Cvar_Get( "sv_forcesimulating", DEFAULT_SV_FORCESIMULATING, 0, "forcing world simulating when server don't have active players" );
 	sv_nat = Cvar_Get( "sv_nat", "0", 0, "enable NAT bypass for this server" );
+	sv_lan = Cvar_Get( "sv_lan", "0", 0, "server is a lan server (no heartbeat, no authentication, no non-class C addresses, 9999.0 rate, etc.)" );
 	sv_password = Cvar_Get( "sv_password", "", CVAR_PROTECTED, "server password. Leave blank if none" );
 
 	sv_allow_joystick = Cvar_Get( "sv_allow_joystick", "1", CVAR_ARCHIVE, "allow connect with joystick enabled" );
@@ -1083,7 +1078,7 @@ void SV_Shutdown( qboolean reconnect )
 	if( svs.clients )
 		SV_FinalMessage( host.finalmsg, reconnect );
 
-	if( public_server->integer && sv_maxclients->integer != 1 )
+	if( public_server->integer && sv_maxclients->integer != 1 && sv_lan->integer != 1 )
 		Master_Shutdown();
 
 	Sequence_PurgeEntries( true ); // clear Sequence

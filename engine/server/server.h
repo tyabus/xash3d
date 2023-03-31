@@ -588,6 +588,8 @@ void SV_RemoteCommand( netadr_t from, sizebuf_t *msg );
 int SV_CalcPing( sv_client_t *cl );
 void SV_PurgeResourceListCache( void );
 void SV_UpdateResourceList( void );
+void SV_GetPlayerCount( int *clients, int *bots );
+
 //
 // sv_cmds.c
 //

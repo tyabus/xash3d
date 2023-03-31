@@ -35,7 +35,8 @@ GNU General Public License for more details.
 void CL_InternetServers_f( void );
 
 convar_t	*r_oldparticles;
-convar_t	*rcon_client_password;
+extern convar_t *host_cheats;
+extern convar_t *rcon_password;
 convar_t	*rcon_address;
 
 convar_t	*cl_timeout;
@@ -843,6 +844,10 @@ void CL_SendConnectPacket( void )
 		IN_LockInputCvars();
 	}
 
+	// lock cheats for remote games only
+	if ( adr.type != NA_LOOPBACK )
+		Cvar_FullSet( "sv_cheats", va( "%s", host_cheats->string ), host_cheats->flags | CVAR_READ_ONLY );
+
 	Info_SetValueForKey( useragent, "d", va( "%d", input_devices ), sizeof( useragent ) );
 	Info_SetValueForKey( useragent, "v", XASH_VERSION, sizeof( useragent ) );
 	Info_SetValueForKey( useragent, "b", va( "%d", Q_buildnum() ), sizeof( useragent ) );
@@ -992,7 +997,7 @@ void CL_Rcon_f( void )
 	netadr_t	to;
 	int	i = 1;
 
-	if( !rcon_client_password->string[0] )
+	if( !rcon_password->string[0] )
 	{
 		Msg( "You must set 'rcon_password' before issuing an rcon command.\n" );
 		return;
@@ -1008,7 +1013,7 @@ void CL_Rcon_f( void )
 
 	Q_strncat( message, "rcon ", sizeof( message ) );
 
-	if( !rcon_client_password->string[0] )
+	if( !rcon_password->string[0] )
 	{
 		// HACK: allow pass password with first argument
 		// do not port this to new engine, it is better to fix on server side
@@ -1018,7 +1023,7 @@ void CL_Rcon_f( void )
 	}
 	else
 	{
-		Q_strncat( message, rcon_client_password->string, sizeof( message ) );
+		Q_strncat( message, rcon_password->string, sizeof( message ) );
 		Q_strncat( message, " ", sizeof( message ) );
 	}
 
@@ -1175,6 +1180,10 @@ void CL_Disconnect( void )
 
 	// reset to writable state
 	IN_LockInputCvars();
+
+	// unlock cheats
+	Cvar_FullSet( "sv_cheats", va( "%s", host_cheats->string ), host_cheats->flags & ~CVAR_READ_ONLY );
+
 	Cbuf_InsertText( "menu_connectionprogress disconnect\n" );
 
 	// back to menu if developer mode set to "player" or "mapper"
@@ -2136,7 +2145,6 @@ void CL_InitLocal( void )
 	cl_timeout = Cvar_Get( "cl_timeout", "60", 0, "connect timeout (in seconds)" );
 	cl_charset = Cvar_Get( "cl_charset", "utf-8", CVAR_ARCHIVE, "1-byte charset to use (iconv style)" );
 
-	rcon_client_password = Cvar_Get( "rcon_password", "", CVAR_PROTECTED, "remote control client password" );
 	rcon_address = Cvar_Get( "rcon_address", "", CVAR_PROTECTED, "remote control address" );
 
 	r_oldparticles = Cvar_Get("r_oldparticles", "0", CVAR_ARCHIVE, "make some particle textures a simple square, like with software rendering");
@@ -2246,7 +2254,7 @@ void CL_InitLocal( void )
 	Cmd_AddRestrictedCommand ("connect", CL_Connect_f, "connect to a server by hostname" );
 	Cmd_AddRestrictedCommand ("reconnect", CL_Reconnect_f, "reconnect to current level" );
 
-	Cmd_AddRestrictedCommand ("rcon", CL_Rcon_f, "sends a command to the server console (rcon_password and rcon_address required)" );
+	Cmd_AddRestrictedCommand ("rcon", CL_Rcon_f, "sends a command to the server console (rcon_password required)" );
 
 #ifndef XASH_RELEASE
 	if( host.developer > 3 )

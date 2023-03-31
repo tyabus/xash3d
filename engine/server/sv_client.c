@@ -46,6 +46,36 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo );
 
 /*
 =================
+SV_GetPlayerCount
+
+=================
+*/
+void SV_GetPlayerCount( int *players, int *bots )
+{
+	int index;
+
+	*players = 0;
+	*bots = 0;
+
+	// no clients
+	if( !svs.clients )
+		return;
+
+	for( index = 0; index < sv_maxclients->integer; index++ )
+	{
+		if( svs.clients[index].state >= cs_connected )
+		{
+			if( svs.clients[index].fakeclient )
+				(*bots)++;
+			else
+				(*players)++;
+		}
+
+	}
+}
+
+/*
+=================
 SV_GetChallenge
 
 Returns a challenge number that can be used
@@ -214,6 +244,14 @@ void SV_DirectConnect( netadr_t from )
 	if( Cmd_Argc() > 6 )
 		errorpacket = "errormsg";
 
+	// Bogus connection packet
+	if( Cmd_Argc() < 5 )
+	{
+		MsgDev( D_ERROR, "SV_DirectConnect: rejected connect from %s, too few (%i) connect packet args!\n", NET_AdrToString( from ), Cmd_Argc() );
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" ); // silently disconnect
+		return;
+	}
+
 	if( !svs.initialized )
 	{
 		Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nServer not running any map!\n", errorpacket );
@@ -257,6 +295,50 @@ void SV_DirectConnect( netadr_t from )
 		}
 	}
 
+	// see if the challenge is valid (LAN clients don't need to challenge)
+	if( !NET_IsLocalAddress( from ) )
+	{
+		const char *password;
+
+		for( i = 0; i < MAX_CHALLENGES; i++ )
+		{
+			if( NET_CompareAdr( from, svs.challenges[i].adr ) )
+			{
+				if( challenge == svs.challenges[i].challenge )
+					break; // valid challenge
+			}
+		}
+
+		if( i == MAX_CHALLENGES )
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nNo or bad challenge for address.\n", errorpacket );
+			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+			return;
+		}
+
+		MsgDev( D_NOTE, "Client %i connecting with challenge %x\n", i, challenge );
+		svs.challenges[i].connected = true;
+
+		password = sv_password->string;
+
+		if( password[0] &&                                                    // does server have password
+		     Q_stricmp( password, Info_ValueForKey( userinfo, "password" ) ) ) // does user have match it
+		{
+			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nInvalid server password.\n", errorpacket );
+			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+			return;
+		}
+	}
+
+	// LAN servers are restricted to class C IP addresses
+	if( sv_lan->integer && !NET_IsLanAddress( from ))
+	{
+		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nLAN servers are restricted to local clients (class C)\n");
+		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nLAN servers are restricted to local clients (class C)\n");
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
+	}
+
 	if( !Info_IsValid( userinfo ) )
 	{
 		MsgDev( D_INFO, "%s:connect rejected : invalid userinfo\n", NET_AdrToString( from ));
@@ -283,41 +365,6 @@ void SV_DirectConnect( netadr_t from )
 		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nThis server dosent allow HLTV proxies.\n");
 		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
 		return;
-	}
-
-	// see if the challenge is valid (LAN clients don't need to challenge)
-	if( !NET_IsLocalAddress( from ) )
-	{
-		const char *password;
-
-		for( i = 0; i < MAX_CHALLENGES; i++ )
-		{
-			if( NET_CompareAdr( from, svs.challenges[i].adr ))
-			{
-				if( challenge == svs.challenges[i].challenge )
-					break; // valid challenge
-			}
-		}
-
-		if( i == MAX_CHALLENGES )
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nNo or bad challenge for address.\n", errorpacket );
-			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
-			return;
-		}
-
-		MsgDev( D_NOTE, "Client %i connecting with challenge %x\n", i, challenge );
-		svs.challenges[i].connected = true;
-
-		password = sv_password->string;
-
-		if( password[0] && // does server have password
-			Q_stricmp( password, Info_ValueForKey( userinfo, "password" ) ) ) // does user have match it
-		{
-			Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nInvalid server password.\n", errorpacket );
-			Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
-			return;
-		}
 	}
 
 	// if there is already a slot for this ip, reuse it
@@ -869,8 +916,8 @@ The second parameter should be the current protocol version number.
 void SV_Info( netadr_t from, int version )
 {
 	char	string[MAX_INFO_STRING];
-	int	i, count = 0;
-	char *gamedir = GI->gamefolder;
+	int		count, bots;
+	char	*gamedir = GI->gamefolder;
 	qboolean havePassword = false;
 
 	// ignore in single player
@@ -885,9 +932,7 @@ void SV_Info( netadr_t from, int version )
 	}
 	else
 	{
-		for( i = 0; i < sv_maxclients->integer; i++ )
-			if( svs.clients[i].state >= cs_connected && !svs.clients[i].fakeclient )
-				count++;
+		SV_GetPlayerCount( &count, &bots );
 
 		if( sv_password->string[0] )
 			havePassword = true;
@@ -902,7 +947,10 @@ void SV_Info( netadr_t from, int version )
 		Info_SetValueForKey( string, "gamedir", gamedir, sizeof( string ) );
 
 		// a1ba: extend to password
-		Info_SetValueForKey( string, "password", havePassword ? "1" : "0", sizeof( string ));
+		Info_SetValueForKey( string, "password", havePassword ? "1" : "0", sizeof( string ) );
+
+		// tyabus: extend to dedicated
+		Info_SetValueForKey( string, "dedicated", Host_IsDedicated() ? "1" : "0", sizeof( string ) );
 	}
 
 	Netchan_OutOfBandPrint( NS_SERVER, from, "info\n%s", string );
@@ -921,8 +969,12 @@ void SV_BuildNetAnswer( netadr_t from )
 	int  version, context, type;
 	int  i, count = 0;
 
-	// ignore in single player
+	// ignore in single player or if no map is running
 	if( sv_maxclients->integer == 1 || !svs.initialized )
+		return;
+
+	// server is not public and request isnt from lan network 
+	if( !public_server->integer && !NET_IsLanAddress( from ) )
 		return;
 
 	version = Q_atoi( Cmd_Argv( 1 ));
@@ -966,8 +1018,8 @@ void SV_BuildNetAnswer( netadr_t from )
 	{
 		qboolean havePassword = false;
 
-		for( i = 0; i < sv_maxclients->integer; i++ )
-			if( svs.clients[i].state >= cs_connected )
+		for ( i = 0; i < sv_maxclients->integer; i++ )
+			if ( svs.clients[i].state >= cs_connected )
 				count++;
 
 		if( sv_password->string[0] )
@@ -3427,25 +3479,13 @@ void SV_TSourceEngineQuery( netadr_t from )
 	// A2S_INFO
 	char answer[1024] = "";
 	sizebuf_t buf;
-	int count = 0, bots = 0, index;
+	int count, bots; // initialized in SV_GetPlayerCount
 	qboolean havePassword = false;
 
-	if( svs.clients )
-	{
-		for( index = 0; index < sv_maxclients->integer; index++ )
-		{
-			if( svs.clients[index].state >= cs_connected )
-			{
-				if( svs.clients[index].fakeclient )
-					bots++;
-				else count++;
-			}
-		}
-	}
+	SV_GetPlayerCount( &count, &bots );
 
 	if( sv_password->string[0] )
 		havePassword = true;
-
 
 	BF_Init( &buf, "TSourceEngineQuery", answer, sizeof( answer ));
 
@@ -3503,6 +3543,9 @@ void SV_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 
 	c = Cmd_Argv( 0 );
 	MsgDev( D_NOTE, "SV_ConnectionlessPacket: %s : %s\n", NET_AdrToString( from ), c );
+
+	if( sv_lan->integer && !NET_IsLanAddress( from ))
+		return; // dont do anything if sv_lan is on
 
 	if( !Q_strcmp( c, "ping" )) SV_Ping( from );
 	else if( !Q_strcmp( c, "ack" )) SV_Ack( from );
