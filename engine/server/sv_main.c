@@ -724,13 +724,14 @@ static void Master_Add( void )
 {
 	sizebuf_t msg;
 	char buf[16];
-	uint challenge;
 
-	svs.heartbeat_challenge = challenge = Com_RandomLong( 0, INT_MAX );
+	// Server originally might have been under sv_lan
+	if ( svs.heartbeat_challenge == 0 )
+		svs.heartbeat_challenge = Com_RandomLong( 0, INT_MAX );
 
 	BF_Init( &msg, "Master Join", buf, sizeof( buf ));
 	BF_WriteBytes( &msg, "q\xFF", 2 );
-	BF_WriteUBitLong( &msg, challenge, sizeof( challenge ) << 3 );
+	BF_WriteUBitLong( &msg, svs.heartbeat_challenge, sizeof( svs.heartbeat_challenge ) << 3 );
 
 	if( NET_SendToMasters( NS_SERVER, BF_GetNumBytesWritten( &msg ), BF_GetData( &msg )))
 		svs.last_heartbeat = MAX_HEARTBEAT; // try next frame
@@ -771,6 +772,7 @@ Informs all masters that this server is going down
 */
 static void Master_Shutdown( void )
 {
+	svs.heartbeat_challenge = 0;
 	NET_Config( true, false ); // allow remote
 	while( NET_SendToMasters( NS_SERVER, 2, "\x62\x0A" ) );
 }
