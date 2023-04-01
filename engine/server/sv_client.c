@@ -295,6 +295,14 @@ void SV_DirectConnect( netadr_t from )
 		}
 	}
 
+	// we still need to check it first just to be srue
+	if( !Info_IsValid( userinfo ) )
+	{
+		MsgDev( D_INFO, "%s:connect rejected : invalid userinfo\n", NET_AdrToString( from ) );
+		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
+		return;
+	}
+
 	// see if the challenge is valid (LAN clients don't need to challenge)
 	if( !NET_IsLocalAddress( from ) )
 	{
@@ -335,13 +343,6 @@ void SV_DirectConnect( netadr_t from )
 	{
 		Netchan_OutOfBandPrint( NS_SERVER, from, "print\nLAN servers are restricted to local clients (class C)\n");
 		Netchan_OutOfBandPrint( NS_SERVER, from, "errormsg\nLAN servers are restricted to local clients (class C)\n");
-		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
-		return;
-	}
-
-	if( !Info_IsValid( userinfo ) )
-	{
-		MsgDev( D_INFO, "%s:connect rejected : invalid userinfo\n", NET_AdrToString( from ));
 		Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
 		return;
 	}
