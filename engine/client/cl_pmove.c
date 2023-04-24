@@ -379,6 +379,9 @@ int CL_TruePointContents( const vec3_t p )
 	// sanity check
 	if( !p ) return CONTENTS_NONE;
 
+	// tyabus: if we dont have map loaded we will crash in PM_HullPointContents later
+	if ( !cl.worldmodel ) return CONTENTS_NONE;
+
 	oldhull = clgame.pmove->usehull;
 
 	// get base contents from world
