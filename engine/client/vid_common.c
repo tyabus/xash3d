@@ -917,7 +917,7 @@ void GL_InitCommands( void )
 	vid_highdpi = Cvar_Get( "vid_highdpi", "1", CVAR_RENDERINFO, "Enable High-DPI mode" );
 
 	Cmd_AddCommand( "r_info", R_RenderInfo_f, "display renderer info" );
-	Cmd_AddCommand( "texturelist", R_TextureList_f, "display loaded textures list" );
+	Cmd_AddRestrictedCommand( "texturelist", R_TextureList_f, "display loaded textures list" );
 }
 
 void GL_RemoveCommands( void )
