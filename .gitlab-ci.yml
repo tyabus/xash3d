@@ -36,7 +36,7 @@ linux_dedicated:
   - export CC="gcc -m32"
   - export CXX="gcc -m32"
   - cmake -DXASH_DOWNLOAD_DEPENDENCIES=yes -DXASH_SDL=OFF -DXASH_DEDICATED=ON -DXASH_STATIC=ON -DXASH_DLL_LOADER=ON -DXASH_VGUI=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
-  - make -j2
+  - make -j$(nproc --all)
   artifacts:
     paths:
     - out2/engine/xash3d
@@ -62,7 +62,7 @@ linux_desktop:
   - cd $CI_PROJECT_DIR/SDL2-2.0.14/
   - export CC="gcc -msse2 -march=i686 -m32 -ggdb -O2"
   - ./configure --disable-dependency-tracking --enable-audio --enable-video --enable-events --disable-render --enable-joystick --disable-haptic --disable-power --enable-threads --enable-timers --enable-loadso --enable-video-opengl --enable-x11-shared --enable-video-x11 --enable-video-x11-xrandr --enable-video-x11-scrnsaver --enable-video-x11-xinput --disable-video-x11-xshape --disable-video-x11-xdbe --disable-libudev --disable-dbus --disable-ibus --enable-sdl-dlopen --disable-video-opengles --disable-cpuinfo --disable-assembly --disable-atomic --enable-alsa
-  - make -j2
+  - make -j$(nproc --all)
   - mkdir -p ../sdl2-linux
   - make install DESTDIR=$CI_PROJECT_DIR/sdl2-linux
   - cd ../
@@ -71,7 +71,7 @@ linux_desktop:
   - export CC="gcc -m32"
   - export CXX="gcc -m32"
   - cmake -DCMAKE_PREFIX_PATH=$CI_PROJECT_DIR/sdl2-linux/usr/local -DXASH_DOWNLOAD_DEPENDENCIES=yes -DXASH_STATIC=ON -DXASH_DLL_LOADER=ON -DXASH_VGUI=ON -DMAINUI_USE_STB=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
-  - make -j2
+  - make -j$(nproc --all)
   - mkdir artifacts
   - cp ../scripts/xash3d.sh artifacts
   - cp engine/xash3d artifacts
@@ -153,7 +153,7 @@ coverity_scan:
   - cd $CI_PROJECT_DIR/SDL2-2.0.14/
   - export CC="gcc -msse2 -march=i686 -m32 -ggdb -O2"
   - ./configure --disable-dependency-tracking --enable-audio --enable-video --enable-events --disable-render --enable-joystick --disable-haptic --disable-power --enable-threads --enable-timers --enable-loadso --enable-video-opengl --enable-x11-shared --enable-video-x11 --enable-video-x11-xrandr --enable-video-x11-scrnsaver --enable-video-x11-xinput --disable-video-x11-xshape --disable-video-x11-xdbe --disable-libudev --disable-dbus --disable-ibus --enable-sdl-dlopen --disable-video-opengles --disable-cpuinfo --disable-assembly --disable-atomic --enable-alsa
-  - make -j2
+  - make -j$(nproc --all)
   - mkdir -p ../sdl2-linux
   - make install DESTDIR=$CI_PROJECT_DIR/sdl2-linux
   - cd ../
