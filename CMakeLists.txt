@@ -25,7 +25,12 @@ cmake_minimum_required(VERSION 3.0.0)
 # Install custom module path
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
-include(VSForceXPToolchain) # Force XP toolchain for Visual Studio
+# Must be specified before to check if we are targeting 64 bit
+option(XASH_64BIT "Enable experimental 64-bit build. Note that you must also provide 64-bit game binaries" OFF) # Enable 64-bit build of Xash3D FWGS Engine.
+
+if(NOT XASH_64BIT)
+	include(VSForceXPToolchain) # Force XP toolchain for Visual Studio
+endif()
 
 project(XASH3D)
 
@@ -40,9 +45,6 @@ include(CPack)
 set (XASH3D_VERSION 0.19.4)
 
 option(XASH_DEDICATED "Enable dedicated build. Servers must choose this." OFF) # Servers must choose this
-
-# Enable 64-bit build of Xash3D FWGS Engine.
-option(XASH_64BIT "Enable experimental 64-bit build. Note that you must also provide 64-bit game binaries" OFF)
 
 # Windows only. Enable it by default for Windows.
 cmake_dependent_option(XASH_NONSTANDARD_LOAD "Enable own DLL loader in Windows." ON "WIN32" OFF)

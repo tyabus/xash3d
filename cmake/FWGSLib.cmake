@@ -191,9 +191,9 @@ macro(fwgs_library_dependency tgt pkgname)
 			set(FORCE_UNPACK TRUE)
 		else()
 			# I see what you did there, CMake Cache!
-			if(NOT EXISTS ${${pkgname}_LIBRARY})
+			if(NOT EXISTS "${${pkgname}_LIBRARY}")
 				# Check if we unpacked
-				if(NOT EXISTS ${CMAKE_BINARY_DIR}/${pkgname})
+				if(NOT EXISTS "${CMAKE_BINARY_DIR}/${pkgname}")
 					set(FORCE_UNPACK TRUE)
 
 					# Check if we need re-download

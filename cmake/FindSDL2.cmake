@@ -92,8 +92,13 @@ find_library(SDL2_LIBRARY_TEMP
 	NAMES SDL2 SDL2.dll
 	PATH_SUFFIXES
 	    lib
-		lib/i386-linux-gnu
-		lib/x86
+		if(XASH_64BIT)
+			lib/x86_64-linux-gnu
+			lib/x64
+		else()
+			lib/i386-linux-gnu
+			lib/x86
+		endif()
 	PATHS ${SDL2_SEARCH_PATHS}
 )
 
@@ -118,8 +123,13 @@ if(SDL2_BUILDING_EXECUTABLE)
 			NAMES SDL2main libSDL2main.a
 			PATH_SUFFIXES
 			    lib
-				lib/i386-linux-gnu
-				lib/x86
+				if(XASH_64BIT)
+					lib/x86_64-linux-gnu
+					lib/x64
+				else()
+					lib/i386-linux-gnu
+					lib/x86
+				endif()
 			PATHS ${SDL2_SEARCH_PATHS}
 		)
     endif()
