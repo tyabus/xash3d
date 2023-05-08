@@ -95,6 +95,7 @@ void Delta_Shutdown( void );
 void Delta_InitFields( void );
 int Delta_NumTables( void );
 delta_info_t *Delta_FindStructByIndex( int index );
+delta_info_t *Delta_FindStruct( const char *name );
 void Delta_AddEncoder( char *name, pfnDeltaEncode encodeFunc );
 int Delta_FindField( delta_t *pFields, const char *fieldname );
 void Delta_SetField( delta_t *pFields, const char *fieldname );
