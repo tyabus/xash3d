@@ -88,19 +88,25 @@ find_path(SDL2_INCLUDE_DIR SDL.h
 	PATHS ${SDL2_SEARCH_PATHS}
 )
 
+if(XASH_64BIT)
+	find_library(SDL2_LIBRARY_TEMP
+	NAMES SDL2 SDL2.dll
+	PATH_SUFFIXES
+	    lib
+		lib/x86_64-linux-gnu
+		lib/x64
+	PATHS ${SDL2_SEARCH_PATHS}
+	)
+else()
 find_library(SDL2_LIBRARY_TEMP
 	NAMES SDL2 SDL2.dll
 	PATH_SUFFIXES
 	    lib
-		if(XASH_64BIT)
-			lib/x86_64-linux-gnu
-			lib/x64
-		else()
-			lib/i386-linux-gnu
-			lib/x86
-		endif()
+		lib/i386-linux-gnu
+		lib/x86
 	PATHS ${SDL2_SEARCH_PATHS}
 )
+endif()
 
 # Call sdl2-config if SDL2_LIBRARY still not found
 if(NOT SDL2_LIBRARY_TEMP AND NOT WIN32)
@@ -119,20 +125,24 @@ if(SDL2_BUILDING_EXECUTABLE)
 		# SDL2main. This is mainly for Windows and OS X. Other (Unix) platforms
 		# seem to provide SDL2main for compatibility even though they don't
 		# necessarily need it.
-		find_library(SDL2MAIN_LIBRARY
-			NAMES SDL2main libSDL2main.a
-			PATH_SUFFIXES
-			    lib
-				if(XASH_64BIT)
+		if(XASH_64BIT)
+			find_library(SDL2MAIN_LIBRARY
+				NAMES SDL2main libSDL2main.a
+				PATH_SUFFIXES
+					lib
 					lib/x86_64-linux-gnu
 					lib/x64
-				else()
+				PATHS ${SDL2_SEARCH_PATHS})
+		else()
+			find_library(SDL2MAIN_LIBRARY
+				NAMES SDL2main libSDL2main.a
+				PATH_SUFFIXES
+					lib
 					lib/i386-linux-gnu
 					lib/x86
-				endif()
-			PATHS ${SDL2_SEARCH_PATHS}
-		)
-    endif()
+				PATHS ${SDL2_SEARCH_PATHS})
+		endif()
+	endif()
 endif()
 
 # SDL2 may require threads on your system.
