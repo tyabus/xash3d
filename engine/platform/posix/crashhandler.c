@@ -26,8 +26,12 @@ Crash handler, called from system
 // Posix signal handler
 #include "library.h"
 #define _GNU_SOURCE
+#if defined(__APPLE__)
+#define _XOPEN_SOURCE
+#include <sys/ucontext.h>
+#endif
 #define __USE_GNU
-#if !defined(__OpenBSD__)
+#if !defined(__OpenBSD__) || !defined(__APPLE__)
 #include <ucontext.h>
 #endif
 #include <dlfcn.h>
@@ -70,6 +74,8 @@ static void Sys_Crash( int signal, siginfo_t *si, void *context)
 		void *pc = (void*)ucontext->uc_mcontext.__gregs[REG_RIP], **bp = (void**)ucontext->uc_mcontext.__gregs[REG_RBP], **sp = (void**)ucontext->uc_mcontext.__gregs[REG_RSP];
 	#elif defined(__OpenBSD__)
 		void *pc = (void*)ucontext->sc_rip, **bp = (void**)ucontext->sc_rbp, **sp = (void**)ucontext->sc_rsp;
+	#elif defined(__APPLE__)
+		void *pc = (void*)ucontext->uc_mcontext->__ss.__rip, **bp = (void**)ucontext->uc_mcontext->__ss.__rbp, **sp = (void**)ucontext->uc_mcontext->__ss.__rsp;
 	#else
 		void *pc = (void*)ucontext->uc_mcontext.gregs[REG_RIP], **bp = (void**)ucontext->uc_mcontext.gregs[REG_RBP], **sp = (void**)ucontext->uc_mcontext.gregs[REG_RSP];
 	#endif
@@ -80,6 +86,8 @@ static void Sys_Crash( int signal, siginfo_t *si, void *context)
 		void *pc = (void*)ucontext->uc_mcontext.__gregs[REG_EIP], **bp = (void**)ucontext->uc_mcontext.__gregs[REG_EBP], **sp = (void**)ucontext->uc_mcontext.__gregs[REG_ESP];
 	#elif defined(__OpenBSD__)
 		void *pc = (void*)ucontext->sc_eip, **bp = (void**)ucontext->sc_ebp, **sp = (void**)ucontext->sc_esp;
+	#elif defined(__APPLE__)
+		void *pc = (void*)ucontext->uc_mcontext->__ss.__rip, **bp = (void**)ucontext->uc_mcontext->__ss.__rbp, **sp = (void**)ucontext->uc_mcontext->__ss.__rsp;
 	#else
 		void *pc = (void*)ucontext->uc_mcontext.gregs[REG_EIP], **bp = (void**)ucontext->uc_mcontext.gregs[REG_EBP], **sp = (void**)ucontext->uc_mcontext.gregs[REG_ESP];
 	#endif
@@ -91,7 +99,7 @@ static void Sys_Crash( int signal, siginfo_t *si, void *context)
 #error "Unknown arch!!!"
 #endif
 	// Safe actions first, stack and memory may be corrupted
-	#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+	#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined (__APPLE__)
 		len = Q_snprintf( message, 4096, "Sys_Crash: signal %d, err %d with code %d at %p\n", signal, si->si_errno, si->si_code, si->si_addr );
 	#else
 		len = Q_snprintf( message, 4096, "Sys_Crash: signal %d, err %d with code %d at %p %p\n", signal, si->si_errno, si->si_code, si->si_addr, si->si_ptr );

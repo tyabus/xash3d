@@ -33,11 +33,11 @@ file(GLOB_RECURSE XASH_ENGINE_STUB_SOURCES     platform/stub/*.c) # Stub sources
 file(GLOB_RECURSE XASH_ENGINE_ANDROID_SOURCES platform/android/*.c) # Android sources
 file(GLOB_RECURSE XASH_ENGINE_CLIENT_SOURCES  client/*.c) # Client sources
 
-if(NOT WIN32)
+if(NOT WIN32 AND NOT APPLE)
 	find_package (Libunwind)
 endif()
 
-if(LIBUNWIND_FOUND AND UNIX)
+if(LIBUNWIND_FOUND AND UNIX AND NOT APPLE)
 	message(STATUS "libunwind found")
 	include_directories(${LIBUNWIND_INCLUDE_DIRS})
 	file(GLOB XASH_ENGINE_POSIX_SOURCES platform/posix/crashhandler_libunwind.c)
