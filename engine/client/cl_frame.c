@@ -739,7 +739,7 @@ void CL_UpdateStudioVars( cl_entity_t *ent, entity_state_t *newstate, qboolean n
 {
 	int	i;
 
-	if( newstate->effects & EF_NOINTERP || noInterp )
+	if( (newstate->effects & EF_NOINTERP) || noInterp )
 	{
 		ent->latched.sequencetime = 0.0f; // no lerping between sequences
 		ent->latched.prevsequence = newstate->sequence; // keep an actual
@@ -803,7 +803,7 @@ Using studio latched vars for interpolate bmodels
 */
 void CL_UpdateBmodelVars( cl_entity_t *ent, entity_state_t *newstate, qboolean noInterp )
 {
-	if( newstate->effects & EF_NOINTERP || noInterp )
+	if( (newstate->effects & EF_NOINTERP) || noInterp )
 	{
 		ent->latched.prevanimtime = newstate->animtime;
 		VectorCopy( newstate->origin, ent->latched.prevorigin );
@@ -893,7 +893,7 @@ void CL_DeltaEntity( sizebuf_t *msg, frame_t *frame, int newnum, entity_state_t 
 	// set player state
 	ent->player = CL_IsPlayerIndex( ent->index );
 
-	if( state->effects & EF_NOINTERP || newent )
+	if( (state->effects & EF_NOINTERP) || newent )
 	{	
 		// duplicate the current state so lerping doesn't hurt anything
 		ent->prevstate = *state;

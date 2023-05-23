@@ -210,10 +210,10 @@ Load master server list from xashcomm.lst
 */
 void NET_LoadMasters( )
 {
-	byte *afile, *pfile;
+	char *afile, *pfile;
 	char token[4096];
 
-	pfile = afile = FS_LoadFile( "xashcomm.lst", NULL, true );
+	pfile = afile = (char*)FS_LoadFile( "xashcomm.lst", NULL, true );
 
 	if( !afile ) // file doesn't exist yet
 	{

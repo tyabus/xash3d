@@ -65,6 +65,7 @@ extern "C" {
 #include <stdio.h> // off_t
 #include <stdarg.h> // va_list
 #include <stdlib.h> // rand, abs
+#include <limits.h> // PATH_MAX
 
 #ifdef __i386__
 #define EXPORT __attribute__ ((visibility ("default"),force_align_arg_pointer))
@@ -184,6 +185,7 @@ typedef enum
 
 #include "system.h"
 #include "ref_params.h"
+#include "bspfile.h"
 #include "com_model.h"
 #include "filesystem.h"
 #include "crtlib.h"

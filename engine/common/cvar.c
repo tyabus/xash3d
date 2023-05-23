@@ -435,7 +435,7 @@ convar_t *Cvar_Set2( const char *var_name, const char *value, qboolean force )
 					return var;
 			}
 
-			if( var->flags & CVAR_LATCH && Cvar_VariableInteger( "host_serverstate" ))
+			if( (var->flags & CVAR_LATCH) && Cvar_VariableInteger( "host_serverstate" ))
 			{
 				MsgDev( D_INFO, "%s will be changed upon restarting.\n", var->name );
 				var->latched_string = copystring( value );
@@ -1197,7 +1197,7 @@ void Cvar_Latched_f( void )
 		if( var->flags & CVAR_EXTDLL )
 			continue;
 
-		if( var->flags & CVAR_LATCH && var->latched_string )
+		if( (var->flags & CVAR_LATCH) && var->latched_string )
 		{
 			Cvar_FullSet( var->name, var->latched_string, var->flags );
 			Mem_Free( var->latched_string );
@@ -1242,7 +1242,7 @@ void Cvar_LatchedVideo_f( void )
 		if( var->flags & CVAR_EXTDLL )
 			continue;
 
-		if( var->flags & CVAR_LATCH_VIDEO && var->latched_string )
+		if( (var->flags & CVAR_LATCH_VIDEO) && var->latched_string )
 		{
 			Cvar_FullSet( var->name, var->latched_string, var->flags );
 			Mem_Free( var->latched_string );

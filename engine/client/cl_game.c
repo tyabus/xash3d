@@ -374,7 +374,7 @@ print centerscreen message
 */
 void CL_CenterPrint( const char *text, float y )
 {
-	byte	*s;
+	const char	*s;
 	int	width = 0;
 	int	length = 0;
 	float yscale = 1;

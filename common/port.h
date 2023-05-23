@@ -111,12 +111,12 @@ GNU General Public License for more details.
 	#define tell( a )					lseek(a, 0, SEEK_CUR)
 
 	typedef unsigned char	BYTE;
-	typedef short int	    WORD;
-	typedef uint32_t    DWORD;
-	typedef int	    LONG;
-	typedef uint32_t   ULONG;
-	typedef int			WPARAM;
-	typedef uint32_t    LPARAM;
+	typedef short int		WORD;
+	typedef unsigned int	DWORD;
+	typedef int				LONG;
+	typedef unsigned int	ULONG;
+	typedef int				WPARAM;
+	typedef unsigned int	LPARAM;
 
 	typedef void* HANDLE;
 	typedef void* HMODULE;

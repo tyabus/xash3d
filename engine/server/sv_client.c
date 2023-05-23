@@ -1661,7 +1661,7 @@ void SV_ParseResListFile( resourcelist_t *reslist, const char *name )
 	char token[MAX_SYSPATH];
 	resourcetype_t type;
 
-	afile = pfile = FS_LoadFile( name, NULL, true );
+	afile = pfile = (char*)FS_LoadFile( name, NULL, true );
 
 	while(( pfile = COM_ParseFile( pfile, token )))
 	{

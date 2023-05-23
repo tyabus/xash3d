@@ -29,7 +29,8 @@ extern "C" {
 #endif
 
 #include "port.h"
-
+#include <stdlib.h>
+#include <stdint.h>
 #include <setjmp.h>
 #include <stdio.h>
 #include <time.h>

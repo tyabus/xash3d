@@ -1101,7 +1101,7 @@ void NET_SendPacket( netsrc_t sock, size_t length, const void *data, netadr_t to
 
 	// sequenced packets are shown in netchan, so just show oob
 	if( net_showpackets->integer && *(int *)data == -1 )
-		MsgDev( D_INFO, "send packet %4u\n", length );
+		MsgDev( D_INFO, "send packet %zu\n", length );
 
 	if( to.type == NA_LOOPBACK )
 	{
@@ -1122,7 +1122,7 @@ void NET_SendPacket( netsrc_t sock, size_t length, const void *data, netadr_t to
 	{
 		char buf[256];
 		Q_strncpy( buf, data,  min( 256, length ));
-		MsgDev( D_ERROR, "NET_SendPacket ( %d, %d, \"%s\", %i ): bad address type %i\n", sock, length, buf, to.type, to.type );
+		MsgDev( D_ERROR, "NET_SendPacket ( %d, %zu, \"%s\", %i ): bad address type %i\n", sock, length, buf, to.type, to.type );
 		return;
 	}
 

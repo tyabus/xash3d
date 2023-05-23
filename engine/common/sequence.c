@@ -1504,7 +1504,7 @@ Sequence_ParseBuffer
 
 ==============
 */
-void Sequence_ParseBuffer( byte *buffer, int bufferSize )
+void Sequence_ParseBuffer( char *buffer, int bufferSize )
 {
 	char symbol;
 
@@ -1552,13 +1552,13 @@ Sequence_ParseFile
 */
 void Sequence_ParseFile( const char *fileName, qboolean isGlobal )
 {
-	byte *buffer;
+	char *buffer;
 	fs_offset_t bufSize = 0;
 
 	Q_strcpy( g_sequenceParseFileName, fileName );
 	g_sequenceParseFileIsGlobal = isGlobal;
 
-	buffer = FS_LoadFile( va("sequences/%s.seq", fileName ), &bufSize, true );
+	buffer = (char*)FS_LoadFile( va("sequences/%s.seq", fileName ), &bufSize, true );
 
 	if( !buffer )
 		return;

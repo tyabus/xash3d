@@ -16,6 +16,7 @@ GNU General Public License for more details.
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "common.h"
 #include "mathlib.h"
 #include "edict.h"
 #include "eiface.h"
