@@ -2262,6 +2262,10 @@ static qboolean SV_ShouldUpdateUserinfo( sv_client_t *cl )
 	if( !sv_userinfo_enable_penalty->value )
 		return allow;
 
+	// we dont care about singleplayer
+	if( sv_maxclients->integer == 1 )
+		return allow;
+
 	if( cl->fakeclient )
 		return allow;
 
