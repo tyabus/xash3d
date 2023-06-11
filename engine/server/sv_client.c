@@ -419,7 +419,7 @@ gotnewcl:
 
 	if( id[0] )
 	{
-		sscanf( id, "%llx", &newcl->WonID );
+		sscanf( id, "%"PRIx64, &newcl->WonID );
 		Q_strncpy( cl->auth_id, id, sizeof( cl->auth_id ) );
 	}
 
@@ -809,7 +809,7 @@ const char *SV_GetClientIDString( sv_client_t *cl )
 	if( cl->authentication_method == 0 )
 	{
 		// probably some old compatibility code.
-		Q_snprintf( result, sizeof( result ), "%010llu", cl->WonID );
+		Q_snprintf( result, sizeof( result ), "%010"PRIu64, cl->WonID );
 	}
 	else if( cl->authentication_method == 2 )
 	{
@@ -827,7 +827,7 @@ const char *SV_GetClientIDString( sv_client_t *cl )
 		}
 		else
 		{
-			Q_snprintf( result, sizeof( result ), "VALVE_%010llu", cl->WonID );
+			Q_snprintf( result, sizeof( result ), "VALVE_%010"PRIu64, cl->WonID );
 		}
 	}
 	else Q_strncpy( result, "UNKNOWN", sizeof( result ));

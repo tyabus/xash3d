@@ -101,7 +101,7 @@ void ID_BloomFilter_f( void )
 	for( i = 1; i < Cmd_Argc(); i++ )
 		value |= BloomFilter_ProcessStr( Cmd_Argv( i ) );
 
-	Msg( "%d %016llX\n", BloomFilter_Weight( value ), value );
+	Msg( "%d %016"PRIX64"\n", BloomFilter_Weight( value ), value );
 
 	// test
 	// for( i = 1; i < Cmd_Argc(); i++ )
@@ -325,7 +325,7 @@ void ID_TestCPUInfo_f( void )
 	bloomfilter_t value = 0;
 
 	if( ID_ProcessCPUInfo( &value ) )
-		Msg( "Got %016llX\n", value );
+		Msg( "Got %016"PRIX64"\n", value );
 	else
 		Msg( "Could not get serial\n" );
 }
@@ -649,7 +649,7 @@ void ID_Init( void )
 #endif
 
 #if defined(__ANDROID__) && !defined(XASH_DEDICATED)
-	sscanf( Android_LoadID(), "%016llX", &id );
+	sscanf( Android_LoadID(), "%016"PRIX64, &id );
 	if( id )
 	{
 		id ^= SYSTEM_XOR_MASK;
@@ -661,7 +661,7 @@ void ID_Init( void )
 		CHAR szBuf[MAX_PATH];
 		ID_GetKeyData( HKEY_CURRENT_USER, "Software\\Xash3D\\", "xash_id", szBuf, MAX_PATH );
 		
-		sscanf(szBuf, "%016llX", &id);
+		sscanf(szBuf, "%016"PRIX64, &id);
 		id ^= SYSTEM_XOR_MASK;
 		ID_Check();
 	}
@@ -682,7 +682,7 @@ void ID_Init( void )
 				cfg = fopen( va( "%s/.xash_id", home ), "r" );
 			if( cfg )
 			{
-				if( fscanf( cfg, "%016llX", &id ) > 0 )
+				if( fscanf( cfg, "%016"PRIX64, &id ) > 0 )
 				{
 					id ^= SYSTEM_XOR_MASK;
 					ID_Check();
@@ -697,7 +697,7 @@ void ID_Init( void )
 		const char *buf = (const char*) FS_LoadFile( ".xash_id", NULL, false );
 		if( buf )
 		{
-			sscanf( buf, "%016llX", &id );
+			sscanf( buf, "%016"PRIX64, &id );
 			id ^= GAME_XOR_MASK;
 			ID_Check();
 			Mem_Free( (void*)buf );
@@ -714,11 +714,11 @@ void ID_Init( void )
 		Q_sprintf( &id_md5[i*2], "%02hhx", md5[i] );
 
 #if defined(__ANDROID__) && !defined(XASH_DEDICATED)
-	Android_SaveID( va("%016llX", id^SYSTEM_XOR_MASK ) );
+	Android_SaveID( va("%016"PRIX64, id^SYSTEM_XOR_MASK ) );
 #elif defined _WIN32
 	{
 		CHAR Buf[MAX_PATH];
-		sprintf( Buf, "%016llX", id^SYSTEM_XOR_MASK );
+		sprintf( Buf, "%016"PRIX64, id^SYSTEM_XOR_MASK );
 		ID_SetKeyData( HKEY_CURRENT_USER, "Software\\Xash3D\\", REG_SZ, "xash_id", Buf, Q_strlen(Buf) );
 	}
 #else
@@ -738,14 +738,14 @@ void ID_Init( void )
 				cfg = fopen( va( "%s/.xash_id", home ), "w" );
 			if( cfg )
 			{
-				fprintf( cfg, "%016llX", id^SYSTEM_XOR_MASK );
+				fprintf( cfg, "%016"PRIX64, id^SYSTEM_XOR_MASK );
 				fclose( cfg );
 			}
 		}
 	}
 #endif
-	FS_WriteFile( ".xash_id", va("%016llX", id^GAME_XOR_MASK), 16 );
+	FS_WriteFile( ".xash_id", va("%016"PRIX64, id^GAME_XOR_MASK), 16 );
 #if 0
-	Msg("MD5 id: %s\nRAW id:%016llX\n", id_md5, id );
+	Msg("MD5 id: %s\nRAW id:%016"PRIX64"\n", id_md5, id );
 #endif
 }
