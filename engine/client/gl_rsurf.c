@@ -35,7 +35,7 @@ static int		nColinElim; // stats
 static vec2_t		world_orthocenter;
 static vec2_t		world_orthohalf;
 static byte		visbytes[MAX_MAP_LEAFS/8];
-static uint		r_blocklights[BLOCK_SIZE_MAX*BLOCK_SIZE_MAX*3];
+static uint32_t		r_blocklights[BLOCK_SIZE_MAX*BLOCK_SIZE_MAX*3];
 static int		r_blockdeluxe[BLOCK_SIZE_MAX*BLOCK_SIZE_MAX*3];
 static glpoly_t		*fullbright_polys[MAX_TEXTURES];
 static qboolean		draw_fullbrights = false;
@@ -497,7 +497,7 @@ void R_AddDynamicLights( msurface_t *surf )
 	vec3_t		impact, origin_l;
 	mtexinfo_t	*tex;
 	dlight_t		*dl;
-	uint		*bl;
+	uint32_t		*bl;
 
 	// no dlighted surfaces here
 	if( !R_CountSurfaceDlights( surf )) return;
@@ -708,7 +708,7 @@ format in r_blocklights
 static void R_BuildLightMap( msurface_t *surf, byte *dest, int stride, qboolean dynamic )
 {
 	int	smax, tmax;
-	uint	*bl, scale;
+	uint32_t	*bl, scale;
 	int	i, map, size, s, t;
 	color24	*lm;
 
@@ -1755,7 +1755,7 @@ Insert static brushes into world texture chains
 */
 void R_DrawStaticBrushes( void )
 {
-	uint	i;
+	uint32_t	i;
 
 	// draw static entities
 	for( i = 0; i < tr.num_static_entities; i++ )

@@ -100,7 +100,7 @@ typedef struct sfx_s
 	wavdata_t		*cache;
 
 	int		touchFrame;
-	uint		hashValue;
+	uint32_t		hashValue;
 	struct sfx_s	*hashNext;
 } sfx_t;
 

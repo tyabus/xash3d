@@ -429,7 +429,7 @@ static void Con_LoadConsoleFont( int fontNumber, cl_font_t *font )
 	byte	*buffer;
 	fs_offset_t	length;
 	qfont_t	*src;
-	dword crc = 0;
+	uint32_t crc = 0;
 
 	ASSERT( font != NULL );
 

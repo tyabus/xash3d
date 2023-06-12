@@ -523,7 +523,7 @@ void SCR_UpdateScreen( void )
 void SCR_LoadCreditsFont( void )
 {
 	int	fontWidth;
-	dword crc = 0;
+	uint32_t crc = 0;
 	const char *path = "gfx/creditsfont.fnt";
 	byte	*buffer;
 	fs_offset_t	length;

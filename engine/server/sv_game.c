@@ -1232,7 +1232,7 @@ pfnChangeLevel
 */
 void GAME_EXPORT pfnChangeLevel( const char* s1, const char* s2 )
 {
-	static uint	last_spawncount = 0;
+	static uint32_t	last_spawncount = 0;
 
 	if( !s1 || s1[0] <= ' ' || sv.background )
 		return;
@@ -3586,7 +3586,7 @@ pfnCRC32_Final
 
 =============
 */
-dword GAME_EXPORT pfnCRC32_Final( dword pulCRC )
+uint32_t GAME_EXPORT pfnCRC32_Final( uint32_t pulCRC )
 {
 	CRC32_Final( &pulCRC );
 
@@ -3805,7 +3805,7 @@ void GAME_EXPORT pfnRunPlayerMove( edict_t *pClient, const float *v_angle, float
 {
 	sv_client_t	*cl, *oldcl;
 	usercmd_t		cmd;
-	uint		seed;
+	uint32_t		seed;
 
 	if( sv.paused ) return;
 

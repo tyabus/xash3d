@@ -32,8 +32,8 @@ typedef struct memheader_s
 	struct memclump_s	*clump;		// clump this memheader lives in, NULL if not in a clump
 	size_t		size;		// size of the memory after the header (excluding header and sentinel2)
 	const char	*filename;	// file name and line where Mem_Alloc was called
-	uint		fileline;
-	uint		sentinel1;	// should always be MEMHEADER_SENTINEL1
+	uint32_t		fileline;
+	uint32_t		sentinel1;	// should always be MEMHEADER_SENTINEL1
 
 	// immediately followed by data, which is followed by a MEMHEADER_SENTINEL2 byte
 } memheader_t;
@@ -41,9 +41,9 @@ typedef struct memheader_s
 typedef struct memclump_s
 {
 	byte		block[MEMCLUMPSIZE];// contents of the clump
-	uint		sentinel1;	// should always be MEMCLUMP_SENTINEL
+	uint32_t		sentinel1;	// should always be MEMCLUMP_SENTINEL
 	int		bits[MEMBITINTS];	// if a bit is on, it means that the MEMUNIT bytes it represents are allocated, otherwise free
-	uint		sentinel2;	// should always be MEMCLUMP_SENTINEL
+	uint32_t		sentinel2;	// should always be MEMCLUMP_SENTINEL
 	size_t		blocksinuse;	// if this drops to 0, the clump is freed
 	size_t		largestavailable;	// largest block of memory available
 	struct memclump_s	*chain;		// next clump in the chain
@@ -51,7 +51,7 @@ typedef struct memclump_s
 
 typedef struct mempool_s
 {
-	uint		sentinel1;	// should always be MEMHEADER_SENTINEL1
+	uint32_t		sentinel1;	// should always be MEMHEADER_SENTINEL1
 	struct memheader_s	*chain;		// chain of individual memory allocations
 	struct memclump_s	*clumpchain;	// chain of clumps (if any)
 	size_t		totalsize;	// total memory allocated in this pool (inside memheaders)
@@ -61,7 +61,7 @@ typedef struct mempool_s
 	const char	*filename;	// file name and line where Mem_AllocPool was called
 	int		fileline;
 	char		name[64];		// name of the pool
-	uint		sentinel2;	// should always be MEMHEADER_SENTINEL1
+	uint32_t		sentinel2;	// should always be MEMHEADER_SENTINEL1
 } mempool_t;
 
 mempool_t *poolchain; // critical stuff

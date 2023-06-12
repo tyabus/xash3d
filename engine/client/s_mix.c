@@ -69,9 +69,9 @@ void S_TransferPaintBuffer( int endtime )
 	int	i, val, sampleMask;
 	int ls, rs;
 	short	*snd_out;
-	dword	*pbuf;
+	uint32_t	*pbuf;
 
-	pbuf = (dword *)dma.buffer;
+	pbuf = (uint32_t *)dma.buffer;
 	snd_p = (int *)PAINTBUFFER;
 	lpaintedtime = paintedtime;
 	sampleMask = ((dma.samples >> 1) - 1);
@@ -255,7 +255,7 @@ void S_PaintMonoFrom8( portable_samplepair_t *pbuf, int *volume, byte *pData, in
 void S_PaintStereoFrom8( portable_samplepair_t *pbuf, int *volume, byte *pData, int outCount )
 {
 	int	*lscale, *rscale;
-	uint	left, right;
+	uint32_t	left, right;
 	word	*data;
 	int	i;
 
@@ -289,7 +289,7 @@ void S_PaintMonoFrom16( portable_samplepair_t *pbuf, int *volume, short *pData, 
 
 void S_PaintStereoFrom16( portable_samplepair_t *pbuf, int *volume, short *pData, int outCount )
 {
-	uint	*data;
+	uint32_t	*data;
 	int	left, right;
 	int	i;
 
@@ -311,7 +311,7 @@ void S_PaintStereoFrom16( portable_samplepair_t *pbuf, int *volume, short *pData
 void S_Mix8Mono( portable_samplepair_t *pbuf, int *volume, byte *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
-	uint	sampleFrac = inputOffset;
+	uint32_t	sampleFrac = inputOffset;
 	int	*lscale, *rscale;
 
 	// Not using pitch shift?
@@ -337,7 +337,7 @@ void S_Mix8Mono( portable_samplepair_t *pbuf, int *volume, byte *pData, int inpu
 void S_Mix8Stereo( portable_samplepair_t *pbuf, int *volume, byte *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
-	uint	sampleFrac = inputOffset;
+	uint32_t	sampleFrac = inputOffset;
 	int	*lscale, *rscale;
 
 	// Not using pitch shift?
@@ -363,7 +363,7 @@ void S_Mix8Stereo( portable_samplepair_t *pbuf, int *volume, byte *pData, int in
 void S_Mix16Mono( portable_samplepair_t *pbuf, int *volume, short *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
-	uint	sampleFrac = inputOffset;
+	uint32_t	sampleFrac = inputOffset;
 
 	// Not using pitch shift?
 	if( rateScale == FIX( 1 ))
@@ -385,7 +385,7 @@ void S_Mix16Mono( portable_samplepair_t *pbuf, int *volume, short *pData, int in
 void S_Mix16Stereo( portable_samplepair_t *pbuf, int *volume, short *pData, int inputOffset, uint32_t rateScale, int outCount )
 {
 	int	i, sampleIndex = 0;
-	uint	sampleFrac = inputOffset;
+	uint32_t	sampleFrac = inputOffset;
 
 	// Not using pitch shift?
 	if( rateScale == FIX( 1 ))

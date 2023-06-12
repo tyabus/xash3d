@@ -1457,7 +1457,7 @@ void S_StopAllSounds( void )
 //=============================================================================
 void S_UpdateChannels( void )
 {
-	uint	endtime;
+	uint32_t	endtime;
 	int	samps;
 
 	SNDDMA_BeginPainting();

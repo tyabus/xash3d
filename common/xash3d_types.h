@@ -22,12 +22,4 @@ typedef enum { false, true }	qboolean;
 typedef int qboolean;
 #endif
 
-#if _MSC_VER == 1200
-typedef __int64 integer64; //msvc6
-#elif defined (XASH_SDL)
-typedef Uint64 integer64;
-#else
-typedef unsigned long long integer64;
-#endif
-typedef integer64 longtime_t;
 #endif // XASH_TYPES_H

@@ -152,8 +152,8 @@ _inline float LittleFloat( float f )
 #define LittleFloat(x) (x)
 #endif
 
-typedef unsigned int	dword;
-typedef unsigned int	uint;
+typedef uint32_t	dword;
+typedef uint32_t	uint;
 typedef char		string[MAX_STRING];
 typedef struct wfile_s	wfile_t;		// wad file
 typedef struct file_s file_t;     // normal file
@@ -349,8 +349,8 @@ typedef enum
 // MD5 Hash
 typedef struct
 {
-	uint	buf[4];
-	uint	bits[2];
+	uint32_t	buf[4];
+	uint32_t	bits[2];
 	byte	in[64];
 } MD5Context_t;
 
@@ -411,7 +411,7 @@ typedef struct host_parm_s
 	host_state	state;		// global host state
 	instance_t	type;		// running at
 	jmp_buf		abortframe;	// abort current frame
-	dword		errorframe;	// to prevent multiple host error
+	uint32_t		errorframe;	// to prevent multiple host error
 	byte		*mempool;		// static mempool for misc allocations
 	string		finalmsg;		// server shutdown final message
 	host_redirect_t	rd;		// remote console
@@ -424,7 +424,7 @@ typedef struct host_parm_s
 	double		frametime;	// time between engine frames
 	double		realframetime;	// for some system events, e.g. console animations
 
-	uint		framecount;	// global framecount
+	uint32_t		framecount;	// global framecount
 
 	// list of unique decal indexes
 	signed char		draw_decals[MAX_DECALS][CS_SIZE];
@@ -457,7 +457,7 @@ typedef struct host_parm_s
 	byte		*imagepool;	// imagelib mempool
 	byte		*soundpool;	// soundlib mempool
 
-	uint		features;		// custom features that enables by mod-maker request
+	uint32_t		features;		// custom features that enables by mod-maker request
 
 	// for IN_MouseMove() easy access
 	int		window_center_x;
@@ -596,7 +596,7 @@ typedef struct bpc_desc_s
 {
 	int	format;	// pixelformat
 	char	name[16];	// used for debug
-	uint	glFormat;	// RGBA format
+	uint32_t	glFormat;	// RGBA format
 	int	bpp;	// channels (e.g. rgb = 3, rgba = 4)
 } bpc_desc_t;
 
@@ -667,8 +667,8 @@ typedef struct rgbdata_s
 	word	width;		// image width
 	word	height;		// image height
 	word	depth;		// image depth
-	uint	type;		// compression type
-	uint	flags;		// misc image flags
+	uint32_t	type;		// compression type
+	uint32_t	flags;		// misc image flags
 	word	encode;
 	byte	numMips;	// mipmap count
 	byte	*palette;		// palette if present
@@ -689,7 +689,7 @@ typedef struct imgfilter_s
 	float	factor;		// filter factor value
 	float	bias;		// filter bias value
 	flFlags_t	flags;		// filter additional flags
-	uint	blendFunc;	// blending mode
+	uint32_t	blendFunc;	// blending mode
 } imgfilter_t;
 
 //
@@ -752,8 +752,8 @@ typedef struct
 	byte	channels;		// num channels (1 - mono, 2 - stereo)
 	int	loopStart;	// offset at this point sound will be looping while playing more than only once
 	int	samples;		// total samplecount in wav
-	uint	type;		// compression type
-	uint	flags;		// misc sound flags
+	uint32_t	type;		// compression type
+	uint32_t	flags;		// misc sound flags
 	byte	*buffer;		// sound buffer
 	size_t	size;		// for bounds checking
 } wavdata_t;
@@ -889,13 +889,13 @@ void pfnResetTutorMessageDecayData( void );
 //
 // crclib.c
 //
-void CRC32_Init( dword *pulCRC );
+void CRC32_Init( uint32_t *pulCRC );
 byte CRC32_BlockSequence( byte *base, int length, int sequence );
-void CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, size_t nBuffer );
-void CRC32_ProcessByte( dword *pulCRC, byte ch );
-void CRC32_Final( dword *pulCRC );
-qboolean CRC32_File( dword *crcvalue, const char *filename );
-qboolean CRC32_MapFile( dword *crcvalue, const char *filename, qboolean multiplayer );
+void CRC32_ProcessBuffer( uint32_t *pulCRC, const void *pBuffer, size_t nBuffer );
+void CRC32_ProcessByte( uint32_t *pulCRC, byte ch );
+void CRC32_Final( uint32_t *pulCRC );
+qboolean CRC32_File( uint32_t *crcvalue, const char *filename );
+qboolean CRC32_MapFile( uint32_t *crcvalue, const char *filename, qboolean multiplayer );
 void MD5Init( MD5Context_t *ctx );
 void MD5Update( MD5Context_t *ctx, const byte *buf, uint32_t len );
 void MD5Final( byte digest[16], MD5Context_t *ctx );

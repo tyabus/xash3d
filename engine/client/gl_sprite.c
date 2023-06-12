@@ -33,7 +33,7 @@ convar_t		*r_sprite_lighting;
 char		group_suffix[8];
 static vec3_t	sprite_mins, sprite_maxs;
 static float	sprite_radius;
-static uint	r_texFlags = 0;
+static uint32_t	r_texFlags = 0;
 
 /*
 ====================

@@ -310,11 +310,11 @@ qboolean Image_SaveBMP( const char *name, rgbdata_t *pix )
 	bmp_t		bhdr;
 	size_t		total_size = 0, cur_size;
 	RGBQUAD		rgrgbPalette[256];
-	uint		cbBmpBits;
+	uint32_t		cbBmpBits;
 	byte		magic[2];
 	byte		*pb, *pbBmpBits;
-	uint		cbPalBytes;
-	uint		biTrueWidth;
+	uint32_t		cbPalBytes;
+	uint32_t		biTrueWidth;
 	int		pixel_size;
 	int		i, x, y;
 

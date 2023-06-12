@@ -512,7 +512,7 @@ creates mesh for decal on first rendering
 msurfmesh_t *R_DecalCreateMesh( decalinfo_t *decalinfo, decal_t *pdecal, msurface_t *surf )
 {
 	float		*v;
-	uint		i, bufSize;
+	uint32_t		i, bufSize;
 	qboolean	createSTverts = false;
 	int		numVerts, numElems;
 	byte		*buffer;

@@ -99,7 +99,7 @@ uint32_t GAME_EXPORT Sound_GetApproxWavePlayLen( const char *filepath )
 	wavehdr_t	wav;
 	size_t	filesize;
 	float	seconds;
-	uint	samples;
+	uint32_t	samples;
 
 	f = FS_Open( filepath, "rb", false );
 	if( !f ) return 0;
@@ -130,10 +130,10 @@ uint32_t GAME_EXPORT Sound_GetApproxWavePlayLen( const char *filepath )
 
 	// calc samplecount
 	seconds = (float)filesize / wav.nAvgBytesPerSec / wav.nChannels;
-	samples = (uint)(( wav.nSamplesPerSec * wav.nChannels ) * seconds );
+	samples = (uint32_t)(( wav.nSamplesPerSec * wav.nChannels ) * seconds );
 
 	// g-cont. this function returns samplecount or time in milliseconds ???
-	return (uint)(seconds * 1000);
+	return (uint32_t)(seconds * 1000);
 }
 
 /*
@@ -236,7 +236,7 @@ qboolean Sound_ResampleInternal( wavdata_t *sc, int inrate, int inwidth, int out
 				samplefrac += fracstep;
 
 				if( inwidth == 2 ) sample = ( (short *)data )[srcsample];
-				else sample = (int)( (uint)( (char)(data[srcsample]) ) << 8 );
+				else sample = (int)( (uint32_t)( (char)(data[srcsample]) ) << 8 );
 
 				if( outwidth == 2 ) ( (short *)sound.tempbuffer )[i] = sample;
 				else ( (signed char *)sound.tempbuffer )[i] = sample >> 8;

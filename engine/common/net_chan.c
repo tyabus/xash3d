@@ -1303,7 +1303,7 @@ void Netchan_TransmitBits( netchan_t *chan, int length, byte *data )
 	qboolean	send_resending = false;
 	qboolean	send_reliable;
 	size_t	size1, size2;
-	uint	w1, w2, hdr_size;
+	uint32_t	w1, w2, hdr_size;
 	int	i, j;
 	float	fRate;
 
@@ -1474,7 +1474,7 @@ void Netchan_TransmitBits( netchan_t *chan, int length, byte *data )
 
 	// prepare the packet header
 	w1 = chan->outgoing_sequence | (send_reliable << 31);
-	w2 = chan->incoming_sequence | ((uint)chan->incoming_reliable_sequence << 31);
+	w2 = chan->incoming_sequence | ((uint32_t)chan->incoming_reliable_sequence << 31);
 
 	send_reliable_fragment = false;
 
@@ -1631,9 +1631,9 @@ modifies net_message so that it points to the packet payload
 */
 qboolean Netchan_Process( netchan_t *chan, sizebuf_t *msg )
 {
-	uint	sequence, sequence_ack, hdr_size;
-	uint	reliable_ack, reliable_message;
-	uint	fragid[MAX_STREAMS] = { 0, 0 };
+	uint32_t	sequence, sequence_ack, hdr_size;
+	uint32_t	reliable_ack, reliable_message;
+	uint32_t	fragid[MAX_STREAMS] = { 0, 0 };
 	qboolean	frag_message[MAX_STREAMS] = { false, false };
 	int	frag_offset[MAX_STREAMS] = { 0, 0 };
 	int	frag_length[MAX_STREAMS] = { 0, 0 };
@@ -1696,11 +1696,11 @@ qboolean Netchan_Process( netchan_t *chan, sizebuf_t *msg )
 	}
 
 	// discard stale or duplicated packets
-	if( sequence <= (uint)chan->incoming_sequence )
+	if( sequence <= (uint32_t)chan->incoming_sequence )
 	{
 		if( net_showdrop->integer )
 		{
-			if( sequence == (uint)chan->incoming_sequence )
+			if( sequence == (uint32_t)chan->incoming_sequence )
 			{
 				Msg( "%s:duplicate packet %i at %i\n"
 					, NET_AdrToString( chan->remote_address )
@@ -1735,7 +1735,7 @@ qboolean Netchan_Process( netchan_t *chan, sizebuf_t *msg )
 
 	// if the current outgoing reliable message has been acknowledged
 	// clear the buffer to make way for the next
-	if( reliable_ack == (uint)chan->reliable_sequence )
+	if( reliable_ack == (uint32_t)chan->reliable_sequence )
 	{
 		// make sure we actually could have ack'd this message
 		if( chan->incoming_acknowledged + 1 >= chan->last_reliable_sequence )

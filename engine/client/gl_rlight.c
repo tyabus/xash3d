@@ -232,7 +232,7 @@ int R_CountSurfaceDlights( msurface_t *surf )
 
 =======================================================================
 */
-static uint	r_pointColor[3];
+static uint32_t	r_pointColor[3];
 static vec3_t	r_lightSpot;
 
 /*
@@ -303,7 +303,7 @@ static qboolean R_RecursiveLightPoint( model_t *model, mnode_t *node, const vec3
 
 		for( map = 0; map < MAXLIGHTMAPS && surf->styles[map] != 255; map++ )
 		{
-			uint	scale = RI.lightstylevalue[surf->styles[map]];
+			uint32_t	scale = RI.lightstylevalue[surf->styles[map]];
 
 			r_pointColor[0] += TextureToTexGamma( lm->r ) * scale;
 			r_pointColor[1] += TextureToTexGamma( lm->g ) * scale;

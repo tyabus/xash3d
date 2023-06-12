@@ -1396,7 +1396,7 @@ Mod_BuildPolygon
 static void Mod_BuildPolygon( mextrasurf_t *info, msurface_t *surf, int numVerts, const float *verts )
 {
 	float		s, t;
-	uint		bufSize;
+	uint32_t		bufSize;
 	vec3_t		normal, tangent, binormal;
 	mtexinfo_t	*texinfo = surf->texinfo;
 	int		i, numElems;
@@ -1498,7 +1498,7 @@ static void Mod_SubdividePolygon( mextrasurf_t *info, msurface_t *surf, int numV
 	vec2_t		totalST, totalLM;
 	float		s, t, scale;
 	int		i, j, f, b;
-	uint		bufSize;
+	uint32_t		bufSize;
 	byte		*buffer;
 	msurfmesh_t	*mesh;
 
@@ -2534,7 +2534,7 @@ void Mod_CalcPHS( void )
 	byte	*uncompressed_pas;
 	byte	*compressed_pas;
 	byte	*scan, *comp;
-	uint	*dest, *src;
+	uint32_t	*dest, *src;
 	double	timestart;
 	size_t	phsdatasize;
 
@@ -3061,7 +3061,7 @@ void Mod_LoadWorld( const char *name, uint32_t *checksum, qboolean multiplayer )
 	// load the newmap
 	world.loading = true;
 	worldmodel = Mod_ForName( name, true );
-	CRC32_MapFile( (dword *)&world.checksum, worldmodel->name, multiplayer );
+	CRC32_MapFile( (uint32_t *)&world.checksum, worldmodel->name, multiplayer );
 	world.loading = false;
 
 	if( checksum ) *checksum = world.checksum;

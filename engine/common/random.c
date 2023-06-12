@@ -93,8 +93,8 @@ float GAME_EXPORT Com_RandomFloat( float flLow, float flHigh )
 
 int GAME_EXPORT Com_RandomLong( int lLow, int lHigh )
 {
-	dword	maxAcceptable;
-	dword	n, x = lHigh-lLow + 1; 	
+	uint32_t	maxAcceptable;
+	uint32_t	n, x = lHigh-lLow + 1; 	
 
 	if( idum == 0 ) COM_SetRandomSeed(0);
 

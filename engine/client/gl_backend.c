@@ -505,7 +505,7 @@ void VID_ImageAdjustGamma( byte *in, uint32_t width, uint32_t height )
 qboolean VID_ScreenShot( const char *filename, int shot_type )
 {
 	rgbdata_t *r_shot;
-	uint	flags = IMAGE_FLIP_Y;
+	uint32_t	flags = IMAGE_FLIP_Y;
 	int	width = 0, height = 0;
 	qboolean	result;
 

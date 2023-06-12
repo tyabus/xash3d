@@ -796,7 +796,7 @@ void Image_Resample32Lerp( const void *indata, int inwidth, int inheight, void *
 void Image_Resample32Nolerp( const void *indata, int inwidth, int inheight, void *outdata, int outwidth, int outheight )
 {
 	int	i, j;
-	uint	frac, fracstep;
+	uint32_t	frac, fracstep;
 	int	*inrow, *out = (int *)outdata; // relies on int being 4 bytes
 
 	fracstep = inwidth * 0x10000 / outwidth;
@@ -935,7 +935,7 @@ void Image_Resample24Lerp( const void *indata, int inwidth, int inheight, void *
 
 void Image_Resample24Nolerp( const void *indata, int inwidth, int inheight, void *outdata, int outwidth, int outheight )
 {
-	uint	frac, fracstep;
+	uint32_t	frac, fracstep;
 	int	i, j, f, inwidth3 = inwidth * 3;
 	byte	*inrow, *out = (byte *)outdata;
 
@@ -1003,7 +1003,7 @@ void Image_Resample8Nolerp( const void *indata, int inwidth, int inheight, void 
 {
 	int	i, j;
 	byte	*in, *inrow;
-	uint	frac, fracstep;
+	uint32_t	frac, fracstep;
 	byte	*out = (byte *)outdata;
 
 	in = (byte *)indata;
@@ -1439,7 +1439,7 @@ All credit due
 qboolean Image_ApplyFilter( rgbdata_t *pic, int filter, float factor, float bias, flFlags_t flags, GLenum blendFunc )
 { 
 	int	i, x, y; 
-	uint	*fin, *fout; 
+	uint32_t	*fin, *fout; 
 	size_t	size;
 
 	// first expand the image into 32-bit buffer

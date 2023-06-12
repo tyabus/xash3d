@@ -160,7 +160,7 @@ typedef struct
 	qboolean		thirdperson;
 	qboolean		background;		// not real game, just a background
 
-	uint		checksum;			// for catching cheater maps
+	uint32_t		checksum;			// for catching cheater maps
 
 	client_data_t	data;			// some clientdata holds
 

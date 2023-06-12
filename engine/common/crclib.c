@@ -21,7 +21,7 @@ GNU General Public License for more details.
 #define CRC32_INIT_VALUE	0xFFFFFFFFUL
 #define CRC32_XOR_VALUE	0xFFFFFFFFUL
 
-static const dword crc32table[NUM_BYTES] =
+static const uint32_t crc32table[NUM_BYTES] =
 {
 0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,
 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
@@ -89,30 +89,30 @@ static const dword crc32table[NUM_BYTES] =
 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
-void GAME_EXPORT CRC32_Init( dword *pulCRC )
+void GAME_EXPORT CRC32_Init( uint32_t *pulCRC )
 {
 	*pulCRC = CRC32_INIT_VALUE;
 }
 
-void CRC32_Final( dword *pulCRC )
+void CRC32_Final( uint32_t *pulCRC )
 {
 	*pulCRC ^= CRC32_XOR_VALUE;
 }
 
-void GAME_EXPORT CRC32_ProcessByte( dword *pulCRC, byte ch )
+void GAME_EXPORT CRC32_ProcessByte( uint32_t *pulCRC, byte ch )
 {
-	dword	ulCrc = *pulCRC;
+	uint32_t	ulCrc = *pulCRC;
 
 	ulCrc ^= ch;
 	ulCrc = crc32table[(byte)ulCrc] ^ (ulCrc >> 8);
 	*pulCRC = ulCrc;
 }
 
-void GAME_EXPORT CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, size_t nBuffer )
+void GAME_EXPORT CRC32_ProcessBuffer( uint32_t *pulCRC, const void *pBuffer, size_t nBuffer )
 {
-	dword	ulCrc = *pulCRC;
+	uint32_t	ulCrc = *pulCRC;
 	byte	*pb = (byte *)pBuffer;
-	uint	*pu = NULL;
+	uint32_t	*pu = NULL;
 
 	// align pointer
 	while (((size_t)pb & 3u) && nBuffer--)
@@ -120,7 +120,7 @@ void GAME_EXPORT CRC32_ProcessBuffer( dword *pulCRC, const void *pBuffer, size_t
 		ulCrc  = crc32table[*pb++ ^ (byte)ulCrc] ^ (ulCrc >> 8);
 	}
 
-	pu = (uint*)pb;
+	pu = (uint32_t*)pb;
 
 	while( nBuffer >= sizeof (uint64_t) )
 	{
@@ -156,7 +156,7 @@ For proxy protecting
 */
 byte CRC32_BlockSequence( byte *base, int length, int sequence )
 {
-	dword	CRC;
+	uint32_t	CRC;
 	char	*ptr;
 	char	buffer[64];
 
@@ -180,7 +180,7 @@ byte CRC32_BlockSequence( byte *base, int length, int sequence )
 	return (byte)CRC;
 }
 
-qboolean CRC32_File( dword *crcvalue, const char *filename )
+qboolean CRC32_File( uint32_t *crcvalue, const char *filename )
 {
 	file_t	*f;
 	char	buffer[1024];
@@ -207,7 +207,7 @@ qboolean CRC32_File( dword *crcvalue, const char *filename )
 	return true;
 }
 
-qboolean CRC32_MapFile( dword *crcvalue, const char *filename, qboolean multiplayer )
+qboolean CRC32_MapFile( uint32_t *crcvalue, const char *filename, qboolean multiplayer )
 {
 	file_t	*f;
 	dheader_t	*header;
@@ -331,12 +331,12 @@ Update context to reflect the concatenation of another buffer full of bytes.
 */
 void MD5Update( MD5Context_t *ctx, const byte *buf, uint32_t len )
 {
-	uint	t;
+	uint32_t	t;
 
 	// update bitcount
 	t = ctx->bits[0];
 
-	if(( ctx->bits[0] = t + ((uint) len << 3 )) < t )
+	if(( ctx->bits[0] = t + ((uint32_t) len << 3 )) < t )
 		ctx->bits[1]++;	// carry from low to high
 	ctx->bits[1] += len >> 29;
 
@@ -383,7 +383,7 @@ Final wrapup - pad to 64-byte boundary with the bit pattern
 */
 void MD5Final( byte digest[16], MD5Context_t *ctx )
 {
-	uint	count;
+	uint32_t	count;
 	byte	*p;
 
 	// compute number of bytes mod 64
@@ -443,7 +443,7 @@ the data and converts bytes into longwords for this routine.
 */
 void MD5Transform( uint32_t buf[4], const uint32_t in[16] )
 {
-	register uint	a, b, c, d;
+	register uint32_t	a, b, c, d;
 
 	a = buf[0];
 	b = buf[1];
@@ -570,7 +570,7 @@ returns hash key for string
 */
 uint32_t Com_HashKey( const char *string, uint32_t hashSize )
 {
-	uint	i, hashKey = 0;
+	uint32_t	i, hashKey = 0;
 
 	for( i = 0; string[i]; i++ )
 		hashKey = (hashKey + i) * 37 + Q_tolower( string[i] );

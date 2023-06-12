@@ -67,7 +67,7 @@ typedef struct
 {
 	int		version;		// bsp version
 	int		mapversion;	// map version (an key-value in worldspawn settings)
-	uint		checksum;		// current map checksum
+	uint32_t		checksum;		// current map checksum
 	int		load_sequence;	// increace each map change
 	vec3_t		hull_sizes[MAX_MAP_HULLS];	// actual hull sizes
 	msurface_t	**draw_surfaces;	// used for sorting translucent surfaces

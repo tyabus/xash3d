@@ -50,8 +50,8 @@ typedef struct sndlib_s
 	int		width;		// resolution - bum bits divided by 8 (8 bit is 1, 16 bit is 2)
 	int		channels;		// num channels (1 - mono, 2 - stereo)
 	int		loopstart;	// start looping from
-	uint		samples;		// total samplecount in sound
-	uint		flags;		// additional sound flags
+	uint32_t		samples;		// total samplecount in sound
+	uint32_t		flags;		// additional sound flags
 	size_t		size;		// sound unpacked size (for bounds checking)
 	byte		*wav;		// sound pointer (see sound_type for details)
 

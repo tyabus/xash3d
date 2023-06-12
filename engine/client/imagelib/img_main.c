@@ -21,7 +21,7 @@ imglib_t	image;
 typedef struct suffix_s
 {
 	const char	*suf;
-	uint		flags;
+	uint32_t		flags;
 	side_hint_t	hint;
 } suffix_t;
 

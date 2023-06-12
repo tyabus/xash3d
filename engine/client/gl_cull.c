@@ -36,7 +36,7 @@ Returns true if the box is completely outside the frustum
 */
 qboolean R_CullBox( const vec3_t mins, const vec3_t maxs, uint32_t clipflags )
 {
-	uint		i, bit;
+	uint32_t		i, bit;
 	const mplane_t	*p;
 
 	// client.dll may use additional passes for render custom mirrors etc
@@ -98,7 +98,7 @@ Returns true if the sphere is completely outside the frustum
 */
 qboolean R_CullSphere( const vec3_t centre, const float radius, const uint32_t clipflags )
 {
-	uint	i, bit;
+	uint32_t	i, bit;
 	const mplane_t *p;
 
 	// client.dll may use additional passes for render custom mirrors etc

@@ -498,7 +498,7 @@ void FS_ClearPaths_f( void )
 
 void FS_Crc32_f( void )
 {
-	dword crc = 0;
+	uint32_t crc = 0;
 
 	if( Cmd_Argc() != 2 )
 	{
@@ -1191,7 +1191,7 @@ static qboolean FS_ParseVector( char **pfile, float *v, size_t size )
 	string	token;
 	qboolean	bracket = false;
 	char	*saved;
-	uint	i;
+	uint32_t	i;
 
 	if( v == NULL || size == 0 )
 		return false;
@@ -2033,7 +2033,7 @@ static file_t* FS_SysOpen( const char* filepath, const char* mode )
 {
 	file_t	*file;
 	int	mod, opt;
-	uint	ind;
+	uint32_t	ind;
 
 	// Parse the mode string
 	switch( mode[0] )

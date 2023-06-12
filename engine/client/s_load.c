@@ -169,7 +169,7 @@ S_FindName
 sfx_t *S_FindName( const char *pname, int *pfInCache )
 {
 	sfx_t	*sfx;
-	uint	i, hash;
+	uint32_t	i, hash;
 	string	name;
 
 	if( !pname || !pname[0] || !dma.initialized )

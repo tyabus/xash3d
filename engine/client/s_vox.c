@@ -21,7 +21,7 @@ GNU General Public License for more details.
 #include "sequence.h"
 
 sentence_t	g_Sentences[MAX_SENTENCES];
-static uint	g_numSentences;
+static uint32_t	g_numSentences;
 static char	*g_SentenceFile = NULL;
 static char	*rgpparseword[CVOXWORDMAX];	// array of pointers to parsed words
 static char	voxperiod[] = "_period";	// vocal pause

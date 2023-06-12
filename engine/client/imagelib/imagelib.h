@@ -69,22 +69,22 @@ typedef struct imglib_s
 	word			depth;
 	byte			num_mips; // mipmap count
 	word			encode;		// custom encode type
-	uint			type;		// main type switcher
-	uint			flags;		// additional image flags
+	uint32_t			type;		// main type switcher
+	uint32_t			flags;		// additional image flags
 	size_t			size;		// image rgba size (for bounds checking)
-	uint			ptr;		// safe image pointer
+	uint32_t			ptr;		// safe image pointer
 	int			bpp;		// PFDesc[type].bpp
 	byte			*rgba;		// image pointer (see image_type for details)
 
 	// current cubemap state
 	int			source_width;	// locked cubemap dims (all wrong sides will be automatically resampled)
 	int			source_height;
-	uint			source_type;	// shared image type for all mipmaps or cubemap sides
+	uint32_t			source_type;	// shared image type for all mipmaps or cubemap sides
 	int			num_sides;	// how much sides is loaded 
 	byte			*cubemap;		// cubemap pack
 
 	// indexed images state
-	uint			*d_currentpal;	// installed version of internal palette
+	uint32_t			*d_currentpal;	// installed version of internal palette
 	int			d_rendermode;	// palette rendermode
 	byte			*palette;		// palette pointer
 
@@ -107,20 +107,20 @@ typedef struct imglib_s
 typedef struct
 {
 	//char	id[2];		// bmfh.bfType
-	uint	fileSize;		// bmfh.bfSize
-	uint	reserved0;	// bmfh.bfReserved1 + bmfh.bfReserved2
-	uint	bitmapDataOffset;	// bmfh.bfOffBits
-	uint	bitmapHeaderSize;	// bmih.biSize
-	uint	width;		// bmih.biWidth
+	uint32_t	fileSize;		// bmfh.bfSize
+	uint32_t	reserved0;	// bmfh.bfReserved1 + bmfh.bfReserved2
+	uint32_t	bitmapDataOffset;	// bmfh.bfOffBits
+	uint32_t	bitmapHeaderSize;	// bmih.biSize
+	uint32_t	width;		// bmih.biWidth
 	int	height;		// bmih.biHeight
 	word	planes;		// bmih.biPlanes
 	word	bitsPerPixel;	// bmih.biBitCount
-	uint	compression;	// bmih.biCompression
-	uint	bitmapDataSize;	// bmih.biSizeImage
-	uint	hRes;		// bmih.biXPelsPerMeter
-	uint	vRes;		// bmih.biYPelsPerMeter
-	uint	colors;		// bmih.biClrUsed
-	uint	importantColors;	// bmih.biClrImportant
+	uint32_t	compression;	// bmih.biCompression
+	uint32_t	bitmapDataSize;	// bmih.biSizeImage
+	uint32_t	hRes;		// bmih.biXPelsPerMeter
+	uint32_t	vRes;		// bmih.biYPelsPerMeter
+	uint32_t	colors;		// bmih.biClrUsed
+	uint32_t	importantColors;	// bmih.biClrImportant
 } bmp_t;
 
 /*
@@ -209,40 +209,40 @@ typedef struct tga_s
 
 typedef struct dds_pf_s
 {
-	uint	dwSize;
-	uint	dwFlags;
-	uint	dwFourCC;
-	uint	dwRGBBitCount;
-	uint	dwRBitMask;
-	uint	dwGBitMask;
-	uint	dwBBitMask;
-	uint	dwABitMask;
+	uint32_t	dwSize;
+	uint32_t	dwFlags;
+	uint32_t	dwFourCC;
+	uint32_t	dwRGBBitCount;
+	uint32_t	dwRBitMask;
+	uint32_t	dwGBitMask;
+	uint32_t	dwBBitMask;
+	uint32_t	dwABitMask;
 } dds_pixf_t;
 
 //  DDCAPS2
 typedef struct dds_caps_s
 {
-	uint	dwCaps1;
-	uint	dwCaps2;
-	uint	dwCaps3;			// currently unused
-	uint	dwCaps4;			// currently unused
+	uint32_t	dwCaps1;
+	uint32_t	dwCaps2;
+	uint32_t	dwCaps3;			// currently unused
+	uint32_t	dwCaps4;			// currently unused
 } dds_caps_t;
 
 typedef struct dds_s
 {
-	uint		dwIdent;		// must match DDSHEADER
-	uint		dwSize;
-	uint		dwFlags;		// determines what fields are valid
-	uint		dwHeight;
-	uint		dwWidth;
-	uint		dwLinearSize;	// Formless late-allocated optimized surface size
-	uint		dwDepth;		// depth if a volume texture
-	uint		dwMipMapCount;	// number of mip-map levels requested
-	uint		dwAlphaBitDepth;	// depth of alpha buffer requested
-	uint		dwReserved1[10];	// reserved for future expansions
+	uint32_t		dwIdent;		// must match DDSHEADER
+	uint32_t		dwSize;
+	uint32_t		dwFlags;		// determines what fields are valid
+	uint32_t		dwHeight;
+	uint32_t		dwWidth;
+	uint32_t		dwLinearSize;	// Formless late-allocated optimized surface size
+	uint32_t		dwDepth;		// depth if a volume texture
+	uint32_t		dwMipMapCount;	// number of mip-map levels requested
+	uint32_t		dwAlphaBitDepth;	// depth of alpha buffer requested
+	uint32_t		dwReserved1[10];	// reserved for future expansions
 	dds_pixf_t	dsPixelFormat;
 	dds_caps_t	dsCaps;
-	uint		dwTextureStage;
+	uint32_t		dwTextureStage;
 } dds_t;
 
 // imagelib definitions

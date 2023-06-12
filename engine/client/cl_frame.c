@@ -111,7 +111,7 @@ qboolean CL_FindInterpolationUpdates( cl_entity_t *ent, float targettime, positi
 {
 	qboolean	extrapolate = true;
 	// Position history can't be negative
-	uint	i, i0, i1, imod;
+	uint32_t	i, i0, i1, imod;
 	float	at;
 
 	// Debug on grenade

@@ -17,7 +17,7 @@ GNU General Public License for more details.
 
 qboolean Image_CheckDXT3Alpha( dds_t *hdr, byte *fin )
 {
-	uint	bitmask;
+	uint32_t	bitmask;
 	word	sAlpha;
 	byte	*alpha; 
 	int	x, y, i, j; 
@@ -54,7 +54,7 @@ qboolean Image_CheckDXT3Alpha( dds_t *hdr, byte *fin )
 
 qboolean Image_CheckDXT5Alpha( dds_t *hdr, byte *fin )
 {
-	uint	bits, bitmask;
+	uint32_t	bits, bitmask;
 	byte	*alphamask; 
 	int	x, y, i, j; 
 

@@ -109,8 +109,8 @@ static vec3_t		g_xarrayverts[MAXARRAYVERTS];
 static vec2_t		g_xarraycoord[MAXARRAYVERTS];
 static GLubyte		g_xarraycolor[MAXARRAYVERTS][4];
 static unsigned short		g_xarrayelems[MAXARRAYVERTS*6];
-static uint		g_nNumArrayVerts;
-static uint		g_nNumArrayElems;
+static uint32_t		g_nNumArrayVerts;
+static uint32_t		g_nNumArrayElems;
 static vec3_t		g_lightvalues[MAXSTUDIOVERTS];
 static studiolight_t	g_studiolight;
 char			g_nCachedBoneNames[MAXSTUDIOBONES][32];
@@ -1462,7 +1462,7 @@ R_StudioDynamicLight
 */
 void GAME_EXPORT R_StudioDynamicLight( cl_entity_t *ent, alight_t *lightinfo )
 {
-	uint		lnum, i;
+	uint32_t		lnum, i;
 	studiolight_t	*plight;
 	qboolean		invLight;
 	color24		ambient;
@@ -1578,7 +1578,7 @@ pfnStudioEntityLight
 */
 void GAME_EXPORT R_StudioEntityLight( alight_t *lightinfo )
 {
-	uint		lnum, i;
+	uint32_t		lnum, i;
 	studiolight_t	*plight;
 	float		dist, radius2;
 	vec3_t		direction, origin;

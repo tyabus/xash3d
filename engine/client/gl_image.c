@@ -828,11 +828,11 @@ Assume input buffer is RGBA
 */
 byte *GL_ResampleTexture( const byte *source, int inWidth, int inHeight, int outWidth, int outHeight, qboolean isNormalMap )
 {
-	uint		frac, fracStep;
-	uint		*in = (uint32_t *)source;
-	uint		p1[0x1000], p2[0x1000];
+	uint32_t		frac, fracStep;
+	uint32_t		*in = (uint32_t *)source;
+	uint32_t		p1[0x1000], p2[0x1000];
 	byte		*pix1, *pix2, *pix3, *pix4;
-	uint		*out, *inRow1, *inRow2;
+	uint32_t		*out, *inRow1, *inRow2;
 	vec3_t		normal;
 	int		i, x, y;
 
@@ -1127,9 +1127,9 @@ static void GL_UploadTextureDXT( rgbdata_t *pic, gltexture_t *tex, qboolean subI
 	byte		*buf;
 	const byte	*bufend;
 	GLenum		inFormat, glTarget;
-	uint		width, height, depth;
+	uint32_t		width, height, depth;
 	int		texsize = 0, samples;
-	uint		i, j, s, numSides;
+	uint32_t		i, j, s, numSides;
 	int		numMips, err;
 
 	ASSERT( pic != NULL && tex != NULL );
@@ -1267,7 +1267,7 @@ static void GL_UploadTexture( rgbdata_t *pic, gltexture_t *tex, qboolean subImag
 	byte		*buf, *data;
 	const byte	*bufend;
 	GLenum		outFormat, inFormat, glTarget;
-	uint		i, s, numSides, offset = 0, err;
+	uint32_t		i, s, numSides, offset = 0, err;
 	int		texsize = 0, img_flags = 0, samples;
 	GLint		dataType = GL_UNSIGNED_BYTE;
 
@@ -1476,8 +1476,8 @@ int GL_LoadTexture( const char *name, const byte *buf, size_t size, int flags, i
 {
 	gltexture_t	*tex;
 	rgbdata_t		*pic;
-	uint		i, hash;
-	uint		picFlags = 0;
+	uint32_t		i, hash;
+	uint32_t		picFlags = 0;
 
 	if( !name || !name[0] || !glw_state.initialized )
 		return 0;
@@ -1566,7 +1566,7 @@ GL_LoadTextureInternal
 int GL_LoadTextureInternal( const char *name, rgbdata_t *pic, texFlags_t flags, qboolean update )
 {
 	gltexture_t	*tex;
-	uint		i, hash;
+	uint32_t		i, hash;
 
 	if( !name || !name[0] || !glw_state.initialized )
 		return 0;
@@ -1751,7 +1751,7 @@ GL_LoadTexture
 int GL_FindTexture( const char *name )
 {
 	gltexture_t	*tex;
-	uint		hash;
+	uint32_t		hash;
 
 	if( !name || !name[0] || !glw_state.initialized )
 		return 0;
@@ -1788,7 +1788,7 @@ Frees image by name
 void GL_FreeImage( const char *name )
 {
 	gltexture_t	*tex;
-	uint		hash;
+	uint32_t		hash;
 
 	if( !name || !name[0] || !glw_state.initialized )
 		return;
@@ -2366,10 +2366,10 @@ static rgbdata_t *R_SmoothNormals( rgbdata_t *in )
 {
 	byte	*out;
 	int	width, height;
-	uint	frac, fracStep;
-	uint	p1[0x1000], p2[0x1000];
+	uint32_t	frac, fracStep;
+	uint32_t	p1[0x1000], p2[0x1000];
 	byte	*pix1, *pix2, *pix3, *pix4;
-	uint	*inRow1, *inRow2;
+	uint32_t	*inRow1, *inRow2;
 	vec3_t	normal;
 	int	i, x, y;
 
@@ -3788,7 +3788,7 @@ R_FreeImage
 */
 void R_FreeImage( gltexture_t *image )
 {
-	uint		hash;
+	uint32_t		hash;
 	gltexture_t	*cur;
 	gltexture_t	**prev;
 
@@ -4544,7 +4544,7 @@ R_InitImages
 */
 void R_InitImages( void )
 {
-	uint	i, hash;
+	uint32_t	i, hash;
 	float	f;
 
 	r_numTextures = 0;

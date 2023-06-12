@@ -174,7 +174,7 @@ typedef struct server_s
 	byte		spectator_buf[NET_MAX_PAYLOAD];
 
 	model_t		*worldmodel;	// pointer to world
-	uint		checksum;		// for catching cheater maps
+	uint32_t		checksum;		// for catching cheater maps
 
 	qboolean		write_bad_message;	// just for debug
 	qboolean		paused;
@@ -264,7 +264,7 @@ typedef struct sv_client_s
 	int		challenge;		// challenge of this user, randomly generated
 	int		userid;			// identifying number on server
 	int		authentication_method;
-	integer64		WonID;			// WonID
+	uint64_t		WonID;			// WonID
 
 	int		maxpayload;
 	int		resources_sent;
@@ -402,7 +402,7 @@ typedef struct
 
 	double		last_heartbeat;
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
-	uint		heartbeat_challenge;
+	uint32_t		heartbeat_challenge;
 } server_static_t;
 
 //=============================================================================

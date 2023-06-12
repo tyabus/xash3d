@@ -106,7 +106,7 @@ void SV_GetChallenge( netadr_t from )
 	if( i == MAX_CHALLENGES )
 	{
 		// this is the first time this client has asked for a challenge
-		svs.challenges[oldest].challenge = ((uint)rand() << 16) ^ rand();
+		svs.challenges[oldest].challenge = ((uint32_t)rand() << 16) ^ rand();
 		svs.challenges[oldest].adr = from;
 		svs.challenges[oldest].time = host.realtime;
 		svs.challenges[oldest].connected = false;

@@ -68,7 +68,7 @@ typedef struct gltexture_s
 	word		width;		// upload width\height
 	word		height;
 
-	uint		cacheframe;	// worldmodel->load_sequence
+	uint32_t		cacheframe;	// worldmodel->load_sequence
 
 	GLuint		target;		// glTarget
 	GLuint		texnum;		// gl texture binding
@@ -128,7 +128,7 @@ typedef struct
 	vec3_t		cull_vup;
 
 	float		farClip;
-	uint		clipFlags;
+	uint32_t		clipFlags;
 
 	qboolean		fogCustom;
 	qboolean		fogEnabled;
@@ -200,11 +200,11 @@ typedef struct
 	cl_entity_t	*solid_entities[MAX_VISIBLE_PACKET];	// opaque moving or alpha brushes
 	cl_entity_t	*trans_entities[MAX_VISIBLE_PACKET];	// translucent brushes
 	cl_entity_t	*child_entities[MAX_VISIBLE_PACKET];	// entities with MOVETYPE_FOLLOW
-	uint		num_static_entities;
-	uint		num_mirror_entities;
-	uint		num_solid_entities;
-	uint		num_trans_entities;
-	uint		num_child_entities;
+	uint32_t		num_static_entities;
+	uint32_t		num_mirror_entities;
+	uint32_t		num_solid_entities;
+	uint32_t		num_trans_entities;
+	uint32_t		num_child_entities;
          
 	// OpenGL matrix states
 	qboolean		modelviewIdentity;
@@ -223,21 +223,21 @@ typedef struct
 
 typedef struct
 {
-	uint		c_world_polys;
-	uint		c_brush_polys;
-	uint		c_studio_polys;
-	uint		c_sprite_polys;
-	uint		c_world_leafs;
+	uint32_t		c_world_polys;
+	uint32_t		c_brush_polys;
+	uint32_t		c_studio_polys;
+	uint32_t		c_sprite_polys;
+	uint32_t		c_world_leafs;
 
-	uint		c_view_beams_count;
-	uint		c_active_tents_count;
-	uint		c_studio_models_drawn;
-	uint		c_sprite_models_drawn;
-	uint		c_particle_count;
+	uint32_t		c_view_beams_count;
+	uint32_t		c_active_tents_count;
+	uint32_t		c_studio_models_drawn;
+	uint32_t		c_sprite_models_drawn;
+	uint32_t		c_particle_count;
 
-	uint		c_mirror_passes;
+	uint32_t		c_mirror_passes;
 
-	uint		c_client_ents;	// entities that moved to client
+	uint32_t		c_client_ents;	// entities that moved to client
 } ref_speeds_t;
 
 extern ref_speeds_t		r_stats;

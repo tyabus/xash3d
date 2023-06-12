@@ -156,8 +156,8 @@ typedef struct netsplit_packet_s
 typedef struct netsplit_s
 {
 	netsplit_chain_packet_t packets[NETSPLIT_BACKUP];
-	integer64 total_received;
-	integer64 total_received_uncompressed;
+	uint64_t total_received;
+	uint64_t total_received_uncompressed;
 } netsplit_t;
 
 // Network Connection Channel
@@ -202,7 +202,7 @@ typedef struct netchan_s
 	fragbufwaiting_t	*waitlist[MAX_STREAMS]; 
 
 	int		reliable_fragment[MAX_STREAMS];	// is reliable waiting buf a fragment?          
-	uint		reliable_fragid[MAX_STREAMS];		// buffer id for each waiting fragment
+	uint32_t		reliable_fragid[MAX_STREAMS];		// buffer id for each waiting fragment
 
 	fragbuf_t		*fragbufs[MAX_STREAMS];	// the current fragment being set
 	int		fragbufcount[MAX_STREAMS];	// the total number of fragments in this stream

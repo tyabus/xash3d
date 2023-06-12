@@ -161,35 +161,11 @@ GNU General Public License for more details.
 	#define CLIENTDLL "client"ARCH_SUFFIX"." OS_LIB_EXT
 	#define VGUI_SUPPORT_DLL "../vgui_support." OS_LIB_EXT
 	#include <limits.h>
-	
-#if defined(_MSC_VER) && (_MSC_VER < 1700) 
-#include <math.h>
-static __inline int round(float f)
-{
-    return (int)(f + 0.5);
-
-}
-static __inline float cbrt(float f)
-{
-    return pow(f,1.0/3.0);
-
-}
-
-#endif
-
 
 #ifdef XASH_64BIT
 // windows NameForFunction not implemented yet
 #define XASH_ALLOW_SAVERESTORE_OFFSETS
 #endif
 #endif //WIN32
-
-#ifndef INT_MAX
-#define INT_MAX 2147483647
-#endif
-
-#ifndef USHRT_MAX
-#define USHRT_MAX 65535
-#endif
 
 #endif // PORT_H

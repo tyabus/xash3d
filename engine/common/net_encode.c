@@ -1041,7 +1041,7 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 {
 	qboolean		bSigned = ( pField->flags & DT_SIGNED ) ? true : false;
 	float		flValue, flAngle, flTime;
-	uint		iValue;
+	uint32_t		iValue;
 	const char	*pStr;
 
 	if( Delta_CompareField( pField, from, to, timebase ))
@@ -1104,9 +1104,9 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 		#endif
 		flTime = Q_rint( timebase * 100.0f ) - Q_rint(flValue * 100.0f);
 		#if 1
-		iValue = (uint)fabs( flTime );
+		iValue = (uint32_t)fabs( flTime );
 		#else
-		iValue = (uint)fabs( flTime );
+		iValue = (uint32_t)fabs( flTime );
 		if (flTime<0.0f) {
 			iValue |= 0x80000000;
 		}
@@ -1123,9 +1123,9 @@ qboolean Delta_WriteField( sizebuf_t *msg, delta_t *pField, void *from, void *to
 		#endif
 		flTime = (timebase * pField->multiplier) - (flValue * pField->multiplier);
 		#if 1
-		iValue = (uint)fabs( flTime );
+		iValue = (uint32_t)fabs( flTime );
 		#else
-		iValue = (uint)fabs( flTime );
+		iValue = (uint32_t)fabs( flTime );
 		if (flTime<0.0f) {
 			iValue |= 0x80000000;
 		}
@@ -1154,7 +1154,7 @@ qboolean Delta_ReadField( sizebuf_t *msg, delta_t *pField, void *from, void *to,
 	qboolean		bSigned = ( pField->flags & DT_SIGNED ) ? true : false;
 	float		flValue, flAngle, flTime;
 	qboolean		bChanged;
-	uint		iValue;
+	uint32_t		iValue;
 	const char	*pStr;
 	char		*pOut;
 	

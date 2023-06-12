@@ -592,7 +592,7 @@ void CL_ParseServerData( sizebuf_t *msg )
 	Q_strncpy( clgame.maptitle, BF_ReadString( msg ), MAX_STRING );
 	background = BF_ReadOneBit( msg );
 	Q_strncpy( gamefolder, BF_ReadString( msg ), MAX_STRING );
-	host.features = (uint)BF_ReadLong( msg );
+	host.features = (uint32_t)BF_ReadLong( msg );
 
 	if( cl.maxclients > 1 && host.developer < 1 )
 		host.developer++;

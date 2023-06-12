@@ -74,9 +74,9 @@ double GAME_EXPORT Sys_DoubleTime( void )
 
 double GAME_EXPORT Sys_DoubleTime( void )
 {
-	static longtime_t g_PerformanceFrequency;
-	static longtime_t g_ClockStart;
-	longtime_t CurrentTime;
+	static uint64_t g_PerformanceFrequency;
+	static uint64_t g_ClockStart;
+	uint64_t CurrentTime;
 
 	if( !g_PerformanceFrequency )
 	{
@@ -90,9 +90,9 @@ double GAME_EXPORT Sys_DoubleTime( void )
 
 double GAME_EXPORT Sys_DoubleTime( void )
 {
-	static longtime_t g_PerformanceFrequency;
-	static longtime_t g_ClockStart;
-	longtime_t CurrentTime;
+	static uint64_t g_PerformanceFrequency;
+	static uint64_t g_ClockStart;
+	uint64_t CurrentTime;
 	struct timespec ts;
 
 	if( !g_PerformanceFrequency )

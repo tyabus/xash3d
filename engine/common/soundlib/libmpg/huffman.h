@@ -15,7 +15,7 @@
 
 struct newhuff 
 {
-	uint		linbits;
+	uint32_t		linbits;
 	const short	*table;
 };
 

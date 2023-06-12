@@ -31,9 +31,9 @@ typedef struct mstudiocache_s
 	byte	controler[4];
 	byte	blending[2];
 	model_t	*model;
-	uint	current_hull;
-	uint	current_plane;
-	uint	numhitboxes;
+	uint32_t	current_hull;
+	uint32_t	current_plane;
+	uint32_t	numhitboxes;
 } mstudiocache_t;
 
 #define STUDIO_CACHESIZE		16
@@ -46,8 +46,8 @@ static matrix3x4			studio_transform;
 static hull_t			cache_hull[MAXSTUDIOBONES];
 static hull_t			studio_hull[MAXSTUDIOBONES];
 static matrix3x4			studio_bones[MAXSTUDIOBONES];
-static uint			studio_hull_hitgroup[MAXSTUDIOBONES];
-static uint			cache_hull_hitgroup[MAXSTUDIOBONES];
+static uint32_t			studio_hull_hitgroup[MAXSTUDIOBONES];
+static uint32_t			cache_hull_hitgroup[MAXSTUDIOBONES];
 static mstudiocache_t		cache_studio[STUDIO_CACHESIZE];
 static dclipnode_t			studio_clipnodes[6];
 static mplane_t			studio_planes[768];
