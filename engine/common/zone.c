@@ -134,8 +134,8 @@ choseclump:
 	else
 	{
 		// big allocations are not clumped
-		pool->realsize += sizeof( memheader_t ) + size + sizeof( int );
-		mem = (memheader_t *)malloc( sizeof( memheader_t ) + size + sizeof( int ));
+		pool->realsize += sizeof( memheader_t ) + size + sizeof( size_t );
+		mem = (memheader_t *)malloc( sizeof( memheader_t ) + size + sizeof( size_t ));
 		if( mem == NULL ) Sys_Error( "Mem_Alloc: out of memory (alloc at %s:%i)\n", filename, fileline );
 		mem->clump = NULL;
 	}
@@ -244,7 +244,7 @@ static void Mem_FreeBlock( memheader_t *mem, const char *filename, int fileline 
 	}
 	else
 	{
-		pool->realsize -= sizeof( memheader_t ) + mem->size + sizeof( int );
+		pool->realsize -= sizeof( memheader_t ) + mem->size + sizeof( size_t );
 		free( mem );
 	}
 }

@@ -680,7 +680,7 @@ qboolean CL_DemoReadMessage( byte *buffer, size_t *length )
 	float	fElapsedTime = 0.0f;
 	qboolean	swallowmessages = true;
 	byte	*userbuf = NULL;
-	size_t	size;
+	size_t	size = 0;
 	byte	cmd;
 
 	if( !cls.demofile )
