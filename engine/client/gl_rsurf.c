@@ -3626,8 +3626,12 @@ void R_DrawWorld( void )
 	// paranoia issues: when gl_renderer is "0" we need have something valid for currententity
 	// to prevent crashing until HeadShield drawing.
 	RI.currententity = clgame.entities;
-	RI.currentmodel = RI.currententity->model;
 
+	// We dont have anything, abort
+	if( !RI.currententity )
+		return;
+
+	RI.currentmodel = RI.currententity->model;
 	if( !RI.drawWorld || RI.refdef.onlyClientDraw )
 		return;
 
