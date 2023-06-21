@@ -10,7 +10,7 @@ The multiplayer is working, but network protocol isn't compatiable with the Gold
 multiplayer mods should work just fine, but keep in mind that some features may not work at all  
 or work not exactly the way they do in the GoldSource Engine.  
 
-This is a unnamed (for now) fork of Xash3D FWGS Engine (Old one), which aims on improving and bugfixing the original codebase. 
+Xash3D-NG is a fork of Xash3D FWGS Engine (Old one) which itself is based on Xash3D by Uncle Mike, this fork aims on improving and bugfixing the original FWGS codebase. 
 
 - [Building and running the engine](https://github.com/FWGS/xash3d/wiki/Building-and-running)
 - [Installing and setting up the server on Debian/Ubuntu Linux](https://github.com/FWGS/xash3d/wiki/How-to-set-up-a-Xash3D-Dedicated-Server-on-Debian-Ubuntu-Linux)

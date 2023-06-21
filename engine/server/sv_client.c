@@ -2607,7 +2607,7 @@ static void SV_Notarget_f( sv_client_t *cl )
 
 static void SV_SendBuildInfo_f( sv_client_t *cl )
 {
-	SV_ClientPrintf( cl, PRINT_HIGH, "Server running Xash3D FWGS %s (build %i-%s, %s-%s)\n", XASH_VERSION, Q_buildnum(), Q_buildcommit(), Q_buildos(), Q_buildarch() );
+	SV_ClientPrintf( cl, PRINT_HIGH, "Server running Xash3D-NG %s (build %i-%s, %s-%s)\n", XASH_VERSION, Q_buildnum(), Q_buildcommit(), Q_buildos(), Q_buildarch() );
 }
 
 edict_t *pfnFindEntityInSphere( edict_t *pStartEdict, const float *org, float flRadius );
