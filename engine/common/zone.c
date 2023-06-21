@@ -68,7 +68,7 @@ mempool_t *poolchain; // critical stuff
 
 void *_Mem_Alloc( byte *poolptr, size_t size, const char *filename, int fileline )
 {
-	int		i, j, k, needed, endbit, largest;
+	size_t i, j, k, needed, endbit, largest;
 	memclump_t	*clump, **clumpchainpointer;
 	memheader_t	*mem;
 	mempool_t		*pool = (mempool_t *)((byte *)poolptr);
@@ -80,7 +80,7 @@ void *_Mem_Alloc( byte *poolptr, size_t size, const char *filename, int fileline
 	if( size < 4096 )
 	{
 		// clumping
-		needed = ( sizeof( memheader_t ) + size + sizeof( int ) + (MEMUNIT - 1)) / MEMUNIT;
+		needed = ( sizeof( memheader_t ) + size + sizeof( size_t ) + (MEMUNIT - 1)) / MEMUNIT;
 		endbit = MEMBITS - needed;
 		for( clumpchainpointer = &pool->clumpchain; *clumpchainpointer; clumpchainpointer = &(*clumpchainpointer)->chain )
 		{
@@ -173,9 +173,9 @@ static const char *Mem_CheckFilename( const char *filename )
 
 static void Mem_FreeBlock( memheader_t *mem, const char *filename, int fileline )
 {
-	int		i, firstblock, endblock;
+	size_t		i, firstblock, endblock;
 	memclump_t	*clump, **clumpchainpointer;
-	mempool_t		*pool;
+	mempool_t	*pool;
 
 	if( mem->sentinel1 != MEMHEADER_SENTINEL1 )
 	{
@@ -213,7 +213,7 @@ static void Mem_FreeBlock( memheader_t *mem, const char *filename, int fileline 
 		if( firstblock & ( MEMUNIT - 1 ))
 			Sys_Error( "Mem_Free: address not valid in clump (free at %s:%i)\n", filename, fileline );
 		firstblock /= MEMUNIT;
-		endblock = firstblock + ((sizeof( memheader_t ) + mem->size + sizeof( int ) + (MEMUNIT - 1)) / MEMUNIT );
+		endblock = firstblock + ((sizeof( memheader_t ) + mem->size + sizeof( size_t ) + (MEMUNIT - 1)) / MEMUNIT );
 		clump->blocksinuse -= endblock - firstblock;
 
 		// could use &, but we know the bit is set
