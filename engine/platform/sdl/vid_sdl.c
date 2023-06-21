@@ -181,7 +181,7 @@ void VID_RestoreScreenResolution( void )
 }
 #endif
 
-#if defined(_WIN32) && !defined(XASH_64BIT) // ICO support only for Win32
+#if defined(_WIN32) // ICO support only for Win32
 static void WIN_SetWindowIcon( HICON ico )
 {
 	SDL_SysWMinfo wminfo;
@@ -191,7 +191,8 @@ static void WIN_SetWindowIcon( HICON ico )
 
 	if( SDL_GetWindowWMInfo( host.hWnd, &wminfo ) )
 	{
-		SetClassLong( wminfo.info.win.window, GCL_HICON, (LONG)ico );
+		SendMessage( wminfo.info.win.window, WM_SETICON, ICON_SMALL, (LONG_PTR)ico );
+		SendMessage( wminfo.info.win.window, WM_SETICON, ICON_BIG, (LONG_PTR)ico );
 	}
 }
 #endif
@@ -250,53 +251,32 @@ qboolean VID_CreateWindow( int width, int height, qboolean fullscreen )
 		VID_RestoreScreenResolution();
 	}
 
-#if defined(_WIN32) && !defined(XASH_64BIT) // ICO support only for Win32
-	if( FS_FileExists( GI->iconpath, true ) )
+	Q_strcpy( iconpath, GI->iconpath );
+	FS_StripExtension( iconpath );
+	FS_DefaultExtension( iconpath, ".tga") ;
+
+	icon = FS_LoadImage( iconpath, NULL, 0 );
+
+	if( icon )
 	{
-		HICON ico;
-		char	localPath[MAX_PATH];
+		SDL_Surface *surface = SDL_CreateRGBSurfaceFrom( icon->buffer,
+			icon->width, icon->height, 32, 4 * icon->width,
+			0x000000ff, 0x0000ff00, 0x00ff0000,	0xff000000 );
 
-		Q_snprintf( localPath, sizeof( localPath ), "%s/%s", GI->gamefolder, GI->iconpath );
-		ico = (HICON)LoadImage( NULL, localPath, IMAGE_ICON, 0, 0, LR_LOADFROMFILE|LR_DEFAULTSIZE );
-
-		if( !ico )
+		if( surface )
 		{
-			MsgDev( D_INFO, "Extract %s from pak if you want to see it.\n", GI->iconpath );
-			ico = LoadIcon( host.hInst, MAKEINTRESOURCE( 101 ) );
+			SDL_SetWindowIcon( host.hWnd, surface );
+			SDL_FreeSurface( surface );
 		}
 
-		WIN_SetWindowIcon( ico );
+		FS_FreeImage( icon );
 	}
+#if defined(_WIN32) //&& !defined(XASH_64BIT) // ICO support only for Win32
 	else
-#endif // _WIN32 && !XASH_64BIT
 	{
-		Q_strcpy( iconpath, GI->iconpath );
-		FS_StripExtension( iconpath );
-		FS_DefaultExtension( iconpath, ".tga") ;
-
-		icon = FS_LoadImage( iconpath, NULL, 0 );
-
-		if( icon )
-		{
-			SDL_Surface *surface = SDL_CreateRGBSurfaceFrom( icon->buffer,
-				icon->width, icon->height, 32, 4 * icon->width,
-				0x000000ff, 0x0000ff00, 0x00ff0000,	0xff000000 );
-
-			if( surface )
-			{
-				SDL_SetWindowIcon( host.hWnd, surface );
-				SDL_FreeSurface( surface );
-			}
-
-			FS_FreeImage( icon );
-		}
-#if defined(_WIN32) && !defined(XASH_64BIT) // ICO support only for Win32
-		else
-		{
-			WIN_SetWindowIcon( LoadIcon( host.hInst, MAKEINTRESOURCE( 101 ) ) );
-		}
-#endif
+		WIN_SetWindowIcon( LoadIcon( host.hInst, MAKEINTRESOURCE( 101 ) ) );
 	}
+#endif
 
 	SDL_ShowWindow( host.hWnd );
 	if( !glw_state.initialized )
