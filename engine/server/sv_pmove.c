@@ -33,9 +33,17 @@ void SV_ClearPhysEnts( void )
 
 void SV_ConvertPMTrace( trace_t *out, pmtrace_t *in, edict_t *ent )
 {
-	Q_memcpy( out, in, 48 ); // matched
-	out->hitgroup = in->hitgroup;
-	out->ent = ent;
+	out->allsolid   = in->allsolid;
+	out->startsolid = in->startsolid;
+	out->inopen     = in->inopen;
+	out->inwater    = in->inwater;
+	out->fraction   = in->fraction;
+	out->plane.dist = in->plane.dist;
+	out->hitgroup   = in->hitgroup;
+	out->ent        = ent;
+
+	VectorCopy( in->endpos, out->endpos );
+	VectorCopy( in->plane.normal, out->plane.normal );
 }
 
 void SV_ClipPMoveToEntity( physent_t *pe, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, pmtrace_t *tr )
