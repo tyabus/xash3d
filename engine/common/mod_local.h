@@ -84,6 +84,8 @@ typedef struct
 	int		block_size;	// lightmap blocksize
 	color24		*deluxedata;	// deluxemap data pointer
 	char		message[2048];	// just for debug
+	char		compiler[256];	// map compiler
+	char		generator[256];	// map editor
 
 	vec3_t		mins;		// real accuracy world bounds
 	vec3_t		maxs;
