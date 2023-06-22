@@ -106,8 +106,6 @@ double GAME_EXPORT Sys_DoubleTime( void )
 }
 #endif
 
-#define DEBUG_BREAK
-
 #if (defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)) && defined(GDB_BREAK)
 #include <fcntl.h>
 qboolean Sys_DebuggerPresent( void )
@@ -152,18 +150,17 @@ qboolean Sys_DebuggerPresent( void )
 #endif // __i386__
 // __linux__/__FreeBSD__/__NetBSD__/__OpenBSD__
 
-#elif defined(_WIN32) && !defined(XASH_64BIT)
+#elif defined(_WIN32)
 
 #ifdef _MSC_VER
 BOOL WINAPI IsDebuggerPresent(void);
 #define DEBUG_BREAK	if( IsDebuggerPresent() ) \
-		_asm{ int 3 }
+		__debugbreak( );
 #else
 #define DEBUG_BREAK	if( IsDebuggerPresent() ) \
 		asm volatile("int $3;")
 #endif // _MSC_VER
-// _WIN32 && !XASH_64BIT
-
+// _WIN32
 #elif defined(__APPLE__) && defined(_DEBUG)
 
 // For more information, see https://developer.apple.com/library/content/qa/qa1361/_index.html
@@ -219,6 +216,10 @@ static qboolean Sys_DebuggerPresent(void)
 #endif // __i386__
 
 #endif // __APPLE__
+
+#ifndef DEBUG_BREAK
+#define DEBUG_BREAK
+#endif
 
 /*
 ================

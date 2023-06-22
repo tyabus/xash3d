@@ -22,8 +22,6 @@ Sys_Crash
 Crash handler, called from system
 ================
 */
-#define DEBUG_BREAK
-/// TODO: implement on windows too
 
 #pragma comment( lib, "dbghelp" )
 #pragma comment( lib, "psapi" )
