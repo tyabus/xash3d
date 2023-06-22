@@ -324,7 +324,7 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 {
 	search_t		*t;
 	file_t		*f;
-	string		message;
+	string		message, compiler, generator;
 	string		matchbuf;
 	byte		buf[MAX_SYSPATH]; // 1 kb
 	int		i, nummaps;
@@ -347,6 +347,8 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 		
 		if( Q_stricmp( ext, "bsp" )) continue;
 		Q_strncpy( message, "^1error^7", sizeof( message ));
+		compiler[0] = '\0';
+		generator[0] = '\0';
 		f = FS_Open( t->filenames[i], "rb", con_gamemaps->integer );
 	
 		if( f )
@@ -395,7 +397,7 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 				// means there is no title, so clear the message string now
 				char	token[2048];
 
-				message[0] = 0;
+				message[0] = 0; // remove 'error'
 				pfile = ents;
 
 				while(( pfile = COM_ParseFile( pfile, token )) != NULL )
@@ -412,6 +414,16 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 						// get the message contents
 						pfile = COM_ParseFile( pfile, token );
 						mapver = Q_atoi( token );
+					}
+					else if(!Q_strcmp( token, "compiler" ) || !Q_strcmp( token, "_compiler" ))
+					{
+						// get the message contents
+						pfile = COM_ParseFile( pfile, compiler );
+					}
+					else if(!Q_strcmp( token, "generator" ) || !Q_strcmp( token, "_generator" ))
+					{
+						// get the message contents
+						pfile = COM_ParseFile( pfile, generator );
 					}
 				}
 				Mem_Free( ents );
@@ -436,7 +448,7 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 			break;
 		}
 
-		Msg( "%16s (%s) ^3%s^7\n", matchbuf, buf, message );
+		Msg( "%16s (%s) ^3%s^7 ^2%s %s^7\n", matchbuf, buf, message, compiler, generator );
 		nummaps++;
 	}
 
@@ -1015,7 +1027,7 @@ qboolean Cmd_CheckMapsList_R( qboolean fRefresh, qboolean onlyingamedir )
 		return true; // exists
 	}
 
-	t = FS_Search( "maps/*.bsp", false, onlyingamedir );
+	t = FS_Search( "maps/*.bsp", false, onlyingamedir ); // */
 
 	if( !t )
 	{
