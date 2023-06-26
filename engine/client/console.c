@@ -1736,13 +1736,19 @@ void Con_DrawSolidConsole( float frac, qboolean fill )
 	if( host.developer )
 	{
 		// draw current version
-		byte	*color = g_color_table[7];
+		byte	color[4];
 		int	stringLen, width = 0, charH;
+		float	fraction;
 
-		Q_snprintf( curbuild, MAX_STRING, "Xash3D-NG %i/%s build %i %s %s-%s", PROTOCOL_VERSION,
-			XASH_VERSION, Q_buildnum( ), Q_buildcommit( ), Q_buildos( ), Q_buildarch( ) );
+		memcpy( color, g_color_table[7], sizeof( color ) );
+
+		Q_snprintf( curbuild, MAX_STRING, "Xash3D-NG %i/%s build %i %s %s-%s", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum( ), Q_buildcommit( ), Q_buildos( ), Q_buildarch( ) );
+
 		Con_DrawStringLen( curbuild, &stringLen, &charH );
+
 		start = scr_width->integer - stringLen;
+		fraction = lines / (float)scr_height->integer;
+		color[3] = min( fraction * 2.0f, 1.0f ) * 255; // fadeout version number
 		stringLen = Con_StringLength( curbuild );
 
 		for( i = 0; i < stringLen; i++ )
