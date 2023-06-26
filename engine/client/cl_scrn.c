@@ -47,7 +47,7 @@ static qboolean	scr_init = false;
 SCR_DrawFPS
 ==============
 */
-void SCR_DrawFPS( void )
+void SCR_DrawFPS( int height )
 {
 	float calc;
 	rgba_t color;
@@ -125,7 +125,7 @@ void SCR_DrawFPS( void )
 	}
 
 	Con_DrawStringLen( fpsstring, &offset, NULL );
-	Con_DrawString( scr_width->integer - offset - 2, 4, fpsstring, color );
+	Con_DrawString( scr_width->integer - offset - 4, height, fpsstring, color );
 }
 
 /*

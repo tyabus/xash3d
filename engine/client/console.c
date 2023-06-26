@@ -1796,6 +1796,10 @@ void Con_DrawSolidConsole( float frac, qboolean fill )
 
 	// draw the input prompt, user text, and cursor if desired
 	Con_DrawInput();
+
+	y = lines - ( con.curFont->charHeight * 1.2f );
+	SCR_DrawFPS( max( y, 4 ) ); // to avoid to hide fps counter
+
 	pglColor4ub( 255, 255, 255, 255 );
 }
 
@@ -1873,6 +1877,8 @@ void Con_DrawConsole( void )
 		}
 		break;
 	}
+
+	if( !Con_Visible( )) SCR_DrawFPS( 4 );
 }
 
 /*
