@@ -1749,10 +1749,8 @@ void Con_DrawSolidConsole( float frac, qboolean fill )
 		start = scr_width->integer - stringLen;
 		fraction = lines / (float)scr_height->integer;
 		color[3] = min( fraction * 2.0f, 1.0f ) * 255; // fadeout version number
-		stringLen = Con_StringLength( curbuild );
 
-		for( i = 0; i < stringLen; i++ )
-			width += Con_DrawCharacter( start + width, 0, curbuild[i], color );
+		Con_DrawString( start, 0, curbuild, color );
 
 		host.force_draw_version_time = 0;
 	}
@@ -1898,7 +1896,7 @@ void Con_DrawVersion( void )
 {
 	// draws the current build
 	byte	*color = g_color_table[7];
-	int	i, stringLen, width = 0, charH = 0;
+	int	stringLen, charH = 0;
 	int	start, height = scr_height->integer;
 	qboolean	draw_version = false;
 	string	curbuild;
@@ -1931,11 +1929,9 @@ void Con_DrawVersion( void )
 					 XASH_VERSION, Q_buildnum( ), Q_buildcommit( ), Q_buildos( ), Q_buildarch( ));
 	Con_DrawStringLen( curbuild, &stringLen, &charH );
 	start = scr_width->integer - stringLen * 1.05f;
-	stringLen = Con_StringLength( curbuild );
 	height -= charH * 1.05f;
 
-	for( i = 0; i < stringLen; i++ )
-		width += Con_DrawCharacter( start + width, height, curbuild[i], color );
+	Con_DrawString( start, height, curbuild, color );
 }
 
 /*
