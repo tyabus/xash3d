@@ -1737,7 +1737,7 @@ void Con_DrawSolidConsole( float frac, qboolean fill )
 	{
 		// draw current version
 		byte	color[4];
-		int	stringLen, width = 0, charH;
+		int	stringLen, charH = 0;
 		float	fraction;
 
 		memcpy( color, g_color_table[7], sizeof( color ) );
