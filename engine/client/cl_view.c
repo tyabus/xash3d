@@ -418,7 +418,6 @@ void V_PostRender( void )
 		Touch_Draw();
 		SCR_RSpeeds();
 		SCR_NetSpeeds();
-		SCR_DrawFPS();
 		R_Strobe_DrawDebugInfo( );
 
 		SCR_DrawPos();

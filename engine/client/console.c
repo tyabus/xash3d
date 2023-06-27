@@ -1736,17 +1736,21 @@ void Con_DrawSolidConsole( float frac, qboolean fill )
 	if( host.developer )
 	{
 		// draw current version
-		byte	*color = g_color_table[7];
-		int	stringLen, width = 0, charH;
+		byte	color[4];
+		int	stringLen, charH = 0;
+		float	fraction;
 
-		Q_snprintf( curbuild, MAX_STRING, "Xash3D-NG %i/%s build %i %s %s-%s", PROTOCOL_VERSION,
-			XASH_VERSION, Q_buildnum( ), Q_buildcommit( ), Q_buildos( ), Q_buildarch( ) );
+		memcpy( color, g_color_table[7], sizeof( color ) );
+
+		Q_snprintf( curbuild, MAX_STRING, "Xash3D-NG %i/%s build %i %s %s-%s", PROTOCOL_VERSION, XASH_VERSION, Q_buildnum( ), Q_buildcommit( ), Q_buildos( ), Q_buildarch( ) );
+
 		Con_DrawStringLen( curbuild, &stringLen, &charH );
-		start = scr_width->integer - stringLen;
-		stringLen = Con_StringLength( curbuild );
 
-		for( i = 0; i < stringLen; i++ )
-			width += Con_DrawCharacter( start + width, 0, curbuild[i], color );
+		start = scr_width->integer - stringLen;
+		fraction = lines / (float)scr_height->integer;
+		color[3] = min( fraction * 2.0f, 1.0f ) * 255; // fadeout version number
+
+		Con_DrawString( start, 0, curbuild, color );
 
 		host.force_draw_version_time = 0;
 	}
@@ -1796,6 +1800,10 @@ void Con_DrawSolidConsole( float frac, qboolean fill )
 
 	// draw the input prompt, user text, and cursor if desired
 	Con_DrawInput();
+
+	y = lines - ( con.curFont->charHeight * 1.2f );
+	SCR_DrawFPS( max( y, 4 ) ); // to avoid to hide fps counter
+
 	pglColor4ub( 255, 255, 255, 255 );
 }
 
@@ -1873,6 +1881,8 @@ void Con_DrawConsole( void )
 		}
 		break;
 	}
+
+	if( !Con_Visible( )) SCR_DrawFPS( 4 );
 }
 
 /*
@@ -1886,7 +1896,7 @@ void Con_DrawVersion( void )
 {
 	// draws the current build
 	byte	*color = g_color_table[7];
-	int	i, stringLen, width = 0, charH = 0;
+	int	stringLen, charH = 0;
 	int	start, height = scr_height->integer;
 	qboolean	draw_version = false;
 	string	curbuild;
@@ -1919,11 +1929,9 @@ void Con_DrawVersion( void )
 					 XASH_VERSION, Q_buildnum( ), Q_buildcommit( ), Q_buildos( ), Q_buildarch( ));
 	Con_DrawStringLen( curbuild, &stringLen, &charH );
 	start = scr_width->integer - stringLen * 1.05f;
-	stringLen = Con_StringLength( curbuild );
 	height -= charH * 1.05f;
 
-	for( i = 0; i < stringLen; i++ )
-		width += Con_DrawCharacter( start + width, height, curbuild[i], color );
+	Con_DrawString( start, height, curbuild, color );
 }
 
 /*
