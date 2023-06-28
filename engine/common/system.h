@@ -108,8 +108,6 @@ void Sys_SetClipboardData( const byte *buffer, size_t size );
 qboolean _Sys_GetParmFromCmdLine( char *parm, char *out, size_t size );
 void Sys_ShellExecute( const char *path, const char *parms, qboolean exit );
 void Sys_SendKeyEvents( void );
-qboolean Sys_CheckMMX( void );
-qboolean Sys_CheckSSE( void );
 void Sys_Print( const char *pMsg );
 void Sys_PrintLog( const char *pMsg );
 void Sys_InitLog( void );
