@@ -1405,6 +1405,68 @@ void CL_Reconnect_f( void )
 
 /*
 =================
+CL_FixupColorStringsForInfoString
+
+all the keys and values must be ends with ^7
+=================
+*/
+void CL_FixupColorStringsForInfoString( const char *in, char *out )
+{
+	qboolean	hasPrefix = false, endOfKeyVal = false;
+	int		color = 7, count = 0;
+
+	if( *in == '\\' )
+	{
+		*out++ = *in++;
+		count++;
+	}
+
+	while( *in && count < MAX_INFO_STRING )
+	{
+		if( IsColorString( in ))
+			color = ColorIndex( *(in+1));
+
+		// color the not reset while end of key (or value) was found!
+		if( *in == '\\' && color != 7 )
+		{
+			if( IsColorString( out - 2 ))
+			{
+				*(out - 1) = '7';
+			}
+			else
+			{
+				*out++ = '^';
+				*out++ = '7';
+				count += 2;
+			}
+			color = 7;
+		}
+
+		*out++ = *in++;
+		count++;
+	}
+
+	// check the remaining value
+	if( color != 7 )
+	{
+		// if the ends with another color rewrite it
+		if( IsColorString( out - 2 ))
+		{
+			*(out - 1) = '7';
+		}
+		else
+		{
+			*out++ = '^';
+			*out++ = '7';
+			count += 2;
+		}
+	}
+
+	*out = '\0';
+}
+
+/*
+=================
 CL_ParseStatusMessage
 
 Handle a reply from a info
@@ -1412,17 +1474,18 @@ Handle a reply from a info
 */
 void CL_ParseStatusMessage( netadr_t from, sizebuf_t *msg )
 {
-	char	*s;
+	static char	infostring[MAX_INFO_STRING+8];
+	char		*s = BF_ReadString( msg );
 
-	s = BF_ReadString( msg );
+	CL_FixupColorStringsForInfoString( s, infostring );
 
-	if( Info_IsValid( s ) )
+	if( Info_IsValid( infostring ) )
 	{
-		MsgDev(D_NOTE, "Got info string: %s\n", s);
-		UI_AddServerToList(from, s);
+		MsgDev(D_NOTE, "Got info string: %s\n", infostring);
+		UI_AddServerToList(from, infostring);
 	}
 	else
-		MsgDev(D_NOTE, "Got bad info string: %s\n", s);
+		MsgDev(D_NOTE, "Got bad info string: %s\n", infostring);
 }
 
 /*
@@ -1436,11 +1499,14 @@ void CL_ParseNETInfoMessage( netadr_t from, sizebuf_t *msg )
 {
 	char		*s;
 	net_request_t	*nr;
+	static char	infostring[MAX_INFO_STRING+8];
 	int		i, context, type;
 
 	context = Q_atoi( Cmd_Argv( 1 ));
 	type = Q_atoi( Cmd_Argv( 2 ));
 	s = Cmd_Argv( 3 );
+
+	CL_FixupColorStringsForInfoString( s, infostring );
 
 	// find a request with specified context
 	for( i = 0; i < MAX_REQUESTS; i++ )
@@ -1452,7 +1518,7 @@ void CL_ParseNETInfoMessage( netadr_t from, sizebuf_t *msg )
 			if( nr->timeout > host.realtime )
 			{
 				// setup the answer
-				nr->resp.response = s;
+				nr->resp.response = infostring;
 				nr->resp.remote_address = from;
 				nr->resp.error = NET_SUCCESS;
 				nr->resp.ping = host.realtime - nr->timesend;
