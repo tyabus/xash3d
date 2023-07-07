@@ -2124,7 +2124,7 @@ static pmtrace_t *GAME_EXPORT pfnTraceLine( float *start, float *end, int flags,
 static void GAME_EXPORT pfnPlaySoundByNameAtLocation( char *szSound, float volume, float *origin )
 {
 	int hSound = S_RegisterSound( szSound );
-	S_StartSound( origin, 0, CHAN_ITEM, hSound, volume, 1.0, PITCH_NORM, 0 );
+	S_StartSound( origin, cl.refdef.viewentity, CHAN_ITEM, hSound, volume, 1.0, PITCH_NORM, 0 );
 }
 
 /*
