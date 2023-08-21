@@ -1450,8 +1450,11 @@ void SV_KillOperatorCommands( void )
 	Cmd_RemoveCommand( "status" );
 	Cmd_RemoveCommand( "serverinfo" );
 	Cmd_RemoveCommand( "clientinfo" );
+	Cmd_RemoveCommand( "clientuseragent" );
 	Cmd_RemoveCommand( "playersonly" );
 
+	Cmd_RemoveCommand( "redirect" );
+	Cmd_RemoveCommand( "stopredirect" );
 	Cmd_RemoveCommand( "map" );
 	Cmd_RemoveCommand( "newgame" );
 	Cmd_RemoveCommand( "endgame" );
