@@ -25,6 +25,7 @@ GNU General Public License for more details.
 
 #ifndef _WIN32
 #include <unistd.h> // fork
+#include <stdio.h>  // printf
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -1227,6 +1228,15 @@ Host_Main
 */
 int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bChangeGame, pfnChangeGame func )
 {
+	// tyabus: Added another anti-moron check here
+#if ( !defined( __HAIKU__ ) && !defined( _WIN32 ) && !defined( __SAILFISH__ ) && !defined( __ANDROID__ ) )
+	if ( !getuid( ) )
+	{
+		printf( "You shouldn't run Xash3D as root!\n" );
+		exit( 1 );
+	}
+#endif
+
 	pChangeGame = func;	// may be NULL
 
 	host.change_game = bChangeGame;
