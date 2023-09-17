@@ -718,6 +718,8 @@ void GAME_EXPORT CL_WeaponAnim( int iAnim, int body )
 	view->curstate.scale = 1.0f;
 	view->curstate.frame = 0.0f;
 	view->curstate.body = body;
+	view->curstate.rendermode = kRenderNormal;
+	view->curstate.renderamt  = 255;
 
 #if 0	// g-cont. for GlowShell testing
 	view->curstate.renderfx = kRenderFxGlowShell;
