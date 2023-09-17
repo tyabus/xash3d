@@ -638,3 +638,16 @@ void QuaternionSlerp( const vec4_t p, vec4_t q, float t, vec4_t qt )
 			qt[i] = sclp * p[i] + sclq * qt[i];
 	}
 }
+
+/*
+====================
+QuaternionAngle
+
+====================
+*/
+void QuaternionAngle( const vec4_t q, vec3_t angles )
+{
+	matrix3x4 mat;
+	Matrix3x4_FromOriginQuat( mat, q, vec3_origin );
+	Matrix3x4_AnglesFromMatrix( mat, angles );
+}

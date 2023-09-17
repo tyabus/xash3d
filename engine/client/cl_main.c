@@ -219,7 +219,7 @@ static float CL_LerpPoint( void )
 {
 	float	f, frac;
 
-	f = cl.mtime[0] - cl.mtime[1];
+	f = cl_serverframetime( );
 
 	if( !f || SV_Active( ))
 	{

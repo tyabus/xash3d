@@ -169,6 +169,7 @@ float RadiusFromBounds( const vec3_t mins, const vec3_t maxs );
 
 void AngleQuaternion( const vec3_t angles, vec4_t q, qboolean studio );
 void QuaternionSlerp( const vec4_t p, vec4_t q, float t, vec4_t qt );
+void QuaternionAngle( const vec4_t q, vec3_t angles );
 float RemapVal( float val, float A, float B, float C, float D );
 float ApproachVal( float target, float value, float speed );
 void InterpolateAngles( vec3_t start, vec3_t end, vec3_t output, float frac );
@@ -193,6 +194,7 @@ void Matrix3x4_TransformPositivePlane( cmatrix3x4 in, const vec3_t normal, float
 void Matrix3x4_SetOrigin( matrix3x4 out, float x, float y, float z );
 void Matrix3x4_Invert_Simple( matrix3x4 out, cmatrix3x4 in1 );
 void Matrix3x4_OriginFromMatrix( cmatrix3x4 in, float *out );
+void Matrix3x4_AnglesFromMatrix( const matrix3x4 in, vec3_t out );
 
 #define Matrix4x4_LoadIdentity( mat )	Matrix4x4_Copy( mat, matrix4x4_identity )
 #define Matrix4x4_Copy( out, in )	Q_memcpy( out, in, sizeof( matrix4x4 ))

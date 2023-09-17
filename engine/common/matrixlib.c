@@ -94,6 +94,26 @@ void Matrix3x4_OriginFromMatrix( cmatrix3x4 in, float *out )
 	out[2] = in[2][3];
 }
 
+void Matrix3x4_AnglesFromMatrix( const matrix3x4 in, vec3_t out )
+{
+	float xyDist = sqrt( in[0][0] * in[0][0] + in[1][0] * in[1][0] );
+
+	if ( xyDist > 0.001f )
+	{
+		// enough here to get angles?
+		out[0] = RAD2DEG( atan2( -in[2][0], xyDist ) );
+		out[1] = RAD2DEG( atan2( in[1][0], in[0][0] ) );
+		out[2] = RAD2DEG( atan2( in[2][1], in[2][2] ) );
+	}
+	else
+	{
+		// forward is mostly Z, gimbal lock
+		out[0] = RAD2DEG( atan2( -in[2][0], xyDist ) );
+		out[1] = RAD2DEG( atan2( -in[0][1], in[1][1] ) );
+		out[2] = 0.0f;
+	}
+}
+
 void Matrix3x4_FromOriginQuat( matrix3x4 out, const vec4_t quaternion, const vec3_t origin )
 {
 	out[0][0] = 1.0f - 2.0f * quaternion[1] * quaternion[1] - 2.0f * quaternion[2] * quaternion[2];

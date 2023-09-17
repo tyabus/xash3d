@@ -93,6 +93,9 @@ typedef struct runcmd_s
 	int		sendsize;
 } runcmd_t;
 
+#define ANGLE_BACKUP	16
+#define ANGLE_MASK		( ANGLE_BACKUP - 1 )
+
 #define CMD_BACKUP		MULTIPLAYER_BACKUP	// allow a lot of command backups for very fast systems
 #define CMD_MASK		(CMD_BACKUP - 1)
 
@@ -100,6 +103,7 @@ typedef struct runcmd_s
 extern int CL_UPDATE_BACKUP;
 
 #define INVALID_HANDLE	0xFFFF		// for XashXT cache system
+#define cl_serverframetime( ) ( cl.mtime[0] - cl.mtime[1] )
 
 // used by SetUpPlayerPrediction
 #if 0
@@ -649,6 +653,7 @@ void CL_WriteDemoUserMessage( const byte *buffer, size_t size );
 qboolean CL_DemoReadMessage( byte *buffer, size_t *length );
 void CL_WriteDemoJumpTime( void );
 void CL_CloseDemoHeader( void );
+void CL_DemoInterpolateAngles( void );
 void CL_StopPlayback( void );
 void CL_StopRecord( void );
 void CL_PlayDemo_f( void );
