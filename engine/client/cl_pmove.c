@@ -340,7 +340,7 @@ void GAME_EXPORT CL_SetSolidPlayers( int playernum )
 			continue; // not present this frame
 
 
-#if 1 // came from SetUpPlayerPrediction
+		// came from SetUpPlayerPrediction
 		state = cl.frames[cl.parsecountmod].playerstate + j;
 
 		if( ent->curstate.messagenum != cl.parsecount )
@@ -355,7 +355,6 @@ void GAME_EXPORT CL_SetSolidPlayers( int playernum )
 		if( !state->solid )
 			continue; // not solid
 
-#endif
 		pe = &clgame.pmove->physents[clgame.pmove->numphysent];
 		if( CL_CopyEntityToPhysEnt( pe, ent ))
 			clgame.pmove->numphysent++;

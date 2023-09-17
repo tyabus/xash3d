@@ -538,24 +538,28 @@ AngleQuaternion
 
 ====================
 */
-void AngleQuaternion( const vec3_t angles, vec4_t q )
+void AngleQuaternion( const vec3_t angles, vec4_t q, qboolean studio )
 {
 	float	sr, sp, sy, cr, cp, cy;
 
+	if ( studio )
+	{
+		SinCos( angles[ROLL] * 0.5f, &sy, &cy );
+		SinCos( angles[YAW] * 0.5f, &sp, &cp );
+		SinCos( angles[PITCH] * 0.5f, &sr, &cr );
+	}
+	else
+	{
 #ifdef XASH_VECTORIZE_SINCOS
-	SinCosFastVector3( angles[2] * 0.5f, angles[1] * 0.5f, angles[0] * 0.5f,
-		&sy, &sp, &sr,
-		&cy, &cp, &cr);
+		SinCosFastVector3( angles[2] * 0.5f, angles[1] * 0.5f, angles[0] * 0.5f,
+			&sy, &sp, &sr,
+			&cy, &cp, &cr);
 #else
-	float	angle;
-
-	angle = angles[2] * 0.5f;
-	SinCos( angle, &sy, &cy );
-	angle = angles[1] * 0.5f;
-	SinCos( angle, &sp, &cp );
-	angle = angles[0] * 0.5f;
-	SinCos( angle, &sr, &cr );
+		SinCos( DEG2RAD( angles[YAW] ) * 0.5f, &sy, &cy );
+		SinCos( DEG2RAD( angles[PITCH] ) * 0.5f, &sp, &cp );
+		SinCos( DEG2RAD( angles[ROLL] ) * 0.5f, &sr, &cr );
 #endif
+	}
 
 	q[0] = sr * cp * cy - cr * sp * sy; // X
 	q[1] = cr * sp * cy + sr * cp * sy; // Y

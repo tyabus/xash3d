@@ -167,7 +167,7 @@ qboolean BoundsIntersect( const vec3_t mins1, const vec3_t maxs1, const vec3_t m
 qboolean BoundsAndSphereIntersect( const vec3_t mins, const vec3_t maxs, const vec3_t origin, float radius );
 float RadiusFromBounds( const vec3_t mins, const vec3_t maxs );
 
-void AngleQuaternion( const vec3_t angles, vec4_t q );
+void AngleQuaternion( const vec3_t angles, vec4_t q, qboolean studio );
 void QuaternionSlerp( const vec4_t p, vec4_t q, float t, vec4_t qt );
 float RemapVal( float val, float A, float B, float C, float D );
 float ApproachVal( float target, float value, float speed );

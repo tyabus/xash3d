@@ -410,13 +410,13 @@ static void Mod_StudioCalcBoneQuaterion( int frame, float s, mstudiobone_t *pbon
 
 	if( !VectorCompare( angle1, angle2 ))
 	{
-		AngleQuaternion( angle1, q1 );
-		AngleQuaternion( angle2, q2 );
+		AngleQuaternion( angle1, q1, true );
+		AngleQuaternion( angle2, q2, true );
 		QuaternionSlerp( q1, q2, s, q );
 	}
 	else
 	{
-		AngleQuaternion( angle1, q );
+		AngleQuaternion( angle1, q, true );
 	}
 }
 
