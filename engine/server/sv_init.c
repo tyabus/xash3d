@@ -725,8 +725,8 @@ void SV_InitGame( void )
 	{
 		// setup all the clients
 		ent = EDICT_NUM( i + 1 );
-		SV_InitEdict( ent );
 		svs.clients[i].edict = ent;
+		SV_InitEdict( ent );
 	}
 
 	// get actual movevars
