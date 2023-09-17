@@ -1380,9 +1380,10 @@ void FS_InitGameInfo( gameinfo_t *GameInfo, const char *gamedir )
 	// setup default values
 	GameInfo->soundclip_dist = 1536;
 
-	GameInfo->max_edicts     = 900; // default value if not specified
-	GameInfo->max_tents      = 500;
-	GameInfo->max_beams      = 128;
+	// default values if not specified
+	GameInfo->max_edicts     = 1024; // tyabus: original was 900
+	GameInfo->max_tents      = 768; // tyabus: original was 500
+	GameInfo->max_beams      = 256; // tyabus: original was 128
 	GameInfo->max_particles  = 4096;
 }
 
