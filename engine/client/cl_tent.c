@@ -34,7 +34,7 @@ TEMPENTS MANAGEMENT
 
 ==============================================================
 */
-#define MAX_MUZZLEFLASH		4
+#define MAX_MUZZLEFLASH		3
 #define SHARD_VOLUME		12.0f	// on shard ever n^3 units
 #define SF_FUNNEL_REVERSE		1
 
@@ -67,7 +67,6 @@ void CL_RegisterMuzzleFlashes( void )
 	cl_muzzleflash[0] = CL_FindModelIndex( "sprites/muzzleflash1.spr" );
 	cl_muzzleflash[1] = CL_FindModelIndex( "sprites/muzzleflash2.spr" );
 	cl_muzzleflash[2] = CL_FindModelIndex( "sprites/muzzleflash3.spr" );
-	cl_muzzleflash[3] = CL_FindModelIndex( "sprites/muzzleflash.spr" );
 
 	// update registration for shellchrome
 	cls.hChromeSprite = pfnSPR_Load( "sprites/shellchrome.spr" );
@@ -762,7 +761,7 @@ void GAME_EXPORT CL_MuzzleFlash( const vec3_t pos, int type )
 	int		index, modelIndex, frameCount;
 	float		scale;
 
-	index = bound( 0, type % 5, MAX_MUZZLEFLASH - 1 );
+	index = (type % 5) % MAX_MUZZLEFLASH;
 	scale = (type / 10) * 0.1f;
 	if( scale == 0.0f ) scale = 0.5f;
 

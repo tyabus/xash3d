@@ -288,7 +288,6 @@ void SV_ActivateServer( void )
 		return;
 
 	// custom muzzleflashes
-	pfnPrecacheModel( "sprites/muzzleflash.spr" );
 	pfnPrecacheModel( "sprites/muzzleflash1.spr" );
 	pfnPrecacheModel( "sprites/muzzleflash2.spr" );
 	pfnPrecacheModel( "sprites/muzzleflash3.spr" );
