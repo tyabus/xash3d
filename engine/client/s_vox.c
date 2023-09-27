@@ -41,13 +41,6 @@ static int IsSkipSpace( const char c )
 	return 0;
 }
 
-static int IsWhiteSpace( const char space )
-{
-	if( space == ' ' || space == '\t' || space == '\r' || space == '\n' )
-		return 1;
-	return 0;
-}
-
 static int IsCommandChar( const char c )
 {
 	if( c == 'v' || c == 'p' || c == 's' || c == 'e' || c == 't' )
@@ -648,7 +641,7 @@ void VOX_ReadSentenceFile( const char *psentenceFileName )
 		// skip newline, cr, tab, space
 
 		c = *pch;
-		while( pch < pchlast && IsWhiteSpace( c ))
+		while( pch < pchlast && COM_IsWhiteSpace( c ))
 			c = *(++pch);
 
 		// skip entire line if first char is /

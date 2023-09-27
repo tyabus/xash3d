@@ -181,6 +181,54 @@ int GAME_EXPORT COM_ExpandFilename( const char *fileName, char *nameOutBuffer, i
 }
 
 /*
+==============
+COM_IsWhiteSpace
+
+interpret symbol as whitespace
+==============
+*/
+int COM_IsWhiteSpace( char space )
+{
+	if ( space == ' ' || space == '\t' || space == '\r' || space == '\n' )
+		return 1;
+	return 0;
+}
+
+/*
+=============
+COM_TrimSpace
+
+trims all whitespace from the front
+and end of a string
+=============
+*/
+void COM_TrimSpace( const char *source, char *dest )
+{
+	int start, end, length;
+
+	start = 0;
+	end   = Q_strlen( source );
+
+	while ( source[start] && COM_IsWhiteSpace( source[start] ) )
+		start++;
+	end--;
+
+	while ( end > 0 && COM_IsWhiteSpace( source[end] ) )
+		end--;
+	end++;
+
+	length = end - start;
+
+	if ( length > 0 )
+		memcpy( dest, source + start, length );
+	else
+		length = 0;
+
+	// terminate the dest string
+	dest[length] = 0;
+}
+
+/*
 ============
 COM_FixSlashes
 

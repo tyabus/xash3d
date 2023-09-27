@@ -2330,7 +2330,7 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 
 	val = Info_ValueForKey( cl->userinfo, "name" );
 	Q_strncpy( temp2, val, sizeof( temp2 ));
-	TrimSpace( temp2, temp1 );
+	COM_TrimSpace( temp2, temp1 );
 
 	Info_RemoveKey( cl->userinfo, "password" ); // hide password from other users
 

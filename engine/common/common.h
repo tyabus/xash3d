@@ -1001,6 +1001,8 @@ void CL_StudioEvent( struct mstudioevent_s *event, struct cl_entity_s *ent );
 qboolean CL_GetComment( const char *demoname, char *comment );
 void COM_AddAppDirectoryToSearchPath( const char *pszBaseDir, const char *appName );
 int COM_ExpandFilename( const char *fileName, char *nameOutBuffer, int nameOutBufferSize );
+int COM_IsWhiteSpace( char space );
+void COM_TrimSpace( const char *source, char *dest );
 struct pmtrace_s *PM_TraceLine( float *start, float *end, int flags, int usehull, int ignore_pe );
 void SV_StartSound( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch );
 void SV_StartMusic( const char *curtrack, const char *looptrack, fs_offset_t position );
@@ -1067,7 +1069,6 @@ void Cmd_AutoComplete( char *complete_string );
 void COM_SetRandomSeed( int lSeed );
 int Com_RandomLong( int lMin, int lMax );
 float Com_RandomFloat( float fMin, float fMax );
-void TrimSpace( const char *source, char *dest );\
 const byte *GL_TextureData( uint32_t texnum );
 void GL_FreeImage( const char *name );
 void UI_SetActiveMenu( qboolean fActive );

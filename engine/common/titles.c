@@ -63,19 +63,12 @@ static int IsEndOfText( const char *pText )
 	return 0;
 }
 
-static int IsWhiteSpace( char space )
-{
-	if( space == ' ' || space == '\t' || space == '\r' || space == '\n' )
-		return 1;
-	return 0;
-}
-
 static const char *SkipSpace( const char *pText )
 {
 	if( pText )
 	{
 		int pos = 0;
-		while( pText[pos] && IsWhiteSpace( pText[pos] ))
+		while( pText[pos] && COM_IsWhiteSpace( pText[pos] ))
 			pos++;
 		return pText + pos;
 	}
@@ -87,7 +80,7 @@ static const char *SkipText( const char *pText )
 	if( pText )
 	{
 		int pos = 0;
-		while( pText[pos] && !IsWhiteSpace( pText[pos] ))
+		while( pText[pos] && !COM_IsWhiteSpace( pText[pos] ))
 			pos++;
 		return pText + pos;
 	}
@@ -118,32 +111,6 @@ static int ParseFloats( const char *pText, float *pFloat, int count )
 	if( count == 0 )
 		return 1;
 	return 0;
-}
-
-// trims all whitespace from the front and end of a string
-void TrimSpace( const char *source, char *dest )
-{
-	int start, end, length;
-
-	start = 0;
-	end = Q_strlen( source );
-
-	while( source[start] && IsWhiteSpace( source[start] ))
-		start++;
-
-	end--;
-	while( end > 0 && IsWhiteSpace( source[end] ))
-		end--;
-
-	end++;
-
-	length = end - start;
-	if( length > 0 )
-		Q_memcpy( dest, source + start, length );
-	else length = 0;
-
-	// terminate the dest string
-	dest[length] = 0;
 }
 
 static int IsToken( const char *pText, const char *pTokenName )
@@ -252,7 +219,7 @@ void CL_TextMessageParse( byte *pMemFile, int fileSize )
 
 	while( COM_MemFgets( pMemFile, fileSize, &filePos, buf, 512 ) != NULL )
 	{
-		TrimSpace( buf, trim );
+		COM_TrimSpace( buf, trim );
 
 		switch( mode )
 		{
