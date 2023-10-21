@@ -1375,7 +1375,7 @@ void NET_Init( void )
 
 	NET_InitializeCriticalSections( );
 
-	r = WSAStartup( MAKEWORD( 1, 1 ), &winsockdata );
+	r = WSAStartup( MAKEWORD( 2, 0 ), &winsockdata );
 	if( r )
 	{
 		MsgDev( D_WARN, "NET_Init: winsock initialization failed: %d\n", r );
