@@ -27,25 +27,13 @@ static uint32_t	ExtraMasks[32];
 short BF_BigShort( short swap )
 {
 #ifndef XASH_BIG_ENDIAN
-#ifdef __MSC_VER
-	short *s = &swap;
-	
-	__asm {
-		mov ebx, s
-		mov al, [ebx+1]
-		mov ah, [ebx  ]
-		mov [ebx], ax
-	}
-
-	return *s;
-#else
 	// Taken from Xash3DLinux project
 	short pDest = 0;
 	pDest = (swap >> 8) | (swap << 8);
 	return pDest;
-#endif
-#endif
+#else
 	return swap;
+#endif
 }
 
 void BF_InitMasks( void )
