@@ -1152,12 +1152,28 @@ void SV_RunCmd( sv_client_t *cl, usercmd_t *ucmd, int random_seed )
    
 	if( cl->next_movetime > host.realtime )
 	{
+		if( !cl->speedhack_warned && !cl->fakeclient )
+		{
+			// report to the server op
+			MsgDev( D_WARN, "%s (%i) time is faster than server time (speedhack?)\n", cl->name, cl->userid );
+			cl->speedhack_warned = true;
+			cl->speedhack_warns++;
+
+			// automatically kick player
+			if( sv_speedhack_kick->value && cl->speedhack_warns > sv_speedhack_warns->value )
+			{
+				SV_ClientPrintf( cl, PRINT_HIGH, "Speedhacking is not allowed on this server!\n" );
+				SV_DropClient( cl );
+			}
+		}
+
 		cl->last_movetime += ( ucmd->msec * 0.001f );
 		return;
 	}
 
 	clent = cl->edict;
 	cl->next_movetime = 0.0;
+	cl->speedhack_warned = false;
 	lastcmd = *ucmd;
 
 	// chop up very long commands
