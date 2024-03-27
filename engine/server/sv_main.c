@@ -19,7 +19,6 @@ GNU General Public License for more details.
 
 #include "errno.h"
 #include "sequence.h"
-#define HEARTBEAT_SECONDS	(sv_nat->integer?60.0f:300.0f) 		// 1 or 5 minutes
 
 convar_t	*sv_zmax;
 convar_t	*sv_novis;			// disable server culling entities by vis
@@ -108,6 +107,7 @@ convar_t	*sv_fullupdate_penalty_multiplier;
 convar_t	*sv_fullupdate_penalty_time;
 convar_t	*sv_speedhack_kick;
 convar_t	*sv_speedhack_warns;
+convar_t	*sv_master_verbose_heartbeats;
 convar_t	*sv_master_response_timeout;
 
 // sky variables
@@ -131,8 +131,6 @@ convar_t	*sv_allow_mouse;
 convar_t	*sv_allow_joystick;
 convar_t	*sv_allow_vr;
 convar_t	*sv_allow_hltv;
-
-static void Master_Heartbeat( void );
 
 char localinfo[MAX_LOCALINFO];
 
@@ -712,72 +710,10 @@ void Host_ServerFrame( void )
 	SV_PrepWorldFrame ();
 
 	// send a heartbeat to the master if needed
-	Master_Heartbeat ();
+	NET_MasterHeartbeat ();
 }
 
 //============================================================================
-
-/*
-=================
-Master_Add
-=================
-*/
-static void Master_Add( void )
-{
-	sizebuf_t msg;
-	char buf[16];
-
-	// Server originally might have been under sv_lan
-	if ( svs.heartbeat_challenge == 0 )
-		svs.heartbeat_challenge = Com_RandomLong( 0, INT_MAX );
-
-	BF_Init( &msg, "Master Join", buf, sizeof( buf ));
-	BF_WriteBytes( &msg, "q\xFF", 2 );
-	BF_WriteUBitLong( &msg, svs.heartbeat_challenge, sizeof( svs.heartbeat_challenge ) << 3 );
-
-	if( NET_SendToMasters( NS_SERVER, BF_GetNumBytesWritten( &msg ), BF_GetData( &msg )))
-		svs.last_heartbeat = MAX_HEARTBEAT; // try next frame
-}
-
-
-/*
-================
-Master_Heartbeat
-
-Send a message to the master every few minutes to
-let it know we are alive, and log information
-================
-*/
-static void Master_Heartbeat( void )
-{
-	if( !public_server->integer || sv_maxclients->integer == 1 || sv_lan->integer == 1 )
-		return; // only public servers send heartbeats
-
-	// check for time wraparound
-	if( svs.last_heartbeat > host.realtime )
-		svs.last_heartbeat = host.realtime;
-
-	if(( host.realtime - svs.last_heartbeat ) < HEARTBEAT_SECONDS )
-		return; // not time to send yet
-
-	svs.last_heartbeat = host.realtime;
-
-	Master_Add();
-}
-
-/*
-=================
-Master_Shutdown
-
-Informs all masters that this server is going down
-=================
-*/
-static void Master_Shutdown( void )
-{
-	svs.heartbeat_challenge = 0;
-	NET_Config( true, false ); // allow remote
-	while( NET_SendToMasters( NS_SERVER, 2, "\x62\x0A" ) );
-}
 
 /*
 =================
@@ -789,18 +725,19 @@ Master will validate challenge and this server to public list
 */
 void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 {
-	uint32_t challenge = 0, challenge2;
+	uint32_t challenge = 0, challenge2, heartbeat_challenge;
 	char s[4096] = "0\n"; // skip 2 bytes of header
 	int clients, bots; // initialized in SV_GetPlayerCount
+	double last_heartbeat;
 	qboolean havePassword = false;
 
-	if( !NET_IsFromMasters( from ) )
+	if ( !NET_GetMaster( from, &heartbeat_challenge, &last_heartbeat ) )
 	{
 		MsgDev(D_ERROR, "Unexpected master server packet from %s\n", NET_AdrToString(from));
 		return;
 	}
 
-	if( svs.last_heartbeat + sv_master_response_timeout->value < host.realtime )
+	if( last_heartbeat + sv_master_response_timeout->value < host.realtime )
 	{
 		MsgDev( D_ERROR, "unexpected master server info query packet (too late? try increasing sv_master_response_timeout value)\n");
 		return;
@@ -809,7 +746,7 @@ void SV_AddToMaster( netadr_t from, sizebuf_t *msg )
 	challenge = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
 	challenge2 = BF_ReadUBitLong( msg, sizeof( uint32_t ) << 3 );
 
-	if( challenge2 != svs.heartbeat_challenge )
+	if( challenge2 != heartbeat_challenge )
 	{
 		MsgDev( D_ERROR, "unexpected master server info query packet (wrong challenge!)\n" );
 		return;
@@ -997,6 +934,7 @@ void SV_Init( void )
 	sv_speedhack_kick = Cvar_Get( "sv_speedhack_kick", "1", CVAR_ARCHIVE, "enable automatic kicking of players who speedhack" );
 	sv_speedhack_warns = Cvar_Get( "sv_speedhack_warns", "8", CVAR_ARCHIVE, "maximum number of warnings before kicking for speedhack" );
 
+	sv_master_verbose_heartbeats = Cvar_Get( "sv_master_verbose_heartbeats", "0", 0, "print every heartbeat to console" );
 	sv_master_response_timeout = Cvar_Get( "sv_master_response_timeout", "4", CVAR_ARCHIVE, "master server heartbeat response timeout in seconds" );
 
 	Cmd_AddCommand( "download_resources", SV_DownloadResources_f, "try to download missing resources to server");
@@ -1086,7 +1024,7 @@ void SV_Shutdown( qboolean reconnect )
 		SV_FinalMessage( host.finalmsg, reconnect );
 
 	if( public_server->integer && sv_maxclients->integer != 1 && sv_lan->integer != 1 )
-		Master_Shutdown();
+		NET_MasterShutdown();
 
 	Sequence_PurgeEntries( true ); // clear Sequence
 

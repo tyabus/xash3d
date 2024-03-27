@@ -562,8 +562,12 @@ void NET_SendPacket( netsrc_t sock, size_t length, const void *data, netadr_t to
 void NET_InitMasters();
 void NET_SaveMasters();
 void NET_ClearMasters();
+void NET_MasterShutdown();
+void NET_MasterHeartbeat();
+void NET_ForceHeartbeat();
+qboolean NET_GetMaster( netadr_t from, uint32_t *challenge, double *last_heartbeat );
 qboolean NET_SendToMasters( netsrc_t sock, size_t len, const void *data );
-qboolean NET_IsFromMasters(netadr_t adr);
+qboolean NET_IsFromMasters( netadr_t adr );
 
 
 /*

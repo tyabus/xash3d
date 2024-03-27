@@ -484,7 +484,7 @@ gotnewcl:
 		if( cl->state >= cs_connected ) count++;
 
 	if( count == 1 || count == sv_maxclients->integer )
-		svs.last_heartbeat = MAX_HEARTBEAT;
+		NET_ForceHeartbeat();
 }
 
 /*
@@ -663,7 +663,7 @@ void SV_DropClient( sv_client_t *drop )
 	}
 
 	if( i == sv_maxclients->integer )
-		svs.last_heartbeat = MAX_HEARTBEAT;
+		NET_ForceHeartbeat();
 }
 
 /*

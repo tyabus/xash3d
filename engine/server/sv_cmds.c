@@ -1078,7 +1078,7 @@ void SV_Heartbeat_f( void )
 		return;
 	}
 
-	svs.last_heartbeat = MAX_HEARTBEAT;
+	NET_ForceHeartbeat();
 }
 
 /*

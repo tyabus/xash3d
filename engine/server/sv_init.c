@@ -513,10 +513,6 @@ qboolean SV_SpawnServer( const char *mapname, const char *startspot )
 	if( !svs.initialized )
 		return false;
 
-	// Only generate if we're egible to be a public server
-	if( !sv.background && sv_maxclients->integer > 1 && !sv_lan->integer && public_server->integer )
-		svs.heartbeat_challenge = Com_RandomLong( 0, INT_MAX );
-
 	svgame.globals->changelevel = false; // will be restored later if needed
 	svs.timestart = Sys_DoubleTime();
 	svs.spawncount++; // any partially connected client will be restarted
@@ -717,7 +713,7 @@ void SV_InitGame( void )
 	svgame.globals->coop = ( sv_maxclients->integer > 1 ) ? Cvar_VariableInteger( "coop" ):0;
 
 	// heartbeats will always be sent to the id master
-	svs.last_heartbeat = MAX_HEARTBEAT; // send immediately
+	NET_ForceHeartbeat();
 
 	// set client fields on player ents
 	for( i = 0; i < svgame.globals->maxClients; i++ )

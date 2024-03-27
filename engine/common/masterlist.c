@@ -13,6 +13,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "common.h"
+#include "server.h"
+
+#define HEARTBEAT_SECONDS ( sv_nat->integer ? 60.0f : 300.0f ) // 1 or 5 minutes
 
 typedef struct master_s
 {
@@ -21,6 +24,9 @@ typedef struct master_s
 	qboolean save;
 	string address;
 	netadr_t adr;
+
+	uint32_t heartbeat_challenge;
+	double last_heartbeat;
 } master_t;
 
 struct masterlist_s
@@ -31,25 +37,102 @@ struct masterlist_s
 
 /*
 ========================
+NET_GetMasterHostByName
+========================
+*/
+static int NET_GetMasterHostByName( master_t *m )
+{
+	int res = NET_StringToAdrNB( m->address, &m->adr );
+
+	if( res )
+		return res;
+
+	m->adr.type = 0;
+	if( !res )
+		MsgDev( D_INFO, "Can't resolve adr: %s\n", m->address );
+
+	return res;
+}
+
+/*
+========================
+NET_GetMasterFromAdr
+
+Returns a pointer to a master
+========================
+*/
+static master_t *NET_GetMasterFromAdr( netadr_t from )
+{
+	master_t *master;
+
+	for( master = ml.list; master; master = master->next )
+	{
+		if( NET_CompareAdr( master->adr, from ) )
+		{
+			return master;
+		}
+	}
+
+	return NULL;
+}
+
+/*
+========================
 NET_IsFromMasters
 
 Determines if source matches
 one of the master servers
 ========================
 */
-qboolean NET_IsFromMasters(netadr_t from)
+qboolean NET_IsFromMasters( netadr_t from )
 {
-	master_t *list;
+	return NET_GetMasterFromAdr( from ) != NULL;
+}
 
-	for (list = ml.list; list; list = list->next)
+/*
+========================
+NET_AnnounceToMaster
+
+Announces server to master
+========================
+*/
+static void NET_AnnounceToMaster( master_t *m )
+{
+	sizebuf_t msg;
+	char buf[16];
+
+	m->heartbeat_challenge = Com_RandomLong( 0, INT_MAX );
+
+	BF_Init( &msg, "Master Join", buf, sizeof( buf ) );
+	BF_WriteBytes( &msg, "q\xFF", 2 );
+	BF_WriteUBitLong( &msg, m->heartbeat_challenge, sizeof( m->heartbeat_challenge ) << 3 );
+
+	NET_SendPacket( NS_SERVER, BF_GetNumBytesWritten( &msg ), BF_GetData( &msg ), m->adr );
+
+	if( sv_master_verbose_heartbeats->value )
 	{
-		if (NET_CompareAdr(list->adr, from))
-		{
-			return true;
-		}
+		MsgDev( D_NOTE, "sent heartbeat to %s (%s, 0x%x)\n", m->address, NET_AdrToString( m->adr ), m->heartbeat_challenge );
+	}
+}
+
+/*
+========================
+NET_GetMaster
+========================
+*/
+qboolean NET_GetMaster( netadr_t from, uint32_t *challenge, double *last_heartbeat )
+{
+	master_t *m;
+
+	m = NET_GetMasterFromAdr( from );
+
+	if( m )
+	{
+		*challenge = m->heartbeat_challenge;
+		*last_heartbeat = m->last_heartbeat;
 	}
 
-	return false;
+	return m != NULL;
 }
 
 /*
@@ -67,46 +150,97 @@ qboolean NET_SendToMasters( netsrc_t sock, size_t len, const void *data )
 
 	for( list = ml.list; list; list = list->next )
 	{
-		int res;
-
 		if( list->sent )
 			continue;
 
-		res = NET_StringToAdrNB( list->address, &list->adr );
-
-		if( !res )
+		switch( NET_GetMasterHostByName( list ) )
 		{
-			MsgDev( D_INFO, "Can't resolve adr: %s\n", list->address );
-			list->sent = true;
-			list->adr.type = 0;
-			continue;
+			case 0:
+			{
+				list->sent = true;
+			    break;
+			}
+			case 2:
+			{
+				list->sent = false;
+				wait = true;
+				break;
+			}
+			case 1:
+			{
+				list->sent = true;
+				NET_SendPacket( sock, len, data, list->adr );
+			    break;
+			}
 		}
-
-		if( res == 2 )
-		{
-			list->sent = false;
-			wait = true;
-			list->adr.type = 0;
-			continue;
-		}
-
-		list->sent = true;
-
-		NET_SendPacket( sock, len, data, list->adr );
 	}
 
 	if( !wait )
 	{
-		list = ml.list;
-
-		while( list )
-		{
+		// reset sent state
+		for( list = ml.list; list; list = list->next )
 			list->sent = false;
-			list = list->next;
-		}
 	}
 
 	return wait;
+}
+
+/*
+================
+NET_MasterHeartbeat
+
+Send a message to the master every few minutes to
+let it know we are alive, and log information
+================
+*/
+void NET_MasterHeartbeat( void )
+{
+	master_t *m;
+
+	if( !public_server->integer || sv_maxclients->integer == 1 || sv_lan->integer == 1 )
+		return; // only public servers send heartbeats
+
+	for( m = ml.list; m; m = m->next )
+	{
+		// not time to send yet
+		if( ( host.realtime - m->last_heartbeat ) < HEARTBEAT_SECONDS )
+			continue;
+
+		switch( NET_GetMasterHostByName( m ) )
+		{
+			case 0:
+			{
+			    m->last_heartbeat = host.realtime; // try to resolve again on next heartbeat
+				break;
+			}
+			case 2:
+			{
+			    m->last_heartbeat = MAX_HEARTBEAT; // retry on next frame
+			    if( sv_master_verbose_heartbeats->value )
+				    MsgDev( D_NOTE, "delay heartbeat to next frame until %s resolves\n", m->address );
+				break;
+			}
+			case 1:
+			{
+			    m->last_heartbeat = host.realtime;
+			    NET_AnnounceToMaster( m );
+				break;
+			}
+		}
+	}
+}
+
+/*
+========================
+NET_ForceHeartbeat
+========================
+*/
+void NET_ForceHeartbeat( void )
+{
+	master_t *m;
+
+	for( m = ml.list; m; m = m->next )
+		m->last_heartbeat = MAX_HEARTBEAT;
 }
 
 /*
@@ -131,6 +265,7 @@ static void NET_AddMaster( char *addr, qboolean save )
 	master->sent = false;
 	master->save = save;
 	master->next = NULL;
+	master->adr.type = 0;
 
 	// link in
 	if( last )
@@ -273,6 +408,20 @@ void NET_SaveMasters( )
 }
 
 /*
+=================
+NET_MasterShutdown
+
+Informs all masters that this server is going down
+(ignored by master servers in current implementation)
+=================
+*/
+void NET_MasterShutdown( void )
+{
+	NET_Config( true, false ); // allow remote
+	while( NET_SendToMasters( NS_SERVER, 2, "\x62\x0A" ) );
+}
+
+/*
 ========================
 NET_InitMasters
 
@@ -288,5 +437,6 @@ void NET_InitMasters()
 	// keep main master always there
 	NET_AddMaster( DEFAULT_PRIMARY_MASTER, false );
 	NET_AddMaster( FWGS_PRIMARY_MASTER, false );
+
 	NET_LoadMasters( );
 }
