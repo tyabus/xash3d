@@ -141,7 +141,7 @@ stream_t *Stream_OpenMPG( const char *filename )
 	if( ret ) MsgDev( D_ERROR, "%s\n", get_error( mpeg ));
 #endif
 	// trying to open stream and read header
-	if( !open_mpeg_stream( mpeg, file, FS_Read, FS_Seek, &sc ))
+	if( !open_mpeg_stream( mpeg, file, (void *)FS_Read, (void *)FS_Seek, &sc ) )
 	{
 		MsgDev( D_ERROR, "Stream_OpenMPG: failed to load (%s): %s\n", filename, get_error( mpeg ));
 		close_decoder( mpeg );
