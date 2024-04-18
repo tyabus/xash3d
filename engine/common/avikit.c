@@ -779,9 +779,10 @@ qboolean AVI_Initailize( void )
 		
 	pAVIFileInit();
 	return true;
-#endif
+#else
 	MsgDev( D_INFO, "AVI: Not supported\n" );
 	return false;
+#endif
 }
 
 void AVI_Shutdown( void )
