@@ -676,7 +676,6 @@ static void SV_SetupPMove( playermove_t *pmove, sv_client_t *cl, usercmd_t *ucmd
 	pmove->flTimeStepSound = clent->v.flTimeStepSound;
 	pmove->iStepLeft = clent->v.iStepLeft;
 	pmove->flFallVelocity = clent->v.flFallVelocity;
-	pmove->flSwimTime = clent->v.flSwimTime;
 	VectorCopy( clent->v.punchangle, pmove->punchangle );
 	pmove->flSwimTime = clent->v.flSwimTime;
 	pmove->flNextPrimaryAttack = 0.0f; // not used by PM_ code
