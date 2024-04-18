@@ -648,7 +648,7 @@ typedef enum
 	IMAGE_ROUND	= BIT(19),	// round image to nearest Pow2
 	IMAGE_RESAMPLE	= BIT(20),	// resample image to specified dims
 	IMAGE_PALTO24	= BIT(21),	// turn 32-bit palette into 24-bit mode (only for indexed images)
-	IMAGE_ROUNDFILLER	= BIT(22),	// round image to Pow2 and fill unused entries with single color	
+	// BIT(21) Reserved
 	IMAGE_FORCE_RGBA	= BIT(23),	// force image to RGBA buffer
 	IMAGE_MAKE_LUMA	= BIT(24),	// create luma texture from indexed
 	IMAGE_QUANTIZE	= BIT(25),	// make indexed image from 24 or 32- bit image
