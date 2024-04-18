@@ -1534,11 +1534,11 @@ void FS_ParseGenericGameInfo( gameinfo_t *GameInfo, const char *buf, const qbool
 			{
 				pfile = COM_ParseFile( pfile, GameInfo->client_lib );
 			}
-			else if( isGameInfo && !Q_stricmp( token, "dllpath" ))
+			else if( !Q_stricmp( token, "dllpath" ))
 			{
 				pfile = COM_ParseFile( pfile, GameInfo->dll_path );
 			}
-			else if( isGameInfo && !Q_stricmp( token, "date" ))
+			else if( !Q_stricmp( token, "date" ))
 			{
 				pfile = COM_ParseFile( pfile, GameInfo->date );
 			}
