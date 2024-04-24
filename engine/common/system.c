@@ -693,7 +693,7 @@ void Sys_Error( const char *format, ... )
 #endif
 	}
 
-	if( host.developer > 0 || host.state != HOST_FRAME )
+	if( host_developer->integer > 0 || host.state != HOST_FRAME )
 	{
 #ifdef XASH_W32CON
 		Wcon_ShowConsole( true );
@@ -742,7 +742,7 @@ void Sys_Break( const char *format, ... )
 #endif
 	}
 
-	if( Host_IsDedicated() || host.developer > 0 )
+	if( Host_IsDedicated( ) || host_developer->integer > 0 )
 	{
 #ifdef XASH_W32CON
 		Wcon_ShowConsole( true );
@@ -885,7 +885,7 @@ void MsgDev( int level, const char *pMsg, ... )
 	va_list	argptr;
 	char	text[8192];
 
-	if( host.developer < level ) return;
+	if( host_developer->integer < level ) return;
 
 	va_start( argptr, pMsg );
 	Q_vsnprintf( text, sizeof( text ), pMsg, argptr );

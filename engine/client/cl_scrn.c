@@ -706,7 +706,7 @@ void SCR_Init( void )
 	{
 		Sys_Warn( "can't initialize menu library:\n%s", Com_GetLibraryError() ); // this is not fatal for us
 		// console still can't be toggled in-game without extra cmd-line switch
-		if( !host.developer ) host.developer = 1; // we need console, because menu is missing
+		if( !host_developer->integer ) Cvar_SetFloat( host_developer, 1.0f ); // we need console, because menu is missing
 	}
 
 	SCR_LoadCreditsFont ();
@@ -718,7 +718,7 @@ void SCR_Init( void )
 
 	if( host.state != HOST_RESTART )
 	{
-		if( host.developer && Sys_CheckParm( "-toconsole" ))
+		if( host_developer->integer && Sys_CheckParm( "-toconsole" ) )
 			Cbuf_AddText( "toggleconsole\n" );
 		else UI_SetActiveMenu( true );
 	}

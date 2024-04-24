@@ -358,33 +358,33 @@ static void GAME_EXPORT APIENTRY GL_DebugOutput( GLuint source, GLuint type, GLu
 	switch( type )
 	{
 	case GL_DEBUG_TYPE_ERROR_ARB:
-		if( host.developer < D_ERROR )	// "-dev 2"
+		if( host_developer->integer < D_ERROR ) // "-dev 2"
 			return;
 		Con_Printf( "^1OpenGL Error:^7 %s\n", message );
 		break;
 	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB:
-		if( host.developer < D_WARN )		// "-dev 3"
+		if( host_developer->integer < D_WARN ) // "-dev 3"
 			return;
 		Con_Printf( "^3OpenGL Warning:^7 %s\n", message );
 		break;
 	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:
-		if( host.developer < D_WARN )		// "-dev 3"
+		if( host_developer->integer < D_WARN ) // "-dev 3"
 			return;
 		Con_Printf( "^3OpenGL Warning:^7 %s\n", message );
 		break;
 	case GL_DEBUG_TYPE_PORTABILITY_ARB:
-		if( host.developer < D_NOTE )	// "-dev 4"
+		if( host_developer->integer < D_NOTE ) // "-dev 4"
 			return;
 		Con_Printf( "^3OpenGL Warning:^7 %s\n", message );
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE_ARB:
-		if( host.developer < D_NOTE )	// "-dev 4"
+		if( host_developer->integer < D_NOTE ) // "-dev 4"
 			return;
 		Con_Printf( "OpenGL Notify: %s\n", message );
 		break;
 	case GL_DEBUG_TYPE_OTHER_ARB:
 	default:
-		if( host.developer <= D_NOTE )		// "-dev 5"
+		if( host_developer->integer <= D_NOTE ) // "-dev 5"
 			return;
 		Con_Printf( "OpenGL: %s\n", message );
 		break;
@@ -522,7 +522,7 @@ void GL_SetupAttributes()
 #endif
 
 #elif !defined XASH_GL_STATIC
-	if( Sys_CheckParm( "-gldebug" ) && host.developer >= 1 )
+	if( Sys_CheckParm( "-gldebug" ) && host_developer->integer >= 1 )
 	{
 		MsgDev( D_NOTE, "Creating an extended GL context for debug...\n" );
 		SDL_GL_SetAttribute( SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG );
@@ -803,18 +803,18 @@ void GL_InitExtensionsBigGL()
 	// enable gldebug if allowed
 	if( GL_Support( GL_DEBUG_OUTPUT ))
 	{
-		if( host.developer >= D_ERROR )
+		if( host_developer->integer >= D_ERROR )
 		{
 			MsgDev( D_NOTE, "Installing GL_DebugOutput...\n");
 			pglDebugMessageCallbackARB( GL_DebugOutput, NULL );
 		}
 
 		// force everything to happen in the main thread instead of in a separate driver thread
-		if( host.developer >= D_WARN )
+		if( host_developer->integer >= D_WARN )
 			pglEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
 
 		// enable all the low priority messages
-		if( host.developer >= D_NOTE )
+		if( host_developer->integer >= D_NOTE )
 			pglDebugMessageControlARB( GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW_ARB, 0, NULL, true );
 	}
 #endif

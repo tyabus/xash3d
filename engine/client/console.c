@@ -262,7 +262,7 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f( void )
 {
-	if( !host.developer ) return;	// disabled
+	if( !host_developer->integer ) return; // disabled
 
 	if( UI_CreditsActive( )) return; // disabled by final credits
 
@@ -1575,7 +1575,7 @@ Draws the debug messages (not passed to console history)
 */
 void Con_DrawDebug( void )
 {
-	if( !host.developer || Cvar_VariableInteger( "cl_background" ) || Cvar_VariableInteger( "sv_background" ))
+	if( !host_developer->integer || Cvar_VariableInteger( "cl_background" ) || Cvar_VariableInteger( "sv_background" ) )
 		return;
 
 	if( con.draw_notify && !Con_Visible( ))
@@ -1601,7 +1601,7 @@ void Con_DrawNotify( void )
 
 	if( !con.curFont ) return;
 
-	if( host.developer && ( !Cvar_VariableInteger( "cl_background" ) && !Cvar_VariableInteger( "sv_background" )))
+	if( host_developer->integer && ( !Cvar_VariableInteger( "cl_background" ) && !Cvar_VariableInteger( "sv_background" ) ) )
 	{
 		currentColor = 7;
 		pglColor4ubv( g_color_table[currentColor] );
@@ -1733,7 +1733,7 @@ void Con_DrawSolidConsole( float frac, qboolean fill )
 
 	rows = ( lines - QCHAR_WIDTH ) / QCHAR_WIDTH; // rows of text to draw
 
-	if( host.developer )
+	if( host_developer->integer )
 	{
 		// draw current version
 		byte	color[4];
@@ -1833,7 +1833,7 @@ void Con_DrawConsole( void )
 		}
 		else
 		{
-			if( host.developer >= 4 )
+			if( host_developer->integer >= 4 )
 			{
 				con.displayFrac = con_halffrac->value;	// keep console open
 			}
@@ -1842,7 +1842,7 @@ void Con_DrawConsole( void )
 				con.finalFrac = 0.0f;
 				Con_RunConsole();
 
-				if( host.developer >= 2 )
+				if( host_developer->integer >= 2 )
 					Con_DrawNotify(); // draw notify lines
 			}
 		}
@@ -1854,7 +1854,7 @@ void Con_DrawConsole( void )
 	case ca_uninitialized:
 		break;
 	case ca_disconnected:
-		if( cls.key_dest != key_menu && host.developer )
+		if( cls.key_dest != key_menu && host_developer->integer )
 		{
 			Con_DrawSolidConsole( con_maxfrac->value, true );
 			Key_SetKeyDest( key_console );
@@ -1944,7 +1944,7 @@ Scroll it up or down
 void Con_RunConsole( void )
 {
 	// decide on the destination height of the console
-	if( host.developer && cls.key_dest == key_console )
+	if( host_developer->integer && cls.key_dest == key_console )
 	{
 		if( cls.state == ca_disconnected )
 			con.finalFrac = 1.0f;// full screen
@@ -2024,7 +2024,7 @@ void Con_VidInit( void )
 	Con_InvalidateFonts();
 
 	// loading console image
-	if( host.developer )
+	if( host_developer->integer )
 	{
 		if( scr_width->integer < 640 )
 		{

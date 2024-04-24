@@ -803,7 +803,7 @@ void R_RenderInfo_f( void )
 	Msg( "GL_VERSION: %s\n", glConfig.version_string );
 
 	// don't spam about extensions
-	if( host.developer >= 4 )
+	if( host_developer->integer >= 4 )
 		Msg( "GL_EXTENSIONS: %s\n", glConfig.extensions_string );
 
 	Msg( "GL_MAX_TEXTURE_SIZE: %i\n", glConfig.max_2d_texture_size );
@@ -1029,7 +1029,7 @@ static void R_CheckVBO( void )
 	r_vbo_dlightmode = Cvar_Get( "r_vbo_dlightmode", dlightmode, CVAR_ARCHIVE, "vbo dlight rendering mode(0-1)" );
 
 	// check if enabled manually
-	if( r_vbo->integer && host.developer > 3 )
+	if( r_vbo->integer && host_developer->integer > 3 )
 		r_vbo->flags |= CVAR_ARCHIVE;
 }
 

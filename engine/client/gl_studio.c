@@ -3450,7 +3450,7 @@ static int GAME_EXPORT R_StudioDrawPlayer( int flags, entity_state_t *pplayer )
 			RI.currententity->curstate.body = 255;
 		}
 
-		if(!( host.developer == 0 && cl.maxclients == 1 ) && ( RI.currentmodel == RI.currententity->model ))
+		if( !( host_developer->integer == 0 && cl.maxclients == 1 ) && ( RI.currentmodel == RI.currententity->model ) )
 		{
 			RI.currententity->curstate.body = 1; // force helmet
 		}

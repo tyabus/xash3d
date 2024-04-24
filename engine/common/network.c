@@ -818,7 +818,7 @@ static void NET_AdjustLag( void )
 	dt = bound( 0.0, dt, 0.1 );
 	lasttime = host.realtime;
 
-	if( host.developer >= D_ERROR || !net_fakelag->value )
+	if( host_developer->integer >= D_ERROR || !net_fakelag->value )
 	{
 		if( net_fakelag->value != fakelag )
 		{
@@ -883,7 +883,7 @@ static qboolean NET_LagPacket( qboolean newdata, netsrc_t sock, netadr_t *from, 
 	{
 		if( net_fakeloss->value != 0.0f )
 		{
-			if( host.developer >= D_ERROR )
+			if( host_developer->integer >= D_ERROR )
 			{
 				losscount[sock]++;
 				if( net_fakeloss->value <= 0.0f )

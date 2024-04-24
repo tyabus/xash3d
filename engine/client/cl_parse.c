@@ -221,7 +221,7 @@ void CL_WriteMessageHistory( void )
 	failcommand = &cls_message_debug.oldcmd[thecmd];
 	MsgDev( D_INFO, "BAD:  %3i:%s\n", BF_GetNumBytesRead( msg ) - 1, CL_MsgInfo( failcommand->command ));
 
-	if( host.developer >= 3 )
+	if( host_developer->integer >= 3 )
 	{
 		CL_WriteErrorMessage( BF_GetNumBytesRead( msg ) - 1, msg );
 	}
@@ -594,8 +594,10 @@ void CL_ParseServerData( sizebuf_t *msg )
 	Q_strncpy( gamefolder, BF_ReadString( msg ), MAX_STRING );
 	host.features = (uint32_t)BF_ReadLong( msg );
 
-	if( cl.maxclients > 1 && host.developer < 1 )
-		host.developer++;
+	// allow console in multiplayer games
+	// tyabus: disable this for now
+	//if( cl.maxclients > 1 && host_developer->integer < 1 )
+		//host.developer++;
 
 	// set the background state
 	if( cls.demoplayback && ( cls.demonum != -1 ))

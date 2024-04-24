@@ -1137,7 +1137,8 @@ qboolean UI_LoadProgs( void )
 	UI_ConvertGameInfo( &menu.gameInfo, SI.GameInfo ); // current gameinfo
 
 	// setup globals
-	menu.globals->developer = host.developer;
+	// tyabus: Since this is a "ordinary" cvar now, can we get rid of this?
+	menu.globals->developer = host_developer->integer;
 
 	// initialize game
 	menu.dllFuncs.pfnInit();

@@ -789,7 +789,7 @@ int SV_MapIsValid( const char *filename, const char *spawn_entity, const char *l
 		string	check_name;
 		qboolean	need_landmark = Q_strlen( landmark_name ) > 0 ? true : false;
 
-		if( !need_landmark && host.developer >= 2 )
+		if( !need_landmark && host_developer->integer >= 2 )
 		{
 			// not transition 
 			Mem_Free( ents );
@@ -2868,19 +2868,19 @@ static void GAME_EXPORT pfnAlertMessage( ALERT_TYPE level, char *szFmt, ... )
 	case at_notice:
 		break;	// passed always
 	case at_console:
-		if( host.developer < D_INFO )
+		if( host_developer->integer < D_INFO )
 			return;
 		break;
 	case at_aiconsole:
-		if( host.developer < D_AICONSOLE )
+		if( host_developer->integer < D_AICONSOLE )
 			return;
 		break;
 	case at_warning:
-		if( host.developer < D_WARN )
+		if( host_developer->integer < D_WARN )
 			return;
 		break;
 	case at_error:
-		if( host.developer < D_ERROR )
+		if( host_developer->integer < D_ERROR )
 			return;
 		break;
 	default:

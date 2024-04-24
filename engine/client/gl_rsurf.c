@@ -1912,7 +1912,7 @@ void R_GenerateVBO()
 		Cvar_FullSet( "r_bump", "0", CVAR_READ_ONLY );
 
 	// save in config if enabled manually
-	if( r_vbo->integer && host.developer > 3 )
+	if( r_vbo->integer && host_developer->integer > 3 )
 		r_vbo->flags |= CVAR_ARCHIVE;
 
 	vbos.mempool = Mem_AllocPool("Render VBO Zone");

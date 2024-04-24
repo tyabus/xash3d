@@ -194,7 +194,7 @@ long _stdcall Sys_Crash( PEXCEPTION_POINTERS pInfo )
 			CL_Crashed(); // tell client about crash
 		else host.state = HOST_CRASHED;
 
-		if( host.developer <= 0 )
+		if( host_developer->integer <= 0 )
 		{
 			// no reason to call debugger in release build - just exit
 			Sys_Quit();

@@ -1065,7 +1065,7 @@ void CL_WarnLostSplitPacket( void )
 	if( Host_IsLocalClient() )
 		return;
 
-	if( ++cl.lostpackets == 8 && host.developer != D_NOTE )
+	if( ++cl.lostpackets == 8 && host_developer->integer != D_NOTE )
 	{
 		CL_Disconnect();
 		Cbuf_AddText( "menu_connectionwarning" );
@@ -1105,7 +1105,8 @@ void CL_ClearState( void )
 	Cvar_SetFloat( "scr_loading", 0.0f );
 
 	// restore real developer level
-	host.developer = host.old_developer;
+	// tyabus: disable this for now
+	//host.developer = host.old_developer;
 
 	if( !SV_Active() && !CL_IsPlaybackDemo() && !cls.demorecording )
 	{
@@ -1187,7 +1188,7 @@ void CL_Disconnect( void )
 	Cbuf_InsertText( "menu_connectionprogress disconnect\n" );
 
 	// back to menu if developer mode set to "player" or "mapper"
-	if( host.developer > 2 ) return;
+	if( host_developer->integer > 2 ) return;
 	UI_SetActiveMenu( true );
 }
 
@@ -1369,7 +1370,6 @@ void CL_Reconnect_f( void )
 	if( cls.state == ca_connected )
 	{
 		cls.demonum = cls.movienum = -1;	// not in the demo loop now
-		cls.state = ca_connected;
 
 		// clear channel and stuff
 		Netchan_Clear( &cls.netchan );
@@ -1696,7 +1696,7 @@ void CL_PrepVideo( void )
 	host.soundList = NULL;
 	host.numsounds = 0;
 
-	if( host.developer <= 2 )
+	if( host_developer->integer <= 2 )
 		Con_ClearNotify(); // clear any lines of console text
 
 	SCR_UpdateScreen ();
@@ -2323,7 +2323,7 @@ void CL_InitLocal( void )
 	Cmd_AddRestrictedCommand ("rcon", CL_Rcon_f, "sends a command to the server console (rcon_password required)" );
 
 #ifndef XASH_RELEASE
-	if( host.developer > 3 )
+	if( host_developer->integer > 3 )
 		Cmd_AddRestrictedCommand ("packet", CL_Packet_f, "send a packet with custom contents (use with caution)" );
 #endif
 

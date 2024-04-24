@@ -218,7 +218,7 @@ void SX_Init( void )
 	sxste_delay      = Cvar_Get( "room_left", "0", 0, "left channel delay time" );
 
 
-	if( host.developer >= 3 )
+	if( host_developer->integer >= 3 )
 	{
 		Cmd_AddRestrictedCommand( "dsp_profile", SX_Profiling_f, "dsp stress-test, first argument is room_type" );
 	}

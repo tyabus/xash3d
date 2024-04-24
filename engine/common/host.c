@@ -65,6 +65,7 @@ convar_t	*download_types;
 convar_t	*build, *ver; // original xash3d info
 convar_t	*host_build, *host_ver; // fork info
 convar_t	*host_mapdesign_fatal;
+convar_t	*host_developer = NULL;
 convar_t 	*cmd_scripting = NULL;
 
 static int num_decals;
@@ -838,7 +839,7 @@ void Host_Error( const char *error, ... )
 	}
 	else
 	{
-		if( host.developer > 0 )
+		if( host_developer > 0 )
 		{
 			UI_SetActiveMenu( false );
 			Key_SetKeyDest( key_console );
@@ -960,6 +961,7 @@ Host_InitCommon
 void Host_InitCommon( int argc, const char** argv, const char *progname, qboolean bChangeGame )
 {
 	char		dev_level[4];
+	int		developer = DEFAULT_DEV;
 	char		*baseDir;
 	int		retval_stdin, retval_stderr, retval_stdout;
 
@@ -1086,21 +1088,20 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	}
 
 	host.state = HOST_INIT; // initialization started
-	host.developer = host.old_developer = DEFAULT_DEV;
 	host.textmode = false;
 
 	host.mempool = Mem_AllocPool( "Zone Engine" );
 
-	if( Sys_CheckParm( "-console" )) host.developer = 1;
+	if( Sys_CheckParm( "-console" )) developer = 1;
 	if( Sys_CheckParm( "-dev" ))
 	{
 		if( Sys_GetParmFromCmdLine( "-dev", dev_level ))
 		{
 			if( Q_isdigit( dev_level ))
-				host.developer = abs( Q_atoi( dev_level ));
-			else host.developer++; // -dev == 1, -dev -console == 2
+				developer = abs( Q_atoi( dev_level ));
+			else developer++; // -dev == 1, -dev -console == 2
 		}
-		else host.developer++; // -dev == 1, -dev -console == 2
+		else developer++; // -dev == 1, -dev -console == 2
 	}
 
 #ifdef XASH_DEDICATED
@@ -1135,12 +1136,17 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 #endif
 #endif
 
-	if ( !host.rootdir[0] || SetCurrentDirectory( host.rootdir ) != 0)
-		MsgDev( D_INFO, "%s is working directory now\n", host.rootdir );
+	if ( !host.rootdir[0] || SetCurrentDirectory( host.rootdir ) != 0 )
+	{
+		// tyabus: We don't have host_developer yet
+		if( developer >= D_INFO )
+			Msg( "%s is working directory now\n", host.rootdir );
+	}
 	else
 		Sys_Error( "Changing working directory to %s failed.\n", host.rootdir );
 
-	Sys_InitLog();
+	if( developer != 0 )
+		Sys_InitLog();
 
 	// set default gamedir
 	if( progname[0] == '#' ) progname++;
@@ -1150,23 +1156,13 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	{
 		Sys_MergeCommandLine( );
 
-		if( host.developer < 3 ) host.developer = 3; // otherwise we see empty console
+		if( developer < 3 ) developer = 3; // otherwise we see empty console
 	}
 	else
 	{
 		// don't show console as default
-		if( host.developer < D_WARN ) host.con_showalways = false;
+		if( developer < D_WARN ) host.con_showalways = false;
 	}
-
-	host.old_developer = host.developer;
-
-#ifdef XASH_W32CON
-	Wcon_Init();
-	Wcon_CreateConsole();
-#endif
-
-	// first text message into console or log 
-	MsgDev( D_NOTE, "Console initialized\n" );
 
 	BaseCmd_Init();
 
@@ -1174,11 +1170,22 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	Cmd_Init();
 	Cvar_Init();
 
+	host_developer = Cvar_Get( "developer", "0", CVAR_LOCALONLY, "current developer level" );
+
+#ifdef XASH_W32CON
+	Wcon_Init();
+	Wcon_CreateConsole();
+#endif
+
+	// first text message into console or log
+	MsgDev( D_NOTE, "Console initialized\n" );
+
 	Cmd_AddRestrictedCommand( "clear", Host_Clear_f, "clear console history" );
 
 	// share developer level across all dlls
-	Q_snprintf( dev_level, sizeof( dev_level ), "%i", host.developer );
-	Cvar_Get( "developer", dev_level, CVAR_INIT, "current developer level" );
+	Q_snprintf( dev_level, sizeof( dev_level ), "%i", developer );
+	Cvar_SetFloat( host_developer->name, Q_atoi( dev_level ) );
+
 	Cmd_AddRestrictedCommand( "exec", Host_Exec_f, "execute a script file" );
 	Cmd_AddRestrictedCommand( "memlist", Host_MemStats_f, "prints memory pool information" );
 	Cmd_AddRestrictedCommand( "userconfigd", Host_Userconfigd_f, "execute all scripts from userconfig.d" );
@@ -1199,7 +1206,6 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	{
 		// clear all developer levels when game is protected
 		Cvar_FullSet( "developer", "0", CVAR_INIT );
-		host.developer = host.old_developer = 0;
 		host.con_showalways = false;
 	}
 #endif
@@ -1244,7 +1250,7 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	Host_InitCommon( argc, argv, progname, bChangeGame );
 
 	// init commands and vars
-	if( host.developer >= 3 )
+	if( host_developer->integer >= 3 )
 	{
 		Cmd_AddRestrictedCommand ( "sys_error", Sys_Error_f, "just throw a fatal error to test shutdown procedures");
 		Cmd_AddRestrictedCommand ( "host_error", Host_Error_f, "just throw a host error to test shutdown procedures");
@@ -1280,7 +1286,7 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	if( !Host_IsDedicated() )
 	{
 		// when we're in developer-mode, automatically turn cheats on
-		if( host.developer > 1 ) Cvar_SetFloat( "sv_cheats", 1.0f );
+		if( host_developer->integer > 1 ) Cvar_SetFloat( "sv_cheats", 1.0f );
 		Cbuf_AddText( "exec video.cfg\n" );
 	}
 

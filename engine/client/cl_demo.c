@@ -464,7 +464,7 @@ void CL_DrawDemoRecording( void )
 	fs_offset_t	pos;
 	int		len;
 
-	if(!( host.developer && cls.demorecording ))
+	if( !( host_developer->integer && cls.demorecording ) )
 		return;
 
 	pos = FS_Tell( cls.demofile );
@@ -609,7 +609,7 @@ void CL_DemoCompleted( void )
 
 	CL_StopPlayback();
 
-	if( !CL_NextDemo() && host.developer <= 2 )
+	if( !CL_NextDemo( ) && host_developer->integer <= 2 )
 		UI_SetActiveMenu( true );
 }
 

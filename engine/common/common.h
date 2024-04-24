@@ -245,6 +245,7 @@ extern convar_t	*scr_download;
 extern convar_t	*cl_allow_levelshots;
 extern convar_t	*mod_allow_materials;
 extern convar_t	*host_limitlocal;
+extern convar_t	*host_developer;
 extern convar_t	*host_maxfps;
 extern convar_t *net_qport;
 extern convar_t *download_types;
@@ -433,8 +434,6 @@ typedef struct host_parm_s
 #else
 	void *hWnd;
 #endif
-	int		developer;	// show all developer's message
-	int		old_developer;	// keep real dev state (we need enable dev-mode in multiplayer)
 	qboolean		key_overstrike;	// key overstrike mode
 	qboolean		stuffcmdsrun;	// execute stuff commands
 	qboolean		con_showalways;	// show console always (developer and dedicated)
