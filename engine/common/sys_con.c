@@ -19,7 +19,7 @@ GNU General Public License for more details.
 #endif
 
 // Don't enable colorized console on win32 and mobile devices
-#if !_WIN32 && !XASH_MOBILE_PLATFORM
+#if !defined( _WIN32 ) && !defined( XASH_MOBILE_PLATFORM )
 #define COLORIZE_CONSOLE 1
 #else
 #define COLORIZE_CONSOLE 0
@@ -181,7 +181,7 @@ void Sys_PrintLog( const char *pMsg )
 	if( !lastchar || lastchar == '\n')
 		strftime( logtime, sizeof( logtime ), "[%H:%M:%S] ", crt_tm ); //short time
 
-#ifdef COLORIZE_CONSOLE
+#if COLORIZE_CONSOLE == 1
 	{
 		char colored[4096];
 		const char *msg = pMsg;
