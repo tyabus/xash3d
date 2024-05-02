@@ -38,8 +38,6 @@ ENTITY AREA CHECKING
 
 #include "lightstyle.h"
 
-extern const char		*et_name[];
-
 // linked list
 void InsertLinkBefore( link_t *l, link_t *before );
 void RemoveLink( link_t *l );

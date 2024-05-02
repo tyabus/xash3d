@@ -20,16 +20,6 @@ GNU General Public License for more details.
 #include "mathlib.h"
 #include "studio.h"
 
-// just for debug
-const char *et_name[] =
-{
-	"normal",
-	"player",
-	"tempentity",
-	"beam",
-	"fragmented",
-};
-
 /*
 ===============================================================================
 
