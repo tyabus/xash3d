@@ -103,11 +103,15 @@ extern "C" {
 
 #define Mod_AllowMaterials()	( mod_allow_materials != NULL && mod_allow_materials->integer && !( host.features & ENGINE_DISABLE_HDTEXTURES ))
 
-#ifdef XASH_FORCEINLINE
-#define xash_force_inline static inline
+#if defined( XASH_FORCEINLINE )
+#if defined( _MSC_VER )
+#define xash_force_inline static __forceinline
+#elif (__GNUC__)
+#define xash_force_inline static inline __attribute__(( always_inline ))
 #else
-#define xash_force_inline
+#define xash_force_inline static inline
 #endif
+#endif // XASH_FORCE_INLINE
 
 #if defined __i386__ &&  defined __GNUC__
 #define GAME_EXPORT __attribute__((force_align_arg_pointer))
