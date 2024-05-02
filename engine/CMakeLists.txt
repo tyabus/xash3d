@@ -138,7 +138,6 @@ else()
         elseif(MSVC)
                 target_link_libraries(${XASH_ENGINE} user32.lib kernel32.lib gdi32.lib Ws2_32.lib)
         endif()
-	add_definitions(-DCOLORIZE_CONSOLE)
 endif()
 
 if(LINUX)

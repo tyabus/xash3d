@@ -1841,7 +1841,7 @@ R_ForceImageToRGBA
 Unpack any image to RGBA buffer
 =================
 */
-_inline rgbdata_t *R_ForceImageToRGBA( rgbdata_t *pic )
+static inline rgbdata_t *R_ForceImageToRGBA( rgbdata_t *pic )
 {
 	// don't need additional checks - image lib do it himself
 	Image_Process( &pic, 0, 0, 0, IMAGE_FORCE_RGBA, NULL );

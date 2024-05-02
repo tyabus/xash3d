@@ -181,7 +181,7 @@ R_LeftHand
 
 ===============
 */
-_inline qboolean R_LeftHand( void )
+static inline qboolean R_LeftHand( void )
 {
 	return r_lefthand->integer == 1 && !g_bCustomStudioRenderer;
 }

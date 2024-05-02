@@ -711,8 +711,7 @@ void CL_SetTraceHull( int hull );
 void CL_FillRGBA( int x, int y, int width, int height, int r, int g, int b, int a );
 void CL_FillRGBABlend( int x, int y, int width, int height, int r, int g, int b, int a );
 
-
-_inline cl_entity_t *CL_EDICT_NUM( int n )
+static inline cl_entity_t *CL_EDICT_NUM( int n )
 {
 	if( !clgame.entities )
 		return NULL;

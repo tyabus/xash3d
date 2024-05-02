@@ -310,7 +310,7 @@ DLY_MovePointer
 Checks overflow and moves pointer
 ============
 */
-_inline void DLY_MovePointer(dly_t *dly)
+static inline void DLY_MovePointer(dly_t *dly)
 {
 	if( ++dly->idelayinput >= dly->cdelaysamplesmax )
 		dly->idelayinput = 0;

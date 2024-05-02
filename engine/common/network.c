@@ -196,7 +196,7 @@ char *NET_ErrorString( void )
 #define NET_ErrorString(x) strerror(errno)
 #endif
 
-_inline qboolean NET_IsSocketError( int retval )
+static inline qboolean NET_IsSocketError( int retval )
 {
 #ifdef _WIN32
 	return retval == SOCKET_ERROR ? true : false;

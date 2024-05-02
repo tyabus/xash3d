@@ -669,7 +669,7 @@ void GAME_EXPORT pfnMessageEnd( void );
 void GAME_EXPORT pfnWriteByte( int iValue );
 void GAME_EXPORT pfnWriteString( const char *src );
 
-_inline edict_t *SV_EDICT_NUM( int n, const char * file, const int line )
+static inline edict_t *SV_EDICT_NUM( int n, const char *file, const int line )
 {
 	if((n >= 0) && (n < svgame.globals->maxEntities))
 		return svgame.edicts + n;

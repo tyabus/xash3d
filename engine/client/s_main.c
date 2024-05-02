@@ -68,14 +68,14 @@ convar_t		*s_samplecount;
 // dB = 20 log (amplitude/32768)		0 to -90.3dB
 // amplitude = 32768 * 10 ^ (dB/20)		0 to +/- 32768
 // gain = amplitude/32768			0 to 1.0
-_inline float Gain_To_dB( float gain ) { return 20 * log( gain ); }
-_inline float dB_To_Gain ( float dB ) { return pow( 10, dB / 20.0f ); }
-_inline float Gain_To_Amplitude( float gain ) { return gain * 32768; }
-_inline float Amplitude_To_Gain( float amplitude ) { return amplitude / 32768; }
+static inline float Gain_To_dB( float gain ) { return 20 * log( gain ); }
+static inline float dB_To_Gain ( float dB ) { return pow( 10, dB / 20.0f ); }
+static inline float Gain_To_Amplitude( float gain ) { return gain * 32768; }
+static inline float Amplitude_To_Gain( float amplitude ) { return amplitude / 32768; }
 
 // convert sound db level to approximate sound source radius,
 // used only for determining how much of sound is obscured by world
-_inline float dB_To_Radius( float db )
+static inline float dB_To_Radius( float db )
 {
 	return (SND_RADIUS_MIN + (SND_RADIUS_MAX - SND_RADIUS_MIN) * (db - SND_DB_MIN) / (SND_DB_MAX - SND_DB_MIN));
 }

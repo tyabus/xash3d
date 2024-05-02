@@ -95,7 +95,6 @@ GNU General Public License for more details.
 #ifndef __HAIKU__
 	#define __cdecl
 #endif
-	#define _inline	static inline
 	#define O_BINARY 0 // O_BINARY is Windows extension
 	#define O_TEXT 0 // O_TEXT is Windows extension
 
@@ -129,11 +128,6 @@ GNU General Public License for more details.
 		int x, y;
 	} POINT;
 #else // WIN32
-	#if defined(__MINGW32__)
-		#undef _inline
-		#define _inline static inline
-	#endif
-
 	#define strcasecmp _stricmp
 	#define strncasecmp _strnicmp
 	#define open _open

@@ -91,7 +91,7 @@ static void _makeFrameBlack( float opacity )
 	}
 }
 
-_inline double _cooldown( void )
+static inline double _cooldown( void )
 {
 	int cooldown = r_strobe_cooldown->integer; 
 	if ( 0 < strobe.cdTimer )
@@ -104,7 +104,7 @@ _inline double _cooldown( void )
 	}
 }
 
-_inline qboolean __checkState( int i )
+static inline qboolean __checkState( int i )
 {
 	if ( strobe.frameState & i )
 		return true;
@@ -112,17 +112,17 @@ _inline qboolean __checkState( int i )
 		return false;
 }
 
-_inline qboolean _isPhaseInverted( void )
+static inline qboolean _isPhaseInverted( void )
 {
 	return __checkState( PHASE_INVERTED );
 }
 
-_inline qboolean _isNormal( void )
+static inline qboolean _isNormal( void )
 {
 	return __checkState( FRAME_RENDER );
 }
 
-_inline qboolean _isPositive( void )
+static inline qboolean _isPositive( void )
 {
 	return __checkState( PHASE_POSITIVE );
 }
@@ -284,18 +284,18 @@ static void _generateDiffBar( char *dst, int size, char type )
 	Q_strcat( dst, "]" );
 }
 
-_inline double _frequency( void )
+static inline double _frequency( void )
 {
 	return ( 1 / ( ( 1.0f / _currentFPS( ) ) * ( abs( strobe.strobeInterval ) + 1 ) ) );
 }
 
-_inline double _dutyCycle( void )
+static inline double _dutyCycle( void )
 {
 	int strobeInterval = strobe.strobeInterval;
 	return ( ( ( 1.0f / ( abs( strobeInterval ) + 1 ) ) * 100 ) * ( strobeInterval < 0 ? -strobeInterval : 1 ) );
 }
 
-_inline double _positivePhaseShift( void )
+static inline double _positivePhaseShift( void )
 {
 	if ( _isPhaseInverted( ) )
 		return ( 1.0f / _currentFPS( ) ) * 1000;
@@ -303,47 +303,47 @@ _inline double _positivePhaseShift( void )
 		return 0.0f;
 }
 
-_inline double _negativePhaseShift( void )
+static inline double _negativePhaseShift( void )
 {
 	return abs( strobe.strobeInterval ) * ( _positivePhaseShift( ) );
 }
 
-_inline double _period( void )
+static inline double _period( void )
 {
 	return ( 1 / _frequency( ) * 1000 );
 }
 
-_inline double _geometricMean( double x, double y )
+static inline double _geometricMean( double x, double y )
 {
 	return sqrt( abs( x * y ) );
 }
 
-_inline double _arithmeticMean( double x, double y )
+static inline double _arithmeticMean( double x, double y )
 {
 	return ( x + y ) / 2;
 }
 
-_inline double _actualBrightnessReduction( void )
+static inline double _actualBrightnessReduction( void )
 {
 	return lossCalculator( _currentFPS( ), _effectiveFPS( ) );
 }
 
-_inline double _logarithmicBrightnessReduction( double base )
+static inline double _logarithmicBrightnessReduction( double base )
 {
 	return lossCalculator( log( base ), log( base * _effectiveFPS( ) / _currentFPS( ) ) );
 }
 
-_inline double _squareBrightnessReduction( double base )
+static inline double _squareBrightnessReduction( double base )
 {
 	return lossCalculator( sqrt( base ), sqrt( base * _effectiveFPS( ) / _currentFPS( ) ) );
 }
 
-_inline double _cubeBrightnessReduction( double base )
+static inline double _cubeBrightnessReduction( double base )
 {
 	return lossCalculator( cbrt( base ), cbrt( base * _effectiveFPS( ) / _currentFPS( ) ) );
 }
 
-_inline double _otherBrightnessReduction( double base, double ( *reductionFunction )( double ) )
+static inline double _otherBrightnessReduction( double base, double ( *reductionFunction )( double ) )
 {
 	return lossCalculator( reductionFunction( base ), reductionFunction( base * _effectiveFPS( ) / _currentFPS( ) ) );
 }

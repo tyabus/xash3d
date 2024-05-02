@@ -151,7 +151,7 @@ CL_EntityTeleported
 Check is entity teleported
 ==================
 */
-_inline qboolean CL_EntityTeleported( cl_entity_t *e )
+static inline qboolean CL_EntityTeleported( cl_entity_t *e )
 {
 	return fabs(e->curstate.origin[0] - e->prevstate.origin[0]) > 128.0f ||
 		fabs(e->curstate.origin[1] - e->prevstate.origin[1]) > 128.0f ||
@@ -342,7 +342,7 @@ CL_IsParametricEntity
 parametric rockets code(see UTIL_ParametricRocket)
 =============
 */
-_inline qboolean CL_IsParametricEntity( cl_entity_t *ent )
+static inline qboolean CL_IsParametricEntity( cl_entity_t *ent )
 {
 	return ent->curstate.starttime != 0.0f && ent->curstate.impacttime != 0.0f;
 }
