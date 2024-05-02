@@ -18,6 +18,13 @@ GNU General Public License for more details.
 #include <android/log.h>
 #endif
 
+// Don't enable colorized console on win32 and mobile devices
+#if !_WIN32 && !XASH_MOBILE_PLATFORM
+#define COLORIZE_CONSOLE 1
+#else
+#define COLORIZE_CONSOLE 0
+#endif
+
 #ifdef USE_SELECT
 // non-blocking console input
 #include <sys/select.h>
