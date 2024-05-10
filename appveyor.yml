@@ -10,8 +10,6 @@ platform:
 
 environment:
   matrix:
-    - image: Visual Studio 2013
-      GENERATOR_NAME: "Visual Studio 12 2013"
     - image: Visual Studio 2015
       GENERATOR_NAME: "Visual Studio 14 2015"
 
