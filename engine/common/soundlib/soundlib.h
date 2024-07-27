@@ -70,10 +70,10 @@ struct stream_s
 	int		channels;	// stream channels
 	int		type;	// wavtype
 	size_t		size;	// total stream size
-	int		pos;	// actual track position
+	size_t		pos;	// actual track position
 	void		*ptr;	// internal decoder state
 	char temp[OUTBUF_SIZE]; // mpeg decoder stuff
-	int		buffsize;	// cached buffer size
+	size_t		buffsize;	// cached buffer size
 	qboolean		timejump;	// true if position is changed
 };
 
