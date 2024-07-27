@@ -511,7 +511,7 @@ void GAME_EXPORT Con_DPrintf( char *szFmt, ... )
 	static char	buffer[16384];	// must support > 1k messages
 	va_list		args;
 
-	if( host_developer < D_INFO )
+	if( host_developer->value < D_INFO )
 		return;
 
 	va_start( args, szFmt );
