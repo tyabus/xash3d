@@ -192,7 +192,6 @@ struct channel_s
 typedef struct
 {
 	vec3_t		origin;		// simorg + view_ofs
-	vec3_t		velocity;
 	vec3_t		forward;
 	vec3_t		right;
 	vec3_t		up;

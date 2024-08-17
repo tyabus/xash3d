@@ -1531,7 +1531,6 @@ void S_RenderFrame( ref_params_t *fd )
 	s_listener.paused = fd->paused;
 
 	VectorCopy( fd->vieworg, s_listener.origin );
-	VectorCopy( fd->simvel, s_listener.velocity );
 	AngleVectors( fd->viewangles, s_listener.forward, s_listener.right, s_listener.up );
 
 	// update general area ambient sound sources
