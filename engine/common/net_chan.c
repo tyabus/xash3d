@@ -487,17 +487,17 @@ void Netchan_OutOfBand( int net_socket, netadr_t adr, int length, byte *data )
 	sizebuf_t	send;
 	byte	send_buf[NET_MAX_PAYLOAD];
 
+	if ( CL_IsPlaybackDemo( ) )
+		return;
+
 	// write the packet header
 	BF_Init( &send, "SequencePacket", send_buf, sizeof( send_buf ));
 
 	BF_WriteLong( &send, -1 );	// -1 sequence means out of band
 	BF_WriteBytes( &send, data, length );
 
-	if( !CL_IsPlaybackDemo( ))
-	{
-		// send the datagram
-		NET_SendPacket( net_socket, BF_GetNumBytesWritten( &send ), BF_GetData( &send ), adr );
-	}
+	// send the datagram
+	NET_SendPacket( net_socket, BF_GetNumBytesWritten( &send ), BF_GetData( &send ), adr );
 }
 
 /*
