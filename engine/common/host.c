@@ -1145,8 +1145,13 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	else
 		Sys_Error( "Changing working directory to %s failed.\n", host.rootdir );
 
-	if( developer != 0 )
-		Sys_InitLog();
+	if ( developer > 0 )
+	{
+		Sys_InitLog( );
+
+		// print current developer level to simplify processing users feedback
+		Msg( "Developer level: ^3%i\n", developer );
+	}
 
 	// set default gamedir
 	if( progname[0] == '#' ) progname++;
