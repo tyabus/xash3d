@@ -3429,7 +3429,6 @@ NetAPI_SendRequest
 static void GAME_EXPORT NetAPI_SendRequest( int context, int request, int flags, double timeout, netadr_t *remote_address, net_api_response_func_t response )
 {
 	net_request_t	*nr = NULL;
-	string		req;
 	int		i;
 
 	if( !response )
@@ -3482,8 +3481,7 @@ static void GAME_EXPORT NetAPI_SendRequest( int context, int request, int flags,
 	else
 	{
 		// send request over the net
-		Q_snprintf( req, sizeof( req ), "netinfo %i %i %i", PROTOCOL_VERSION, context, request );
-		Netchan_OutOfBandPrint( NS_CLIENT, nr->resp.remote_address, req );
+		Netchan_OutOfBandPrint( NS_CLIENT, nr->resp.remote_address, "netinfo %i %i %i", PROTOCOL_VERSION, context, request );
 	}
 }
 
