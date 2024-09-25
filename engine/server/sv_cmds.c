@@ -953,6 +953,16 @@ void SV_Status_f( void )
 	sv_client_t	*cl;
 	edict_t		*ent;
 
+	// Forward the command if we're a non local client
+	if( cmd_source == src_command )
+	{
+		if( !Host_IsLocalClient() && !Host_IsDedicated() )
+		{
+			Cmd_ForwardToServer();
+			return;
+		}
+	}
+
 	if( !svs.clients || sv.background )
 	{
 		Msg( "^3No server running.\n" );
