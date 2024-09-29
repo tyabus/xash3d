@@ -42,7 +42,7 @@ void S_SoundList_f( void )
 	sfx_t		*sfx;
 	wavdata_t		*sc;
 	int		i, totalSfx = 0;
-	int		totalSize = 0;
+	size_t		totalSize = 0;
 
 	for( i = 0, sfx = s_knownSfx; i < s_numSfx; i++, sfx++ )
 	{
