@@ -153,7 +153,7 @@ qboolean Sys_DebuggerPresent( void )
 #elif defined(_WIN32)
 
 #ifdef _MSC_VER
-BOOL WINAPI IsDebuggerPresent(void);
+WINBASEAPI BOOL WINAPI IsDebuggerPresent( void );
 #define DEBUG_BREAK	if( IsDebuggerPresent() ) \
 		__debugbreak( );
 #else
