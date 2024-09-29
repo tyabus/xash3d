@@ -2568,6 +2568,58 @@ void SV_Fullupdate_f( sv_client_t *cl )
 }
 
 /*
+================
+SV_ServerStatus_f
+================
+*/
+void SV_ServerStatus_f( sv_client_t *cl )
+{
+	int			i, clients, bots;
+	float		fps;
+	sv_client_t	*client;
+	edict_t		*ent;
+
+	// Silently abort
+	if ( !cl || !SV_IsValidEdict( cl->edict ) )
+		return;
+
+	ent = EDICT_NUM( 0 ); // worldspawn
+	fps = (1.0 / host.frametime);
+
+	SV_GetPlayerCount( &clients, &bots );
+
+	SV_ClientPrintf( cl, PRINT_LOW, "hostname: %s\n", hostname->string );
+	SV_ClientPrintf( cl, PRINT_LOW, "players: %i (max %i)\n", clients, sv_maxclients->integer );
+	SV_ClientPrintf( cl, PRINT_LOW, "map: %s (x %.f y %.f z %.f)\n", sv.name, ent->v.origin[0], ent->v.origin[1], ent->v.origin[2] );
+	SV_ClientPrintf( cl, PRINT_LOW, "num score ping    name                            \n" );
+	SV_ClientPrintf( cl, PRINT_LOW, "--- ----- ------- --------------------------------\n" );
+
+	for( i = 0, client = svs.clients; i < sv_maxclients->integer; i++, client++ )
+	{
+		int	ping;
+
+		if( !client->state ) continue;
+
+		SV_ClientPrintf( cl, PRINT_LOW, "%3i ", client->userid );
+		SV_ClientPrintf( cl, PRINT_LOW, "%5i ", (int)client->edict->v.frags );
+
+		if( client->state == cs_connected ) SV_ClientPrintf( cl, PRINT_LOW, "Connect" );
+		else if( client->state == cs_zombie ) SV_ClientPrintf( cl, PRINT_LOW, "Zombie " );
+		else if( client->fakeclient ) SV_ClientPrintf( cl, PRINT_LOW, "Bot   " );
+		else if( client->netchan.remote_address.type == NA_LOOPBACK ) SV_ClientPrintf( cl, PRINT_LOW, "Local ");
+		else
+		{
+			ping = min( client->ping, 9999 );
+			SV_ClientPrintf( cl, PRINT_LOW, "%7i ", ping );
+		}
+
+		SV_ClientPrintf( cl, PRINT_LOW, "%s", client->name );
+		SV_ClientPrintf( cl, PRINT_LOW, "\n" );
+	}
+	SV_ClientPrintf( cl, PRINT_LOW, "\n" );
+}
+
+/*
 ==================
 SV_Godmode_f
 ==================
@@ -3417,6 +3469,7 @@ ucmd_t ucmds[] =
 { "continueloading", SV_ContinueLoading_f },
 { "kill", SV_Kill_f },
 { "fullupdate", SV_Fullupdate_f },
+{ "status", SV_ServerStatus_f },
 { "_sv_build_info", SV_SendBuildInfo_f },
 { NULL, NULL }
 };
