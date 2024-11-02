@@ -551,6 +551,7 @@ qboolean NET_IsLocalAddress( netadr_t adr );
 qboolean NET_IsLanAddress( netadr_t adr );
 char *NET_AdrToString( const netadr_t a );
 char *NET_BaseAdrToString( const netadr_t a );
+int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean nonblocking );
 qboolean NET_StringToAdr( const char *string, netadr_t *adr );
 int NET_StringToAdrNB( const char *string, netadr_t *adr );
 qboolean NET_CompareAdr( const netadr_t a, const netadr_t b );
@@ -1089,7 +1090,9 @@ int CSCR_LoadDefaultCVars( const char *scriptfilename );
 int CSCR_WriteGameCVars( file_t *cfg, const char *scriptfilename );
 void Com_EscapeCommand( char *newCommand, const char *oldCommand, int len );
 
-
+//
+// net_http.c
+//
 void HTTP_AddDownload( char *path, int size, qboolean process );
 void HTTP_ResetProcessState ( void );
 void HTTP_Init( void );
@@ -1097,6 +1100,7 @@ void HTTP_Shutdown( void );
 void HTTP_Run( void );
 void HTTP_ClearCustomServers( void );
 void HTTP_Clear_f( void );
+
 void CL_ProcessFile( qboolean successfully_received, const char *filename );
 
 typedef struct autocomplete_list_s

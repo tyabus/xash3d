@@ -118,6 +118,7 @@ LOCAL_SRC_FILES := \
            common/net_chan.c \
            common/net_encode.c \
            common/net_huff.c \
+           common/net_http.c \
            common/network.c \
            common/pm_surface.c \
            common/pm_trace.c \
