@@ -284,6 +284,8 @@ void SV_WriteID_f( void )
 		return;
 	}
 
+	Msg( "Writing %s\n", Cvar_VariableString( "bannedcfgfile" ) );
+
 	FS_Printf( f, "// %s - archive of id blacklist\n", Cvar_VariableString( "bannedcfgfile" ) );
 
 	for( filter = cidfilter; filter; filter = filter->next )
@@ -425,6 +427,8 @@ void SV_WriteIP_f( void )
 		MsgDev( D_ERROR, "Could not write %s\n", Cvar_VariableString( "listipcfgfile" ) );
 		return;
 	}
+
+	Msg( "Writing %s\n", Cvar_VariableString( "listipcfgfile" ) );
 
 	FS_Printf( f, "//\t\t    %s - archive of IP blacklist\n", Cvar_VariableString( "listipcfgfile" ) );
 
