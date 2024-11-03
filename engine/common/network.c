@@ -592,11 +592,6 @@ qboolean NET_CompareAdr( const netadr_t a, const netadr_t b )
 	return false;
 }
 
-qboolean NET_IsLocalAddress( netadr_t adr )
-{
-	return adr.type == NA_LOOPBACK;
-}
-
 qboolean NET_IsLanAddress( netadr_t adr )
 {
 

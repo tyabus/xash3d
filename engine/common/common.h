@@ -547,7 +547,7 @@ void FS_CreatePath( char *path );
 void NET_Init( void );
 void NET_Shutdown( void );
 void NET_Config( qboolean net_enable, qboolean changeport );
-qboolean NET_IsLocalAddress( netadr_t adr );
+
 qboolean NET_IsLanAddress( netadr_t adr );
 char *NET_AdrToString( const netadr_t a );
 char *NET_BaseAdrToString( const netadr_t a );
@@ -559,6 +559,10 @@ qboolean NET_CompareBaseAdr( const netadr_t a, const netadr_t b );
 qboolean NET_GetPacket( netsrc_t sock, netadr_t *from, byte *data, size_t *length );
 void NET_SendPacket( netsrc_t sock, size_t length, const void *data, netadr_t to );
 
+xash_force_inline qboolean NET_IsLocalAddress( netadr_t adr )
+{
+	return adr.type == NA_LOOPBACK;
+}
 
 //
 // masterlist.c
