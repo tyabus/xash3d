@@ -49,6 +49,8 @@ extern char *NET_ErrorString( void );
 #define NET_ErrorString( x ) strerror( errno )
 #endif
 
+#define MAX_HTTP_BUFFER 8192
+
 typedef struct httpserver_s
 {
 	char host[256];
@@ -95,7 +97,7 @@ struct http_static_s
 	httpserver_t *first_server, *last_server;
 
 	// query or response
-	char buf[BUFSIZ];
+	char buf[MAX_HTTP_BUFFER+1];
 	int header_size, query_length, bytes_sent;
 } http;
 
@@ -228,7 +230,7 @@ Call every frame
 void HTTP_Run( void )
 {
 	int res;
-	char buf[BUFSIZ + 1];
+	char buf[MAX_HTTP_BUFFER + 1];
 	char *begin         = 0;
 	httpfile_t *curfile = http.first_file; // download is single-threaded now, but can be rewrited
 	httpserver_t *server;
@@ -337,7 +339,7 @@ void HTTP_Run( void )
 
 	if ( curfile->state < HTTP_REQUEST ) // Request not formatted
 	{
-		http.query_length = Q_snprintf( http.buf, BUFSIZ, "GET %s%s HTTP/1.0\r\n"
+		http.query_length = Q_snprintf( http.buf, sizeof( http.buf ), "GET %s%s HTTP/1.0\r\n"
 		                                                  "Host: %s\r\n"
 		                                                  "User-Agent: %s\r\n\r\n",
 		                                server->path,
@@ -389,20 +391,19 @@ void HTTP_Run( void )
 		}
 
 		Msg( "HTTP: Request sent!\n" );
-		Q_memset( http.buf, 0, BUFSIZ );
+		Q_memset( http.buf, 0, sizeof( http.buf ) );
 		curfile->state = HTTP_REQUEST_SENT;
 	}
 
 	frametime = host.frametime; // save frametime to reset it after first iteration
 
-	while ( ( res = recv( curfile->socket, buf, BUFSIZ, 0 ) ) > 0 ) // if we got there, we are receiving data
+	while ( ( res = recv( curfile->socket, buf, sizeof( buf ), 0 ) ) > 0 ) // if we got there, we are receiving data
 	{
 		//MsgDev(D_INFO,"res: %d\n", res);
 		curfile->blocktime = 0;
 
 		if ( curfile->state < HTTP_RESPONSE_RECEIVED ) // Response still not received
 		{
-			buf[res] = 0; // string break to search \r\n\r\n
 			Q_memcpy( http.buf + http.header_size, buf, res );
 			//MsgDev( D_INFO, "%s\n", buf );
 			begin = Q_strstr( http.buf, "\r\n\r\n" );
