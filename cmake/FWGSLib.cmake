@@ -300,7 +300,7 @@ endmacro()
 # */
 macro(xash_link_sdl2 tgt)
         if(WIN32)
-                set(SDL2_VER "2.0.14")
+                set(SDL2_VER "2.0.20")
                 set(SDL2_DEVELPKG "VC.zip")
                 set(SDL2_SUBDIR "SDL2-${SDL2_VER}")
                 set(SDL2_ARCHIVE "SDL2.zip")

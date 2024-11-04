@@ -9,7 +9,7 @@ sed -e 's/1\.5/1\.6/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
 wget http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin >/dev/null 2>/dev/null
 7z x ./android-ndk-r10e-linux-x86_64.bin > /dev/null
 mv android-ndk-r10e android-ndk
-curl -s http://libsdl.org/release/SDL2-2.0.14.tar.gz | tar xzf -
+curl -s http://libsdl.org/release/SDL2-2.0.20.tar.gz | tar xzf -
 git clone --depth 1 https://github.com/tyabus/xash3d-android-project
 cd $TRAVIS_BUILD_DIR/xash3d-android-project
 cp debug.keystore ~/.android/debug.keystore
