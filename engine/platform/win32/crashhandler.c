@@ -33,7 +33,7 @@ Crash handler, called from system
 typedef ULONG_PTR DWORD_PTR, *PDWORD_PTR;
 #endif
 
-int ModuleName( HANDLE process, char *name, void *address, int len )
+static int Sys_ModuleName( HANDLE process, char *name, void *address, int len )
 {
 	DWORD_PTR   baseAddress = 0;
 	static HMODULE     *moduleArray;
@@ -75,7 +75,7 @@ int ModuleName( HANDLE process, char *name, void *address, int len )
 }
 static void stack_trace( PEXCEPTION_POINTERS pInfo )
 {
-	char message[1024];
+	char message[4096]; // match posix crashhandler
 	int len = 0;
 	size_t i;
 	HANDLE process = GetCurrentProcess();
@@ -166,7 +166,7 @@ static void stack_trace( PEXCEPTION_POINTERS pInfo )
 			len += Q_snprintf(message + len, 1024 - len,"(%s:%d:%d) ", (char*)line.FileName, (int)line.LineNumber, (int)dline);
 		}
 		len += Q_snprintf( message + len, 1024 - len, "(");
-		len += ModuleName( process, message + len, (void*)stackframe.AddrPC.Offset, 1024 - len );
+		len += Sys_ModuleName( process, message + len, (void*)stackframe.AddrPC.Offset, 1024 - len );
 		len += Q_snprintf( message + len, 1024 - len, ")\n");
 	}
 #ifdef XASH_SDL
@@ -187,7 +187,11 @@ long _stdcall Sys_Crash( PEXCEPTION_POINTERS pInfo )
 		// check to avoid recursive call
 		host.crashed = true;
 
-		Sys_Warn( "Sys_Crash: call %p at address %p", pInfo->ExceptionRecord->ExceptionAddress, pInfo->ExceptionRecord->ExceptionCode );
+		// release the mouse
+#ifdef XASH_SDL
+		SDL_SetWindowGrab( host.hWnd, SDL_FALSE );
+#endif // XASH_SDL
+
 		stack_trace( pInfo );
 
 		if( host.type == HOST_NORMAL )
