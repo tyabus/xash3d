@@ -126,18 +126,18 @@ static void stack_trace( PEXCEPTION_POINTERS pInfo )
 	stackframe.AddrStack.Offset = context.IntSp;
 	stackframe.AddrStack.Mode = AddrModeFlat;
 #endif
-	len += Q_snprintf( message + len, 1024 - len, "Sys_Crash: address %p, code %p\n", pInfo->ExceptionRecord->ExceptionAddress, (void*)pInfo->ExceptionRecord->ExceptionCode );
+	len += Q_snprintf( message + len, 4096 - len, "Sys_Crash: address %p, code %p\n", pInfo->ExceptionRecord->ExceptionAddress, (void*)pInfo->ExceptionRecord->ExceptionCode );
 	if( SymGetLineFromAddr64( process, (DWORD64)pInfo->ExceptionRecord->ExceptionAddress, &dline, &line ) )
 	{
-		len += Q_snprintf(message + len, 1024 - len,"Exception: %s:%d:%d\n", (char*)line.FileName, (int)line.LineNumber, (int)dline);
+		len += Q_snprintf(message + len, 4096 - len,"Exception: %s:%d:%d\n", (char*)line.FileName, (int)line.LineNumber, (int)dline);
 	}
 	if( SymGetLineFromAddr64( process, stackframe.AddrPC.Offset, &dline, &line ) )
 	{
-		len += Q_snprintf(message + len, 1024 - len,"PC: %s:%d:%d\n", (char*)line.FileName, (int)line.LineNumber, (int)dline);
+		len += Q_snprintf(message + len, 4096 - len,"PC: %s:%d:%d\n", (char*)line.FileName, (int)line.LineNumber, (int)dline);
 	}
 	if( SymGetLineFromAddr64( process, stackframe.AddrFrame.Offset, &dline, &line ) )
 	{
-		len += Q_snprintf(message + len, 1024 - len,"Frame: %s:%d:%d\n", (char*)line.FileName, (int)line.LineNumber, (int)dline);
+		len += Q_snprintf(message + len, 4096 - len,"Frame: %s:%d:%d\n", (char*)line.FileName, (int)line.LineNumber, (int)dline);
 	}
 	for( i = 0; i < 25; i++ )
 	{
@@ -156,18 +156,18 @@ static void stack_trace( PEXCEPTION_POINTERS pInfo )
 		symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
 		symbol->MaxNameLen = MAX_SYM_NAME;
 
-		len += Q_snprintf( message + len, 1024 - len, "% 2d %p", i, (void*)stackframe.AddrPC.Offset );
+		len += Q_snprintf( message + len, 4096 - len, "% 2d %p", i, (void*)stackframe.AddrPC.Offset );
 		if( SymFromAddr( process, stackframe.AddrPC.Offset, &displacement, symbol ) )
 		{
-			len += Q_snprintf( message + len, 1024 - len, " %s ", symbol->Name );
+			len += Q_snprintf( message + len, 4096 - len, " %s ", symbol->Name );
 		}
 		if( SymGetLineFromAddr64( process, stackframe.AddrPC.Offset, &dline, &line ) )
 		{
-			len += Q_snprintf(message + len, 1024 - len,"(%s:%d:%d) ", (char*)line.FileName, (int)line.LineNumber, (int)dline);
+			len += Q_snprintf(message + len, 4096 - len,"(%s:%d:%d) ", (char*)line.FileName, (int)line.LineNumber, (int)dline);
 		}
-		len += Q_snprintf( message + len, 1024 - len, "(");
-		len += Sys_ModuleName( process, message + len, (void*)stackframe.AddrPC.Offset, 1024 - len );
-		len += Q_snprintf( message + len, 1024 - len, ")\n");
+		len += Q_snprintf( message + len, 4096 - len, "(");
+		len += Sys_ModuleName( process, message + len, (void*)stackframe.AddrPC.Offset, 4096 - len );
+		len += Q_snprintf( message + len, 4096 - len, ")\n");
 	}
 #ifdef XASH_SDL
 	if( host.type != HOST_DEDICATED ) // let system to restart server automaticly
