@@ -282,10 +282,16 @@ const char *Q_timestamp( int format );
 #ifndef XASH_SKIPCRTLIB
 char *Q_stristr( const char *string, const char *string2 );
 char *Q_strstr( const char *string, const char *string2 );
-#define Q_vsprintf( buffer, format, args ) Q_vsnprintf( buffer, 99999, format, args )
+#if XASH_USE_STB_SPRINTF
+#define STB_SPRINTF_DECORATE( name ) Q_##name
+#undef Q_vsprintf
+#include "stb/stb_sprintf.h"
+#else // XASH_USE_STB_SPRINTF
 int Q_vsnprintf( char *buffer, size_t buffersize, const char *format, va_list args );
 int Q_snprintf( char *buffer, size_t buffersize, const char *format, ... ) _format(3);
 int Q_sprintf( char *buffer, const char *format, ... ) _format(2);
+#endif
+#define Q_vsprintf( buffer, format, args ) Q_vsnprintf( buffer, 99999, format, args )
 #else // XASH_SKIPCRTLIB
 #define Q_stristr strcasestr
 #define Q_strstr strstr
