@@ -1474,7 +1474,6 @@ void EXPORT Host_Shutdown( void )
 	Cmd_Shutdown();
 	Host_FreeCommon();
 	Sys_DestroyConsole();
-	Sys_CloseLog();
 	Sys_RestoreCrashHandler();
-
+	Sys_CloseLog();
 }
