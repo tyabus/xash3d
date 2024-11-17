@@ -2455,7 +2455,6 @@ void CL_Init( void )
 	if( Host_IsDedicated() )
 		return; // nothing running on the client
 
-	Con_Init();
 	CL_InitLocal();
 
 	R_Init();	// init renderer

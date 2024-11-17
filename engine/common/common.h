@@ -1060,6 +1060,7 @@ void SCR_CheckStartupVids( void );
 int SCR_GetAudioChunk( char *rawdata, int length );
 wavdata_t *SCR_GetMovieInfo( void );
 void SCR_Shutdown( void );
+void Con_Init( void );
 void Con_Print( const char *txt );
 void Rcon_Print( const char *pMsg );
 void Con_NPrintf( int idx, char *fmt, ... ) _format(2);

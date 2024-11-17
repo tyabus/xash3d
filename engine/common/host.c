@@ -1175,6 +1175,9 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	Cmd_Init();
 	Cvar_Init();
 
+	// early console init to catch all the messages
+	Con_Init();
+
 #ifdef XASH_W32CON
 	Wcon_Init();
 	Wcon_CreateConsole();

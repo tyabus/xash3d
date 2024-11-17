@@ -821,6 +821,10 @@ void Con_Init( void )
 {
 	int	i;
 
+	// dedicated server already has console
+	if ( host.type == HOST_DEDICATED )
+		return;
+
 	// must be init before startup video subsystem
 	scr_width = Cvar_Get( "width", "640", CVAR_RENDERINFO, "screen width" );
 	scr_height = Cvar_Get( "height", "480", CVAR_RENDERINFO, "screen height" );
