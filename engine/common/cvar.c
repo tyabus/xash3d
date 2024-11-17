@@ -1345,6 +1345,8 @@ void Cvar_Init( void )
 	serverinfo = Cvar_Get( "@serverinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
 	renderinfo = Cvar_Get( "@renderinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
 
+	host_developer = Cvar_Get( "developer", "0", CVAR_LOCALONLY, "current developer level" );
+
 	Cmd_AddRestrictedCommand ("toggle", Cvar_Toggle_f, "toggles a console variable's value (use for more info)" );
 	Cmd_AddRestrictedCommand ("set", Cvar_Set_f, "create or change the value of a console variable" );
 	Cmd_AddRestrictedCommand ("sets", Cvar_SetS_f, "create or change the value of a serverinfo variable" );
