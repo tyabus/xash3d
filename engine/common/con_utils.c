@@ -1405,8 +1405,6 @@ void Host_WriteGameConfig( const char *name )
 	Q_snprintf( oldconfigfile, MAX_STRING, "%s.bak", name );
 	Q_snprintf( newconfigfile, MAX_STRING, "%s.new", name );
 
-	SV_InitGameProgs();	// collect user variables
-
 	if(( f = FS_Open( newconfigfile, "w", false )) != NULL )
 	{
 		FS_Printf( f, "//\t\t\t%s - multiplayer config\n", name );

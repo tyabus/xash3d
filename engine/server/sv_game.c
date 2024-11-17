@@ -5312,6 +5312,9 @@ qboolean SV_LoadProgs( const char *name )
 	// all done, initialize game
 	svgame.dllFuncs.pfnGameInit();
 
+	// Initialize delta
+	Delta_Init();
+
 	// initialize pm_shared
 	SV_InitClientMove();
 
