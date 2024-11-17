@@ -2026,6 +2026,10 @@ void CL_ReadNetMessage( void )
 
 void CL_ReadPackets( void )
 {
+	// demo time
+	if ( cls.demorecording && !cls.demowaiting )
+		cls.demotime += host.frametime;
+
 	CL_ReadNetMessage();
 
 	cl.lerpFrac = CL_LerpPoint();
