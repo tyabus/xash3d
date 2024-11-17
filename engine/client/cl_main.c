@@ -1108,11 +1108,6 @@ void CL_ClearState( void )
 	// tyabus: disable this for now
 	//host.developer = host.old_developer;
 
-	if( !SV_Active() && !CL_IsPlaybackDemo() && !cls.demorecording )
-	{
-		Delta_Shutdown();
-		Delta_InitClient();
-	}
 	HTTP_ClearCustomServers();
 }
 
