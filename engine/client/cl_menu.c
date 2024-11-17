@@ -1059,6 +1059,8 @@ void UI_UnloadProgs( void )
 	// deinitialize game
 	menu.dllFuncs.pfnShutdown();
 
+	Cvar_FullSet( "host_menuloaded", "0", CVAR_INIT );
+
 	Com_FreeLibrary( menu.hInstance );
 	Mem_FreePool( &menu.mempool );
 	Q_memset( &menu, 0, sizeof( menu ));
@@ -1133,6 +1135,8 @@ qboolean UI_LoadProgs( void )
 		menu.modsInfo[i] = Mem_Alloc( menu.mempool, sizeof( GAMEINFO ));
 		UI_ConvertGameInfo( menu.modsInfo[i], SI.games[i] );
 	}
+
+	Cvar_FullSet( "host_menuloaded", "1", CVAR_INIT );
 
 	UI_ConvertGameInfo( &menu.gameInfo, SI.GameInfo ); // current gameinfo
 

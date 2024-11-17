@@ -53,6 +53,7 @@ sysinfo_t		SI;
 
 convar_t	*host_serverstate;
 convar_t	*host_gameloaded;
+convar_t	*host_menuloaded;
 convar_t	*host_clientloaded;
 convar_t	*host_limitlocal;
 convar_t	*host_cheats;
@@ -1271,6 +1272,7 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	host_framerate = Cvar_Get( "host_framerate", "0", 0, "locks frame timing to this value in seconds" );  
 	host_serverstate = Cvar_Get( "host_serverstate", "0", CVAR_INIT, "displays current server state" );
 	host_gameloaded = Cvar_Get( "host_gameloaded", "0", CVAR_INIT, "indicates a loaded game library" );
+	host_menuloaded = Cvar_Get( "host_menuloaded", "0", CVAR_INIT, "indicates a loaded menu library" );
 	host_clientloaded = Cvar_Get( "host_clientloaded", "0", CVAR_INIT, "indicates a loaded client library" );
 	host_limitlocal = Cvar_Get( "host_limitlocal", "0", 0, "apply cl_cmdrate and rate to loopback connection" );
 	con_gamemaps = Cvar_Get( "con_mapfilter", "1", CVAR_ARCHIVE, "when enabled, show only maps in game folder (no maps from base folder when running mod)" );
