@@ -1038,7 +1038,7 @@ void CL_Rcon_f( void )
 		Q_strncat( message, "\" ", sizeof( message ) );
 	}
 
-	if( cls.state >= ca_connected )
+	if( cls.state >= ca_connected && !Q_strlen( rcon_address->string ) )
 	{
 		to = cls.netchan.remote_address;
 	}
