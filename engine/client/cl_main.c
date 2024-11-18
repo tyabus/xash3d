@@ -1823,7 +1823,7 @@ void CL_ConnectionlessPacket( netadr_t from, sizebuf_t *msg )
 		// print command from connecting server or rcon_address
 		char *str;
 
-		if( !CL_IsFromConnectingServer( from ) || !Q_strcmp( NET_AdrToString( from ), rcon_address->string ) )
+		if( !CL_IsFromConnectingServer( from ) && Q_strcmp( NET_BaseAdrToString( from ), rcon_address->string ) )
 			return;
 
 		str = BF_ReadString( msg );
