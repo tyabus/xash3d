@@ -590,7 +590,7 @@ void CL_WritePacket( void )
 		if(( host.realtime - cls.netchan.last_received ) > CONNECTION_PROBLEM_TIME )
 		{
 			Con_NPrintf( 1, "^3Warning:^1 Connection Problem^7\n");
-			Con_NPrintf( 2, "Timing out in: ^1%1.1f^7\n", (float)cl_timeout->value - (float)host.realtime - (float)cls.netchan.last_received );
+			Con_NPrintf( 2, "Timing out in: ^1%1.1f^7\n", cl_timeout->value - ( host.realtime - cls.netchan.last_received ) );
 			cl.validsequence = 0;
 		}
 	}
