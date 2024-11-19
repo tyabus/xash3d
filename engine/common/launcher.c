@@ -62,7 +62,7 @@ int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR cmdLine, int n
 #endif
 int main( int argc, char** argv )
 {
-	char gamedir_buf[32] = "";
+	char gamedir_buf[65] = "";
 	const char *gamedir = getenv("XASH3D_GAMEDIR");
 
 	#if (!defined(__HAIKU__) && !defined(_WIN32) && !defined(__SAILFISH__))
@@ -77,7 +77,7 @@ int main( int argc, char** argv )
 		gamedir = "valve";
 	else
 	{
-		strncpy( gamedir_buf, gamedir, 32 );
+		strncpy( gamedir_buf, gamedir, sizeof( gamedir_buf ) - 1 );
 		gamedir = gamedir_buf;
 	}
 
