@@ -519,6 +519,13 @@ void CL_ReadDemoUserCmd( qboolean discard )
 	FS_Read( cls.demofile, &bytes, sizeof( short ));
 	FS_Read( cls.demofile, data, bytes );
 
+	if( bytes >= sizeof( data ) )
+	{
+		MsgDev( D_ERROR, "too large dem_usercmd (size %u seq %i)\n", bytes, outgoing_sequence );
+		CL_DemoAborted();
+		return;
+	}
+
 	if( !discard )
 	{
 		usercmd_t	nullcmd;
