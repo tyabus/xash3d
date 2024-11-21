@@ -129,6 +129,7 @@ int Sys_LogFileNo( void );
 // con_win.c
 //
 void Wcon_ShowConsole( qboolean show );
+void Wcon_RegisterHotkeys( void );
 void Wcon_Print( const char *pMsg );
 void Wcon_Init( void );
 void Wcon_CreateConsole( void );
