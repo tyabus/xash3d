@@ -67,11 +67,11 @@ char *Sys_Input( void )
 			tv.tv_usec = 0;
 		}
 	}
-#endif
-#ifdef XASH_W32CON
+#elif XASH_W32CON
 	return Wcon_Input();
-#endif
+#else
 	return NULL;
+#endif
 }
 
 void Sys_DestroyConsole( void )
