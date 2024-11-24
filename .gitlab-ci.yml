@@ -1,5 +1,3 @@
-image: ubuntu:xenial
-
 stages:
   - linux_dedicated
   - linux_desktop
@@ -15,11 +13,13 @@ cache:
     - ccache
 
 linux_dedicated:
+#  image: ubuntu:bionic
+  image: registry.gitlab.com/mr0maks/gitlab_ci_images:bionic_dedicated
   stage: linux_dedicated
   before_script:
-  - dpkg --add-architecture i386
-  - apt update
-  - apt install -y git cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386
+#  - dpkg --add-architecture i386
+#  - apt update
+#  - apt install -y git cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 libunwind-dev:i386
   - mkdir -p ccache
   - export PATH="/usr/lib/ccache:$PATH"
   - export CCACHE_BASEDIR="$PWD"
@@ -31,22 +31,24 @@ linux_dedicated:
   - export CCACHE_DIR="$PWD/ccache"
   - ccache --show-stats
   script:
-  - mkdir out2
-  - cd out2
+  - mkdir $CI_JOB_STAGE
+  - cd $CI_JOB_STAGE
   - export CC="gcc -m32"
   - export CXX="gcc -m32"
   - cmake -DXASH_DOWNLOAD_DEPENDENCIES=yes -DXASH_SDL=OFF -DXASH_DEDICATED=ON -DXASH_STATIC=ON -DXASH_DLL_LOADER=ON -DXASH_VGUI=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
   - make -j$(nproc --all)
   artifacts:
     paths:
-    - out2/engine/xash3d
+    - $CI_JOB_STAGE/engine/xash3d
 
 linux_desktop:
+#  image: ubuntu:bionic
+  image: registry.gitlab.com/mr0maks/gitlab_ci_images:bionic_desktop
   stage: linux_desktop
   before_script:
-  - dpkg --add-architecture i386
-  - apt update
-  - apt install -y git curl ccache cmake p7zip-full gcc-multilib g++-multilib build-essential libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
+#  - dpkg --add-architecture i386
+#  - apt update
+#  - apt install -y git curl ccache cmake p7zip-full gcc-multilib g++-multilib build-essential libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386 libunwind-dev:i386
   - mkdir -p ccache
   - export PATH="/usr/lib/ccache:$PATH"
   - export CCACHE_BASEDIR="$PWD"
@@ -58,16 +60,16 @@ linux_desktop:
   - export CCACHE_DIR="$PWD/ccache"
   - ccache --show-stats
   script:
-  - curl -s http://libsdl.org/release/SDL2-2.0.14.tar.gz | tar xzf -
-  - cd $CI_PROJECT_DIR/SDL2-2.0.14/
+  - curl -s http://libsdl.org/release/SDL2-2.0.22.tar.gz | tar xzf -
+  - cd $CI_PROJECT_DIR/SDL2-2.0.22/
   - export CC="gcc -msse2 -march=i686 -m32 -ggdb -O2"
   - ./configure --disable-dependency-tracking --enable-audio --enable-video --enable-events --disable-render --enable-joystick --disable-haptic --disable-power --enable-threads --enable-timers --enable-loadso --enable-video-opengl --enable-x11-shared --enable-video-x11 --enable-video-x11-xrandr --enable-video-x11-scrnsaver --enable-video-x11-xinput --disable-video-x11-xshape --disable-video-x11-xdbe --disable-libudev --disable-dbus --disable-ibus --enable-sdl-dlopen --disable-video-opengles --disable-cpuinfo --disable-assembly --disable-atomic --enable-alsa
   - make -j$(nproc --all)
   - mkdir -p ../sdl2-linux
   - make install DESTDIR=$CI_PROJECT_DIR/sdl2-linux
   - cd ../
-  - mkdir out
-  - cd out
+  - mkdir $CI_JOB_STAGE
+  - cd $CI_JOB_STAGE
   - export CC="gcc -m32"
   - export CXX="gcc -m32"
   - cmake -DCMAKE_PREFIX_PATH=$CI_PROJECT_DIR/sdl2-linux/usr/local -DXASH_DOWNLOAD_DEPENDENCIES=yes -DXASH_STATIC=ON -DXASH_DLL_LOADER=ON -DXASH_VGUI=ON -DMAINUI_USE_STB=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo ../
@@ -81,14 +83,16 @@ linux_desktop:
   - cp $CI_PROJECT_DIR/sdl2-linux/usr/local/lib/$(readlink $CI_PROJECT_DIR/sdl2-linux/usr/local/lib/libSDL2-2.0.so.0) artifacts/libSDL2-2.0.so.0
   artifacts:
     paths:
-    - out/artifacts/
+    - $CI_JOB_STAGE/artifacts/
 
 android:
+#  image: ubuntu:xenial
+  image: registry.gitlab.com/mr0maks/gitlab_ci_images:xenial_android
   stage: android
   before_script:
-  - dpkg --add-architecture i386
-  - apt update
-  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
+#  - dpkg --add-architecture i386
+#  - apt update
+#  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
   - curl -s http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz | tar xzf -
   - curl https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.8-bin.tar.xz | tar xJ
   - export ANDROID_HOME=$PWD/android-sdk-linux
@@ -126,11 +130,13 @@ android:
     - android/xash3d-android-project/bin/xash3d-debug.apk
 
 android_64bit:
+# image: ubuntu:xenial
+  image: registry.gitlab.com/mr0maks/gitlab_ci_images:xenial_android
   stage: android
   before_script:
-  - dpkg --add-architecture i386
-  - apt update
-  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
+#  - dpkg --add-architecture i386
+#  - apt update
+#  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
   - curl -s http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz | tar xzf -
   - curl https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.8-bin.tar.xz | tar xJ
   - export ANDROID_HOME=$PWD/android-sdk-linux
@@ -168,14 +174,16 @@ android_64bit:
     - android/xash3d-android-project/bin/xash3d-debug.apk
 
 coverity_scan:
+#  image: ubuntu:bionic
+  image: registry.gitlab.com/mr0maks/gitlab_ci_images:bionic_desktop
   stage: coverity_scan
   only:
     refs:
       - master
   before_script:
-  - dpkg --add-architecture i386
-  - apt update
-  - apt install -y wget curl git ccache cmake p7zip-full gcc-multilib g++-multilib build-essential libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
+#  - dpkg --add-architecture i386
+#  - apt update
+#  - apt install -y wget curl git ccache cmake p7zip-full gcc-multilib g++-multilib build-essential libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
   - mkdir -p ccache
   #- curl -o /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64 --form project=$COVERITY_SCAN_PROJECT_NAME --form token=$COVERITY_SCAN_TOKEN
   - wget -nv -O /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64 --post-data "token=$COVERITY_SCAN_TOKEN&project=tyabus%2Fxash3d"
