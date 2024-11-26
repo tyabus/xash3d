@@ -1091,6 +1091,8 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	host.state = HOST_INIT; // initialization started
 	host.textmode = false;
 
+	Memory_Init(); // init memory subsystem
+
 	host.mempool = Mem_AllocPool( "Zone Engine" );
 
 	if( Sys_CheckParm( "-console" )) developer = 1;

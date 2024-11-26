@@ -323,6 +323,7 @@ void _Q_memmove( void *dest, const void *src, size_t count, const char *filename
 //
 // zone.c
 //
+void Memory_Init( void );
 void *_Mem_Realloc( byte *poolptr, void *memptr, size_t size, const char *filename, int fileline );
 void *_Mem_Alloc( byte *poolptr, size_t size, const char *filename, int fileline );
 byte *_Mem_AllocPool( const char *name, const char *filename, int fileline );
