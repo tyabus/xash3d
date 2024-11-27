@@ -25,6 +25,36 @@ GNU General Public License for more details.
 #include "touch.h" // IN_TouchDraw( )
 #include "joyinput.h" // Joy_DrawOnScreenKeyboard( )
 
+/*
+===============
+V_CalcViewRect
+
+calc frame rectangle (Quake1 style)
+===============
+*/
+void V_CalcViewRect( void )
+{
+	int	size, sb_lines;
+
+	if( scr_viewsize->integer >= 120 )
+		sb_lines = 0;		// no status bar at all
+	else if( scr_viewsize->integer >= 110 )
+		sb_lines = 24;		// no inventory
+	else sb_lines = 48;
+
+	size = min( scr_viewsize->integer, 100 );
+
+	cl.refdef.viewport[2] = scr_width->integer * size / 100;
+	cl.refdef.viewport[3] = scr_height->integer * size / 100;
+
+	if( cl.refdef.viewport[3] > scr_height->integer - sb_lines )
+		cl.refdef.viewport[3] = scr_height->integer - sb_lines;
+	if( cl.refdef.viewport[3] > scr_height->integer )
+		cl.refdef.viewport[3] = scr_height->integer;
+
+	cl.refdef.viewport[0] = ( scr_width->integer - cl.refdef.viewport[2] ) / 2;
+	cl.refdef.viewport[1] = ( scr_height->integer - sb_lines - cl.refdef.viewport[3] ) / 2;
+}
 
 /*
 ===============
@@ -36,8 +66,9 @@ update refdef values each frame
 void V_SetupRefDef( void )
 {
 	cl_entity_t	*clent;
-	int		size;
-	int		sb_lines;
+
+	// compute viewport rectangle
+	V_CalcViewRect( );
 
 	clent = CL_GetLocalPlayer ();
 
@@ -62,31 +93,11 @@ void V_SetupRefDef( void )
 	cl.refdef.onlyClientDraw = 0;	// reset clientdraw
 	cl.refdef.hardware = true;	// always true
 	cl.refdef.spectator = (clent->curstate.spectator != 0);
+	cl.scr_fov = bound( 10.0f, cl.scr_fov, 179.0f );
 	cl.refdef.nextView = 0;
 
 	SCR_AddDirtyPoint( 0, 0 );
 	SCR_AddDirtyPoint( scr_width->integer - 1, scr_height->integer - 1 );
-
-	if( cl.refdef.viewsize >= 120 )
-		sb_lines = 0;		// no status bar at all
-	else if( cl.refdef.viewsize >= 110 )
-		sb_lines = 24;		// no inventory
-	else sb_lines = 48;
-
-	size = min( scr_viewsize->integer, 100 );
-
-	cl.refdef.viewport[2] = scr_width->integer * size / 100;
-	cl.refdef.viewport[3] = scr_height->integer * size / 100;
-
-	if( cl.refdef.viewport[3] > scr_height->integer - sb_lines )
-		cl.refdef.viewport[3] = scr_height->integer - sb_lines;
-	if( cl.refdef.viewport[3] > scr_height->integer )
-		cl.refdef.viewport[3] = scr_height->integer;
-
-	cl.refdef.viewport[0] = (scr_width->integer - cl.refdef.viewport[2]) / 2;
-	cl.refdef.viewport[1] = (scr_height->integer - sb_lines - cl.refdef.viewport[3]) / 2;
-
-	cl.scr_fov = bound( 10.0f, cl.scr_fov, 150.0f );
 
 	// calc FOV
 	cl.refdef.fov_x = cl.scr_fov; // this is a final fov value
