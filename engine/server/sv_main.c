@@ -320,6 +320,9 @@ void SV_CheckCmdTimes( void )
 	double		timewindow;
 	int		i;
 
+	if( Host_IsLocalGame() )
+		return;
+	
 	if(( host.realtime - lastreset ) < 1.0 )
 		return;
 
