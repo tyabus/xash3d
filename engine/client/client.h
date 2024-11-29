@@ -767,9 +767,7 @@ qboolean V_PreRender( void );
 void V_PostRender( void );
 void V_RenderView( void );
 void V_SetupOverviewState( void );
-void V_ProcessOverviewCmds( usercmd_t *cmd );
 void V_MergeOverviewRefdef( ref_params_t *fd );
-void V_ProcessShowTexturesCmds( usercmd_t *cmd );
 void V_WriteOverviewScript( void );
 
 //

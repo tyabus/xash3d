@@ -187,52 +187,6 @@ void V_WriteOverviewScript( void )
 
 /*
 ===============
-V_ProcessOverviewCmds
-
-Transform user movement into overview adjust
-===============
-*/
-void V_ProcessOverviewCmds( usercmd_t *cmd )
-{
-	ref_overview_t	*ov = &clgame.overView;
-	int		sign = 1;
-
-	if( !gl_overview->integer ) return;
-
-	if( ov->flZoom < 0.0f ) sign = -1;
-
-	if( cmd->upmove > 0.0f ) ov->zNear += 1.0f;
-	else if( cmd->upmove < 0.0f ) ov->zNear -= 1.0f;
-
-	if( cmd->buttons & IN_JUMP ) ov->zFar += 1.0f;
-	else if( cmd->buttons & IN_DUCK ) ov->zFar -= 1.0f;
-
-	if( cmd->buttons & IN_FORWARD ) ov->origin[ov->rotated] -= sign * 1.0f;
-	else if( cmd->buttons & IN_BACK ) ov->origin[ov->rotated] += sign * 1.0f;
-
-	if( ov->rotated )
-	{
-		if( cmd->buttons & ( IN_RIGHT|IN_MOVERIGHT ))
-			ov->origin[0] -= sign * 1.0f;
-		else if( cmd->buttons & ( IN_LEFT|IN_MOVELEFT ))
-			ov->origin[0] += sign * 1.0f;
-	}
-	else
-	{
-		if( cmd->buttons & ( IN_RIGHT|IN_MOVERIGHT ))
-			ov->origin[1] += sign * 1.0f;
-		else if( cmd->buttons & ( IN_LEFT|IN_MOVELEFT ))
-			ov->origin[1] -= sign * 1.0f;
-	}
-
-	if( cmd->buttons & IN_ATTACK ) ov->flZoom += 0.01f;
-	else if( cmd->buttons & IN_ATTACK2 ) ov->flZoom -= 0.01f;
-
-	if( ov->flZoom == 0.0f ) ov->flZoom = 0.0001f; // to prevent disivion by zero
-}
-
-/*
-===============
 V_MergeOverviewRefdef
 
 merge refdef with overview settings
@@ -280,32 +234,6 @@ void V_MergeOverviewRefdef( ref_params_t *fd )
 	fd->viewangles[2] = (ov->rotated) ? (ov->flZoom < 0.0f) ? 180.0f : 0.0f : (ov->flZoom < 0.0f) ? -90.0f : 90.0f;
 
 	Mod_SetOrthoBounds( mins, maxs );
-}
-
-/*
-===============
-V_ProcessShowTexturesCmds
-
-navigate around texture atlas
-===============
-*/
-void V_ProcessShowTexturesCmds( usercmd_t *cmd )
-{
-	static int	oldbuttons;
-	int		changed;
-	int		pressed, released;
-
-	if( !gl_showtextures->integer ) return;
-
-	changed = (oldbuttons ^ cmd->buttons);
-	pressed =  changed & cmd->buttons;
-	released = changed & (~cmd->buttons);
-
-	if( released & ( IN_RIGHT|IN_MOVERIGHT ))
-		Cvar_SetFloat( "r_showtextures", gl_showtextures->integer + 1 );
-	if( released & ( IN_LEFT|IN_MOVELEFT ))
-		Cvar_SetFloat( "r_showtextures", max( 1, gl_showtextures->integer - 1 ));
-	oldbuttons = cmd->buttons;
 }
 
 /*

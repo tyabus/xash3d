@@ -402,6 +402,97 @@ CLIENT MOVEMENT COMMUNICATION
 =======================================================================
 */
 /*
+===============
+CL_ProcessShowTexturesCmds
+
+navigate around texture atlas
+===============
+*/
+qboolean CL_ProcessShowTexturesCmds( usercmd_t *cmd )
+{
+	static int oldbuttons;
+	int changed;
+	int pressed, released;
+
+	if ( !gl_showtextures->integer || gl_overview->integer )
+		return false;
+
+	changed  = ( oldbuttons ^ cmd->buttons );
+	pressed  = changed & cmd->buttons;
+	released = changed & ( ~cmd->buttons );
+
+	if ( released & ( IN_RIGHT | IN_MOVERIGHT ) )
+		Cvar_SetFloat( "r_showtextures", gl_showtextures->integer + 1 );
+	if ( released & ( IN_LEFT | IN_MOVELEFT ) )
+		Cvar_SetFloat( "r_showtextures", max( 1, gl_showtextures->integer - 1 ) );
+	oldbuttons = cmd->buttons;
+
+	return true;
+}
+
+/*
+===============
+CL_ProcessOverviewCmds
+
+Transform user movement into overview adjust
+===============
+*/
+qboolean CL_ProcessOverviewCmds( usercmd_t *cmd )
+{
+	ref_overview_t *ov = &clgame.overView;
+	int sign           = 1;
+	float size         = world.size[!ov->rotated] / world.size[ov->rotated];
+	float step         = ( 2.0f / size ) * host.realframetime;
+	float step2        = step * 100.0f * ( 2.0f / ov->flZoom );
+
+	if ( !gl_overview->integer || gl_showtextures->integer )
+		return false;
+
+	if ( ov->flZoom < 0.0f )
+		sign = -1;
+
+	if ( cmd->upmove > 0.0f )
+		ov->zNear += step;
+	else if ( cmd->upmove < 0.0f )
+		ov->zNear -= step;
+
+	if ( cmd->buttons & IN_JUMP )
+		ov->zFar += step;
+	else if ( cmd->buttons & IN_DUCK )
+		ov->zFar -= step;
+
+	if ( cmd->buttons & IN_FORWARD )
+		ov->origin[ov->rotated] -= sign * step2;
+	else if ( cmd->buttons & IN_BACK )
+		ov->origin[ov->rotated] += sign * step2;
+
+	if ( ov->rotated )
+	{
+		if ( cmd->buttons & ( IN_RIGHT | IN_MOVERIGHT ) )
+			ov->origin[0] -= sign * step2;
+		else if ( cmd->buttons & ( IN_LEFT | IN_MOVELEFT ) )
+			ov->origin[0] += sign * step2;
+	}
+	else
+	{
+		if ( cmd->buttons & ( IN_RIGHT | IN_MOVERIGHT ) )
+			ov->origin[1] += sign * step2;
+		else if ( cmd->buttons & ( IN_LEFT | IN_MOVELEFT ) )
+			ov->origin[1] -= sign * step2;
+	}
+
+	if ( cmd->buttons & IN_ATTACK )
+		ov->flZoom += step;
+	else if ( cmd->buttons & IN_ATTACK2 )
+		ov->flZoom -= step;
+
+	if ( ov->flZoom == 0.0f )
+		ov->flZoom = 0.0001f; // to prevent disivion by zero
+
+	return true;
+}
+
+/*
 =================
 CL_CreateCmd
 =================
@@ -413,6 +504,7 @@ void CL_CreateCmd( void )
 	color24		color;
 	vec3_t		angles;
 	qboolean		active;
+	int		input_override = 0;
 	int		i, ms;
 
 	ms = host.frametime * 1000;
@@ -490,10 +582,10 @@ void CL_CreateCmd( void )
 	pcmd->cmd.msec = ms;
 	CL_ComputeClientInterpAmount( &pcmd->cmd );
 
-	V_ProcessOverviewCmds( &pcmd->cmd );
-	V_ProcessShowTexturesCmds( &pcmd->cmd );
+	input_override |= CL_ProcessOverviewCmds( &pcmd->cmd );
+	input_override |= CL_ProcessShowTexturesCmds( &pcmd->cmd );
 
-	if(( cl.background && !cls.demoplayback ) || gl_overview->integer || cls.changelevel )
+	if(( cl.background && !cls.demoplayback ) || input_override || cls.changelevel )
 	{
 		VectorCopy( angles, cl.refdef.cl_viewangles );
 		VectorCopy( angles, pcmd->cmd.viewangles );
