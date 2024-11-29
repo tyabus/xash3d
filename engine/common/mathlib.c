@@ -551,7 +551,7 @@ void AngleQuaternion( const vec3_t angles, vec4_t q, qboolean studio )
 	else
 	{
 #ifdef XASH_VECTORIZE_SINCOS
-		SinCosFastVector3( angles[2] * 0.5f, angles[1] * 0.5f, angles[0] * 0.5f,
+		SinCosFastVector3( DEG2RAD( angles[YAW] ) * 0.5f, DEG2RAD( angles[PITCH] ) * 0.5f, DEG2RAD( angles[ROLL] ) * 0.5f,
 			&sy, &sp, &sr,
 			&cy, &cp, &cr);
 #else
