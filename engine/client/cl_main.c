@@ -2421,6 +2421,10 @@ void CL_InitLocal( void )
 
 	Cmd_AddCommand ("precache", CL_Precache_f, "precache specified resource (by index)" );
 	Cmd_AddCommand ( "trysaveconfig", CL_TrySaveConfig_f, "schedule config save on disconnected state" );
+
+	// these two added to shut up HL25 update about 'unknown' commands
+	Cmd_AddCommand ( "richpresence_gamemode", Cmd_Null_f, "compatibility command, does nothing" );
+	Cmd_AddCommand ( "richpresence_update", Cmd_Null_f, "compatibility command, does nothing" );
 }
 
 //============================================================================
