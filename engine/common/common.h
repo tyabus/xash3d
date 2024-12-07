@@ -394,6 +394,9 @@ typedef struct host_redirect_s
 	int lines;
 } host_redirect_t;
 
+// local flags (never sending acorss the net)
+#define SND_FILTER_CLIENT (1U << 11) // don't send sound from local player if prediction was enabled
+
 typedef struct
 {
 	char		name[64];

@@ -368,6 +368,12 @@ qboolean SV_Send( int dest, const vec3_t origin, const edict_t *ent, qboolean ex
 		if( !cl->edict || cl->fakeclient )
 			continue;
 
+		// tyabus: I'm not sure filtering is required here since pfnPlaySound seems to catch this.
+		// build 3598: reject step sounds while predicting is enabled
+		// FIXME: make sure what this code doesn't cutoff something important!!!
+		/*if( excludeSource && cl == svs.currentPlayer && cl->movement_prediction )
+			continue;*/
+
 		if( excludeSource && cl->edict == ent )
 		{
 			//MsgDev( D_INFO, "%i excluded\n", j );
@@ -1964,12 +1970,13 @@ SV_StartSound
 
 =================
 */
-void SV_StartSoundEx( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch, qboolean excludeSource )
+void GAME_EXPORT SV_StartSound( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch )
 {
 	int 	sound_idx;
 	int	entityIndex;
 	int	msg_dest;
 	vec3_t	origin;
+	qboolean filter = false;
 
 	if( !sample ) return;
 
@@ -2006,6 +2013,7 @@ void SV_StartSoundEx( edict_t *ent, int chan, const char *sample, float vol, flo
 
 	// always sending stop sound command
 	if( flags & SND_STOP ) msg_dest = MSG_ALL;
+	if( flags & SND_FILTER_CLIENT ) filter = true;
 
 	if( sample[0] == '!' && Q_isdigit( sample + 1 ))
 	{
@@ -2032,6 +2040,7 @@ void SV_StartSoundEx( edict_t *ent, int chan, const char *sample, float vol, flo
 
 	// not sending (because this is out of range)
 	flags &= ~SND_SPAWNING;
+	flags &= ~SND_FILTER_CLIENT;
 
 	BF_WriteByte( &sv.multicast, svc_sound );
 	BF_WriteWord( &sv.multicast, flags );
@@ -2047,18 +2056,7 @@ void SV_StartSoundEx( edict_t *ent, int chan, const char *sample, float vol, flo
 	BF_WriteWord( &sv.multicast, entityIndex );
 	BF_WriteVec3Coord( &sv.multicast, origin );
 
-	SV_Send( msg_dest, origin, ent, excludeSource );
-}
-
-/*
-=================
-SV_StartSound
-
-=================
-*/
-void GAME_EXPORT SV_StartSound( edict_t *ent, int chan, const char *sample, float vol, float attn, int flags, int pitch )
-{
-	SV_StartSoundEx( ent, chan, sample, vol, attn, flags, pitch, false );
+	SV_Send( msg_dest, origin, ent, filter );
 }
 
 /*

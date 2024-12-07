@@ -2397,7 +2397,7 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 	if( Q_strlen( val )) cl->messagelevel = Q_atoi( val );
 
 	cl->hltv_proxy = Q_atoi( Info_ValueForKey( cl->userinfo, "hltv" ));
-
+	cl->movement_prediction = Q_atoi( Info_ValueForKey( cl->userinfo, "cl_predict" ) ) ? true : false;
 	cl->local_weapons = Q_atoi( Info_ValueForKey( cl->userinfo, "cl_lw" )) ? true : false;
 	cl->lag_compensation = Q_atoi( Info_ValueForKey( cl->userinfo, "cl_lc" )) ? true : false;
 
