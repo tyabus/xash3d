@@ -43,30 +43,29 @@ static LogData s_ld;
 char *Sys_Input( void )
 {
 #ifdef USE_SELECT
+	fd_set rfds;
+	static char line[1024];
+	static int len;
+	struct timeval tv;
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	FD_ZERO(&rfds);
+	FD_SET(0, &rfds); // stdin
+	while( select(1, &rfds, NULL, NULL, &tv ) > 0 )
 	{
-		fd_set rfds;
-		static char line[1024];
-		static int len;
-		struct timeval tv;
+		if( read( 0, &line[len], 1 ) != 1 )
+			return NULL;
+		if( line[len] == '\n' || len > 1022 )
+		{
+			line[ ++len ] = 0;
+			len = 0;
+			return line;
+		}
+		len++;
 		tv.tv_sec = 0;
 		tv.tv_usec = 0;
-		FD_ZERO(&rfds);
-		FD_SET(0, &rfds); // stdin
-		while( select(1, &rfds, NULL, NULL, &tv ) > 0 )
-		{
-			if( read( 0, &line[len], 1 ) != 1 )
-				break;
-			if( line[len] == '\n' || len > 1022 )
-			{
-				line[ ++len ] = 0;
-				len = 0;
-				return line;
-			}
-			len++;
-			tv.tv_sec = 0;
-			tv.tv_usec = 0;
-		}
 	}
+	return NULL;
 #elif XASH_W32CON
 	return Wcon_Input();
 #else
