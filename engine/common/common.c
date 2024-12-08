@@ -23,6 +23,24 @@ GNU General Public License for more details.
 
 /*
 ==============
+COM_IsSingleChar
+
+interpert this character as single
+==============
+*/
+static int COM_IsSingleChar( char c )
+{
+	if( c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ',' )
+		return true;
+
+	if( host.com_handlecolon && c == ':' )
+		return true;
+
+	return false;
+}
+
+/*
+==============
 COM_ParseFile
 
 text parser
@@ -90,7 +108,7 @@ skipwhite:
 	}
 
 	// parse single characters
-	if( c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ',' )
+	if( COM_IsSingleChar( c ) )
 	{
 		token[len] = c;
 		len++;
@@ -106,7 +124,7 @@ skipwhite:
 		len++;
 		c = ((byte)*data);
 
-		if( c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ',' )
+		if( COM_IsSingleChar( c ) )
 			break;
 	} while( c > 32 );
 

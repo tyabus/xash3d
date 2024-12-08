@@ -2769,6 +2769,24 @@ static void GAME_EXPORT pfnSetLightmapScale( float scale )
 
 /*
 =============
+pfnParseFile
+
+handle colon separately
+=============
+*/
+static char GAME_EXPORT *pfnParseFile( char *data, char *token )
+{
+	char *out;
+
+	host.com_handlecolon = true;
+	out = COM_ParseFile( data, token );
+	host.com_handlecolon = false;
+
+	return out;
+}
+
+/*
+=============
 pfnSPR_DrawGeneric
 
 =============
@@ -3904,7 +3922,7 @@ static cl_enginefunc_t gEngfuncs =
 	pfnVGui_GetPanel,
 	VGui_ViewportPaintBackground,
 	(void*)COM_LoadFile,
-	COM_ParseFile,
+	pfnParseFile,
 	COM_FreeFile,
 	&gTriApi,
 	&gEfxApi,
