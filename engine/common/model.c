@@ -3090,8 +3090,7 @@ void Mod_FreeUnused( void )
 	model_t	*mod;
 	int	i;
 
-	// never tries to release worldmodel
-	for( i = 1, mod = cm_models; i < cm_nummodels; i++, mod++ )
+	for( i = 0, mod = cm_models; i < cm_nummodels; i++, mod++ )
 	{
 		if( !mod->name[0] ) continue;
 		if( mod->needload != world.load_sequence )
