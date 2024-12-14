@@ -76,7 +76,7 @@ char *Sys_Input( void )
 void Sys_DestroyConsole( void )
 {
 	// last text message into console or log
-	MsgDev( D_NOTE, "Sys_DestroyConsole: Exiting!\n" );
+	Sys_Print( "Sys_DestroyConsole: Exiting!\n" );
 #ifdef XASH_W32CON
 	Wcon_DestroyConsole();
 #endif
