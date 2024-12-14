@@ -108,6 +108,14 @@ const char *Q_buildarch( void )
 	archname = "aarch64";
 #elif defined __arm__ || defined _M_ARM
 	archname = "arm";
+#elif defined __riscv
+#if __riscv_xlen == 64
+	archname = "riscv64";
+#elif __riscv_xlen == 32
+	archname = "riscv32";
+#else
+#error "Unknown RISC-V ABI"
+#endif
 #elif defined __mips__
 	archname = "mips";
 #else
