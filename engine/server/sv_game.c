@@ -368,11 +368,10 @@ qboolean SV_Send( int dest, const vec3_t origin, const edict_t *ent, qboolean ex
 		if( !cl->edict || cl->fakeclient )
 			continue;
 
-		// tyabus: I'm not sure filtering is required here since pfnPlaySound seems to catch this.
-		// build 3598: reject step sounds while predicting is enabled
+		// reject step sounds while predicting is enabled
 		// FIXME: make sure what this code doesn't cutoff something important!!!
-		/*if( excludeSource && cl == svs.currentPlayer && cl->movement_prediction )
-			continue;*/
+		if( excludeSource && cl == svs.currentPlayer && cl->movement_prediction )
+			continue;
 
 		if( excludeSource && cl->edict == ent )
 		{
