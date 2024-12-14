@@ -119,7 +119,7 @@ void Cvar_WriteVariables( file_t *f );
 void Cvar_Init( void );
 char *Cvar_Userinfo( void );
 char *Cvar_Serverinfo( void );
-void Cvar_Unlink( void );
+void Cvar_Unlink( int group );
 
 //
 // cmd.c

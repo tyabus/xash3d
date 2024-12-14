@@ -1292,24 +1292,30 @@ void Cvar_Unlink_f( void )
 ============
 Cvar_Unlink
 
-unlink all cvars with flag CVAR_CLIENTDLL
+unlink all cvars with specified flag
 ============
 */
-void Cvar_Unlink( void )
+void Cvar_Unlink( int group )
 {
 	convar_t	*var;
 	convar_t	**prev;
 
-	if( Cvar_VariableInteger( "host_clientloaded" ))
+	if( Cvar_VariableInteger( "host_clientloaded" ) && ( group & CVAR_CLIENTDLL ) )
 	{
 		MsgDev( D_NOTE, "Can't unlink cvars while client is loaded.\n" );
 		return;
 	}
 
+	if( Cvar_VariableInteger( "host_gameloaded" ) && ( group & FCVAR_EXTDLL ) )
+	{
+		MsgDev( D_NOTE, "Can't unlink cvars while server is loaded\n" );
+		return;
+	}
+
 	for( prev = &cvar_vars; ( var = *prev ); )
 	{
-		// ignore all non-client cvars
-		if( !( var->flags & CVAR_CLIENTDLL ))
+		// do filter by specified group
+		if( !( var->flags & group ))
 		{
 			prev = &var->next;
 			continue;

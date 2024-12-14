@@ -5158,6 +5158,7 @@ void SV_UnloadProgs( void )
 	// must unlink all game cvars,
 	// before pointers on them will be lost...
 	Cmd_ExecuteString( "@unlink\n", src_command );
+	Cvar_Unlink( FCVAR_EXTDLL );
 	Cmd_Unlink( CMD_EXTDLL );
 
 	Mod_ResetStudioAPI ();

@@ -4003,7 +4003,7 @@ void CL_UnloadProgs( void )
 	Mem_FreePool( &clgame.mempool );
 	Q_memset( &clgame, 0, sizeof( clgame ));
 
-	Cvar_Unlink();
+	Cvar_Unlink( CMD_CLIENTDLL );
 	Cmd_Unlink( CMD_CLIENTDLL );
 }
 
