@@ -34,7 +34,7 @@ file(GLOB_RECURSE XASH_ENGINE_ANDROID_SOURCES platform/android/*.c) # Android so
 file(GLOB_RECURSE XASH_ENGINE_CLIENT_SOURCES  client/*.c) # Client sources
 
 if(NOT WIN32 AND NOT APPLE)
-	find_package (Libunwind)
+	find_package (Libunwind QUIET)
 endif()
 
 if(LIBUNWIND_FOUND AND UNIX AND NOT APPLE)
