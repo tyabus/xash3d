@@ -16,6 +16,7 @@ find_path(LIBUNWIND_INCLUDE_DIR libunwind.h
   /usr/local/include
 )
 
+message(STATUS "looking for libunwind")
 find_library(LIBUNWIND_LIBRARIES NAMES unwind )
 if(NOT LIBUNWIND_LIBRARIES STREQUAL "LIBUNWIND_LIBRARIES-NOTFOUND")
   if (CMAKE_COMPILER_IS_GNUCC)
@@ -31,7 +32,9 @@ message(STATUS "looking for liblzma")
 find_library(LIBLZMA_LIBRARIES lzma )
 if(NOT LIBLZMA_LIBRARIES STREQUAL "LIBLZMA_LIBRARIES-NOTFOUND")
   message(STATUS "liblzma found")
-  set(LIBUNWIND_LIBRARIES "${LIBUNWIND_LIBRARIES};${LIBLZMA_LIBRARIES}")
+  if(NOT LIBUNWIND_LIBRARIES STREQUAL "LIBUNWIND_LIBRARIES-NOTFOUND")
+    set(LIBUNWIND_LIBRARIES "${LIBUNWIND_LIBRARIES};${LIBLZMA_LIBRARIES}")
+  endif()
 endif()
 
 include(FindPackageHandleStandardArgs)
