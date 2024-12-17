@@ -98,7 +98,7 @@ android:
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=${PATH}:$PWD/apache-ant-1.10.9/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk
   - sleep 3s; echo y | android update sdk -u --filter platform-tools,build-tools-23.0.1,android-23 --force --all > /dev/null
-  - sed -e 's/1\.5/1\.6/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
+  - sed -e 's/1\.5/1\.7/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
   - wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip >/dev/null 2>/dev/null
   - 7z x ./android-ndk-r11c-linux-x86_64.zip > /dev/null
   - mv android-ndk-r11c android-ndk
@@ -123,11 +123,11 @@ android:
   - bash ./gen-version.sh
   - python2 scripts/makepak.py xash-extras assets/extras.pak
   - ndk-build -j$(nproc --all) APP_CFLAGS="-w" NDK_CCACHE=ccache
-  - ln -s android/libs libs
   - ant debug -Dtest.version=1
+  - cp bin/xash3d-debug.apk $CI_PROJECT_DIR/xash3d-debug.apk
   artifacts:
     paths:
-    - android/xash3d-android-project/bin/xash3d-debug.apk
+    - $CI_PROJECT_DIR/xash3d-debug.apk
 
 android_64bit:
 # image: ubuntu:xenial
@@ -142,7 +142,7 @@ android_64bit:
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=${PATH}:$PWD/apache-ant-1.10.9/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk
   - sleep 3s; echo y | android update sdk -u --filter platform-tools,build-tools-23.0.1,android-23 --force --all > /dev/null
-  - sed -e 's/1\.5/1\.6/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
+  - sed -e 's/1\.5/1\.7/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
   - wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip >/dev/null 2>/dev/null
   - 7z x ./android-ndk-r11c-linux-x86_64.zip > /dev/null
   - mv android-ndk-r11c android-ndk
@@ -167,11 +167,11 @@ android_64bit:
   - bash ./gen-version.sh
   - python2 scripts/makepak.py xash-extras assets/extras.pak
   - NDK_TOOLCHAIN_VERSION=clang ndk-build -j$(nproc --all) XASH_64BIT="1" APP_CFLAGS="-w" NDK_CCACHE=ccache
-  - ln -s android/libs libs
   - ant debug -Dtest.version=1
+  - cp bin/xash3d-debug.apk $CI_PROJECT_DIR/xash3d-debug.apk
   artifacts:
     paths:
-    - android/xash3d-android-project/bin/xash3d-debug.apk
+    - $CI_PROJECT_DIR/xash3d-debug.apk
 
 coverity_scan:
 #  image: ubuntu:bionic
