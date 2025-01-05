@@ -538,7 +538,7 @@ static void Mod_FreeModel( model_t *mod )
 void Mod_Init( void )
 {
 	com_studiocache = Mem_AllocPool( "Studio Cache" );
-	mod_studiocache = Cvar_Get( "r_studiocache", "0", CVAR_ARCHIVE, "enables studio cache for speedup tracing hitboxes" );
+	mod_studiocache = Cvar_Get( "r_studiocache", "1", CVAR_ARCHIVE, "enables studio cache for speedup tracing hitboxes" );
 	r_wadtextures = Cvar_Get( "r_wadtextures", "1", CVAR_ARCHIVE, "completely ignore textures in the wad-files if disabled" );
 
 	if( !Host_IsDedicated() )
