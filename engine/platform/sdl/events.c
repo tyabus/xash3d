@@ -476,6 +476,7 @@ static void SDLash_EventFilter( SDL_Event *event )
 			break;
 		case SDL_WINDOWEVENT_FOCUS_LOST:
 			host.state = HOST_NOFOCUS;
+			Key_ClearStates();
 			IN_DeactivateMouse();
 			if( snd_mute_losefocus->integer )
 			{
