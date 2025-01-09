@@ -270,7 +270,7 @@ void Wcon_CreateConsole( void )
 	if( host.type == HOST_NORMAL )
 		Q_strncpy( s_wcd.title, va( "Xash3D-NG %s-%s", XASH_VERSION, XASH_BUILD_COMMIT ), sizeof( s_wcd.title ) );
 	else
-		Q_strncpy( s_wcd.title, "Xash3D-NG Dedicated Server", sizeof( s_wcd.title ) );
+		Q_strncpy( s_wcd.title, va( "Xash3D-NG %s-%s Dedicated Server", XASH_VERSION, XASH_BUILD_COMMIT ), sizeof( s_wcd.title ) );
 
 	Q_strncpy( FontName, "Arial", sizeof( FontName ) );
 	fontsize = 12;
