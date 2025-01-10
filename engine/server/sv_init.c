@@ -513,6 +513,8 @@ qboolean SV_SpawnServer( const char *mapname, const char *startspot )
 	if( !svs.initialized )
 		return false;
 
+	Delta_Init(); // re-initialize delta
+
 	svgame.globals->changelevel = false; // will be restored later if needed
 	svs.timestart = Sys_DoubleTime();
 	svs.spawncount++; // any partially connected client will be restarted
