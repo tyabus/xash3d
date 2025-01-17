@@ -195,6 +195,7 @@ void SV_CleanupClient( sv_client_t *cl, qboolean full )
 {
 	if( cl->frames )
 		Mem_Free( cl->frames );	// fakeclients doesn't have frames
+	cl->frames = NULL;
 
 	SV_ClearCustomizationList( &cl->customization );
 
@@ -203,7 +204,6 @@ void SV_CleanupClient( sv_client_t *cl, qboolean full )
 		Q_memset( cl, '\0', sizeof( sv_client_t ) );
 	} else {
 
-	cl->frames = NULL;
 	cl->fakeclient = false;
 	cl->hltv_proxy = false;
 	cl->state = cs_zombie; // become free in a few seconds
@@ -3773,8 +3773,11 @@ static void SV_ParseClientMove( sv_client_t *cl, sizebuf_t *msg )
 
 	// adjust latency time by 1/2 last client frame since
 	// the message probably arrived 1/2 through client's frame loop
-	frame->latency -= cl->lastcmd.msec * 0.5f / 1000.0f;
-	frame->latency = max( 0.0f, frame->latency );
+	if( cl->frames )
+	{
+		frame->latency -= cl->lastcmd.msec * 0.5f / 1000.0f;
+		frame->latency = max( 0.0f, frame->latency );
+	}
 
 	if( player->v.animtime > svgame.globals->time + host.frametime )
 		player->v.animtime = svgame.globals->time + host.frametime;
