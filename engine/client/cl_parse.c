@@ -1663,9 +1663,8 @@ void CL_ParseServerMessage( sizebuf_t *msg )
 			cl.mtime[0] = BF_ReadFloat( msg );			
 			break;
 		case svc_print:
-			i = BF_ReadByte( msg );
-			MsgDev( D_INFO, "^6%s", BF_ReadString( msg ));
-			if( i == PRINT_CHAT ) S_StartLocalSound( "common/menu2.wav", VOL_NORM, false );
+			i = BF_ReadByte( msg ); // print level
+			MsgDev( D_INFO, "%s", BF_ReadString( msg ));
 			break;
 		case svc_stufftext:
 			CL_ParseStuffText( msg );
