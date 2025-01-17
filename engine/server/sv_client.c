@@ -2450,10 +2450,13 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 	}
 	else cl->modelindex = 0;
 
-	// Force reset player model to "player"
-	if( cl->modelindex == 0 || !model || !model[0] )
-	{
+	// Force player model to "player"
+	if( !model || !model[0] )
 		Info_SetValueForKey( cl->userinfo, "model", "player", sizeof( cl->userinfo ) );
+
+	// Didnt find custom playermodel on the server, use "player"
+	if( cl->modelindex == 0 )
+	{
 		Mod_RegisterModel( "models/player.mdl", SV_ModelIndex( "models/player.mdl" ));
 		SV_SetModel( ent, "models/player.mdl" );
 	}
