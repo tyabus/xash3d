@@ -3690,7 +3690,10 @@ R_RunViewmodelEvents
 */
 void R_RunViewmodelEvents( void )
 {
-	if( cl.refdef.nextView || cl.thirdperson || RI.params & RP_NONVIEWERREF )
+	if( r_drawviewmodel->integer == 0 )
+		return;
+
+	if( cl.refdef.nextView || cl.thirdperson || cl.refdef.health <= 0 || RI.params & RP_NONVIEWERREF )
 		return;
 
 	if( !Mod_Extradata( clgame.viewent.model ))
