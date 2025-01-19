@@ -157,7 +157,7 @@ qboolean CL_FireEvent( event_info_t *ei )
 
 		if( !ev )
 		{
-			idx = bound( 1, ei->index, MAX_EVENTS );
+			idx = bound( 1, ei->index, ( MAX_EVENTS - 1 ));
 			MsgDev( D_ERROR, "CL_FireEvent: %s not precached\n", cl.event_precache[idx] );
 			break;
 		}
