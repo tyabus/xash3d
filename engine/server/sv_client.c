@@ -2203,7 +2203,9 @@ void SV_Begin_f( sv_client_t *cl )
 		return;
 	}
 
+	// now client is spawned
 	SV_PutClientInServer( cl );
+	cl->last_cmdtime = host.realtime;
 
 	// if we are paused, tell the client
 	if( sv.paused )
