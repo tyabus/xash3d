@@ -199,6 +199,12 @@ void SV_CleanupClient( sv_client_t *cl, qboolean full )
 
 	SV_ClearCustomizationList( &cl->customization );
 
+	// clean up all the penalties the old client might had
+	cl->fullupdate_next_calltime = 0;
+	cl->userinfo_next_changetime = 0;
+	cl->userinfo_penalty = 0;
+	cl->userinfo_change_attempts = 0;
+
 	if( full )
 	{
 		Q_memset( cl, '\0', sizeof( sv_client_t ) );
@@ -460,12 +466,6 @@ gotnewcl:
 
 	BF_Init( &newcl->datagram, "Datagram", newcl->datagram_buf, sizeof( newcl->datagram_buf )); // datagram buf
 	newcl->cl_updaterate = 0.05;	// 20 fps as default
-
-	// clean up all the penalties the old client might had
-	newcl->fullupdate_next_calltime = 0;
-	newcl->userinfo_next_changetime = 0;
-	newcl->userinfo_penalty = 0;
-	newcl->userinfo_change_attempts = 0;
 
 	// parse some info from the info strings (this can override cl_updaterate)
 	SV_UserinfoChanged( newcl, userinfo );
