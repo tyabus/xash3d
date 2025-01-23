@@ -1060,6 +1060,7 @@ void UI_UnloadProgs( void )
 	menu.dllFuncs.pfnShutdown();
 
 	Cvar_FullSet( "host_menuloaded", "0", CVAR_INIT );
+	Cmd_Unlink( CMD_GAMEUIDLL );
 
 	Com_FreeLibrary( menu.hInstance );
 	Mem_FreePool( &menu.mempool );

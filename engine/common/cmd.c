@@ -1316,6 +1316,12 @@ void Cmd_Unlink( int group )
 		return;
 	}
 
+	if( Cvar_VariableInteger( "host_menuloaded" ) && ( group & CMD_GAMEUIDLL ))
+	{
+		Msg( "Can't unlink commands while menu is loaded\n" );
+		return;
+	}
+
 	for( prev = &cmd_functions; ( cmd = *prev ); )
 	{
 		if( group && !( cmd->flags & group ))
