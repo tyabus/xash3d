@@ -209,7 +209,7 @@ void Cbuf_AddFilterText( const char *text )
 				}
 				else if( cmd )
 				{
-					if( !( cmd->flags & CMD_LOCALONLY ) )
+					if( !( cmd->flags & CMD_LOCALONLY ) && !( cmd->flags & CMD_GAMEUIDLL ) )
 					{
 						MsgDev( D_NOTE, "AddFilterText(cmd, allowed): %s", line );
 						Cbuf_AddText( line );
