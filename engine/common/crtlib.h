@@ -35,7 +35,8 @@ enum
 
 #define CMD_EXTDLL		BIT( 0 )		// added by game.dll
 #define CMD_CLIENTDLL	BIT( 1 )		// added by client.dll
-#define CMD_LOCALONLY   BIT( 2 )        // should be executed only from local buffers
+#define CMD_GAMEUIDLL	BIT( 2 )		// added by GameUI.dll
+#define CMD_LOCALONLY	BIT( 3 )		// should be executed only from local buffers
 
 typedef void (*setpair_t)( const char *key, const char *value, void *buffer, void *numpairs );
 typedef void (*xcommand_t)( void );
@@ -140,6 +141,7 @@ void Cmd_AddCommand( const char *cmd_name, xcommand_t function, const char *cmd_
 void Cmd_AddRestrictedCommand( const char *cmd_name, xcommand_t function, const char *cmd_desc );
 void Cmd_AddGameCommand( const char *cmd_name, xcommand_t function );
 void Cmd_AddClientCommand( const char *cmd_name, xcommand_t function );
+void Cmd_AddGameUICommand( const char *cmd_name, xcommand_t function );
 void Cmd_RemoveCommand( const char *cmd_name );
 qboolean Cmd_Exists( const char *cmd_name );
 void Cmd_LookupCmds( char *buffer, void *ptr, setpair_t callback );

@@ -839,6 +839,16 @@ void GAME_EXPORT Cmd_AddClientCommand( const char *cmd_name, xcommand_t function
 
 /*
 ============
+Cmd_AddGameUICommand
+============
+*/
+void Cmd_AddGameUICommand( const char *cmd_name, xcommand_t function )
+{
+	Cmd_AddCommandEx( "Cmd_AddGameUICommand", cmd_name, function, "menu command", CMD_GAMEUIDLL );
+}
+
+/*
+============
 Cmd_RemoveCommand
 ============
 */

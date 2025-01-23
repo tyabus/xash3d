@@ -978,7 +978,7 @@ static ui_enginefuncs_t gEngfuncs =
 	Cvar_VariableString,
 	pfnCvarSet,
 	pfnCvarSetValue,
-	pfnAddClientCommand,
+	Cmd_AddGameUICommand,
 	pfnClientCmd,
 	Cmd_RemoveCommand,
 	Cmd_Argc,
