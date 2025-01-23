@@ -334,7 +334,6 @@ int S_ZeroCrossingBefore( wavdata_t *pWaveData, int sample );
 int S_GetOutputData( wavdata_t *pSource, void **pData, int samplePosition, int sampleCount, qboolean use_loop );
 void S_SetSampleStart( channel_t *pChan, wavdata_t *pSource, int newPosition );
 void S_SetSampleEnd( channel_t *pChan, wavdata_t *pSource, int newEndPosition );
-float S_SimpleSpline( float value );
 
 //
 // s_vox.c

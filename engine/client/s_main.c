@@ -191,7 +191,7 @@ void S_UpdateSoundFade( void )
 	}
 
 	// spline it.
-	f = S_SimpleSpline( f );
+	f = -( cos( M_PI * f ) - 1 ) / 2;
 	f = bound( 0.0f, f, 1.0f );
 
 	soundfade.percent = soundfade.initial_percent * f;
