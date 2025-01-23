@@ -40,6 +40,7 @@ GNU General Public License for more details.
 #include "common.h"
 #include "mathlib.h"
 #include "netchan.h"
+#include "eiface.h" // ARRAYSIZE
 
 extern convar_t *host_ver;
 
