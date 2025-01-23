@@ -1110,6 +1110,7 @@ void HTTP_Shutdown( void );
 void HTTP_Run( void );
 void HTTP_ClearCustomServers( void );
 void HTTP_Clear_f( void );
+qboolean HTTP_IsSafeFileToDownload( const char *filename );
 
 void CL_ProcessFile( qboolean successfully_received, const char *filename );
 

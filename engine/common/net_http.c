@@ -101,6 +101,20 @@ struct http_static_s
 	int header_size, query_length, bytes_sent;
 } http;
 
+static const char *bad_file_exts[] =
+{
+	// ban Windows code
+	"exe", "vbs", "com", "bat",
+	"dll", "sys", "ps1",
+
+	// ban common unix code
+	// NOTE: in unix anything can be executed as long it has access flag
+	"so", "sh", "dylib",
+
+	// ban mobile archives
+	"apk", "ipa",
+};
+
 int downloadfileid, downloadcount;
 
 convar_t *http_useragent;
@@ -578,6 +592,12 @@ static void HTTP_Download_f( void )
 		return;
 	}
 
+	if ( !HTTP_IsSafeFileToDownload( Cmd_Argv( 1 ) ) )
+	{
+		MsgDev( D_WARN, "Refusing to download %s\n", Cmd_Argv( 1 ) );
+		return;
+	}
+
 	HTTP_AddDownload( Cmd_Argv( 1 ), -1, false );
 }
 
@@ -844,4 +864,50 @@ void HTTP_Shutdown( void )
 	}
 
 	http.last_server = 0;
+}
+
+/*
+====================
+HTTP_IsSafeFileToDownload
+====================
+*/
+qboolean HTTP_IsSafeFileToDownload( const char *filename )
+{
+	char lwrfilename[4096];
+	const char *first, *last;
+	const char *ext;
+	int i;
+
+	if( !filename[0] )
+		return false;
+
+	Q_strnlwr( filename, lwrfilename, sizeof( lwrfilename ) );
+
+	if( Q_strstr( lwrfilename, "\\" ) || Q_strstr( lwrfilename, ":" ) || Q_strstr( lwrfilename, ".." ) || Q_strstr( lwrfilename, "~" ) )
+		return false;
+
+	if( lwrfilename[0] == '/' )
+		return false;
+
+	first = Q_strchr( lwrfilename, '.' );
+	last  = Q_strrchr( lwrfilename, '.' );
+
+	if( first == NULL || last == NULL )
+		return false;
+
+	if( first != last )
+		return false;
+
+	if( Q_strlen( first ) != 4 )
+		return false;
+
+	ext = FS_FileExtension( lwrfilename );
+
+	for( i = 0; i < ARRAYSIZE( bad_file_exts ); i++ )
+	{
+		if( !Q_stricmp( ext, bad_file_exts[i] ) )
+			return false;
+	}
+
+	return true;
 }
