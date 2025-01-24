@@ -2313,6 +2313,32 @@ static qboolean SV_ShouldUpdateUserinfo( sv_client_t *cl )
 
 /*
 =================
+SV_ValidatePlayerModel
+
+=================
+*/
+static qboolean SV_ValidatePlayerModel( const char *model )
+{
+	if( !model || !model[0] )
+		return false;
+
+	if( Q_strlen( model ) <= 1 )
+		return false;
+
+	if( Q_strstr( model, " " ) )
+		return false;
+
+	if( Q_strstr( model, "." ) )
+		return false;
+
+	if( Q_strstr( model, "/" ) || Q_strstr( model, "\\" ) )
+		return false;
+
+	return true;
+}
+
+/*
+=================
 SV_UserinfoChanged
 
 Pull specific info from a newly changed userinfo string
@@ -2438,8 +2464,12 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 
 	model = Info_ValueForKey( cl->userinfo, "model" );
 
+	// Force player model to "player"
+	if( !SV_ValidatePlayerModel( model ) )
+		Info_SetValueForKey( cl->userinfo, "model", "player", sizeof( cl->userinfo ) );
+
 	// apply custom playermodel
-	if( Q_strlen( model ) && Q_stricmp( model, "player" ))
+	if( Q_stricmp( model, "player" ))
 	{
 		const char *path = va( "models/player/%s/%s.mdl", model, model );
 		if( FS_FileExists( path, false ))
@@ -2451,10 +2481,6 @@ static void SV_UserinfoChanged( sv_client_t *cl, const char *userinfo )
 		else cl->modelindex = 0;
 	}
 	else cl->modelindex = 0;
-
-	// Force player model to "player"
-	if( !model || !model[0] )
-		Info_SetValueForKey( cl->userinfo, "model", "player", sizeof( cl->userinfo ) );
 
 	// Didnt find custom playermodel on the server, use "player"
 	if( cl->modelindex == 0 )
