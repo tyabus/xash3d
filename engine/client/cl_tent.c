@@ -314,11 +314,17 @@ alloc normal\low priority tempentity
 */
 TEMPENTITY *GAME_EXPORT CL_TempEntAlloc( const vec3_t org, model_t *pmodel )
 {
+	static float cl_lasttimewarn = 0.0f;
 	TEMPENTITY	*pTemp;
 
 	if( !cl_free_tents )
 	{
-		MsgDev( D_NOTE, "Overflow %d temporary ents!\n", GI->max_tents );
+		if( cl_lasttimewarn < host.realtime )
+		{
+			// don't spam about overflow
+			MsgDev( D_NOTE, "Overflow %d temporary ents!\n", GI->max_tents );
+			cl_lasttimewarn = host.realtime + 1.0f;
+		}
 		return NULL;
 	}
 
@@ -2653,7 +2659,7 @@ int GAME_EXPORT CL_DecalIndexFromName( const char *name )
 		return 0;
 
 	// look through the loaded sprite name list for SpriteName
-	for( i = 0; i < MAX_DECALS - 1 && host.draw_decals[i+1][0]; i++ )
+	for( i = 0; i < ( MAX_DECALS - 1 ) && host.draw_decals[i+1][0]; i++ )
 	{
 		if( !Q_stricmp( name, (char *)host.draw_decals[i+1] ))
 			return i+1;

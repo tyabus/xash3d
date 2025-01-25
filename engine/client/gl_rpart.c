@@ -238,6 +238,7 @@ can return NULL if particles is out
 */
 particle_t *GAME_EXPORT CL_AllocParticle( void (*callback)( particle_t*, float ))
 {
+	static float cl_lasttimewarn = 0.0f;
 	particle_t	*p;
 
 	if( !cl_draw_particles->integer )
@@ -248,7 +249,12 @@ particle_t *GAME_EXPORT CL_AllocParticle( void (*callback)( particle_t*, float )
 
 	if( !cl_free_particles )
 	{
-		MsgDev( D_NOTE, "Overflow %d particles\n", GI->max_particles );
+		if( cl_lasttimewarn < host.realtime )
+		{
+			// don't spam about overflow
+			MsgDev( D_NOTE, "Overflow %d particles\n", GI->max_particles );
+			cl_lasttimewarn = host.realtime + 1.0f;
+		}
 		return NULL;
 	}
 
