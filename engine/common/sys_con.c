@@ -66,7 +66,7 @@ char *Sys_Input( void )
 		tv.tv_usec = 0;
 	}
 	return NULL;
-#elif XASH_W32CON
+#elif _WIN32
 	return Wcon_Input();
 #else
 	return NULL;
@@ -77,7 +77,7 @@ void Sys_DestroyConsole( void )
 {
 	// last text message into console or log
 	Sys_Print( "Sys_DestroyConsole: Exiting!\n" );
-#ifdef XASH_W32CON
+#ifdef _WIN32
 	Wcon_DestroyConsole();
 #endif
 }
@@ -223,7 +223,7 @@ void Sys_PrintLog( const char *pMsg )
 		printf( "\033[34m%s\033[0m%s\033[0m", logtime, colored );
 	}
 #else
-#if !defined __ANDROID__ || defined XASH_DEDICATED
+#if !defined __ANDROID__ && !defined _WIN32 || defined XASH_DEDICATED
 	printf( "%s %s", logtime, pMsg );
 	fflush( stdout );
 #endif

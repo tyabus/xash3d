@@ -424,7 +424,7 @@ void Host_Clear_f( void )
 #ifndef XASH_DEDICATED
 	Con_Clear();
 #endif
-#ifdef XASH_W32CON
+#ifdef _WIN32
 	Wcon_Clear();
 #endif
 }
@@ -1181,8 +1181,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	// early console init to catch all the messages
 	Con_Init();
 
-#ifdef XASH_W32CON
-	Wcon_Init();
+#ifdef _WIN32
 	Wcon_CreateConsole();
 #endif
 
@@ -1334,7 +1333,7 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	switch( host.type )
 	{
 	case HOST_NORMAL:
-#ifdef XASH_W32CON
+#ifdef _WIN32
 		Wcon_ShowConsole( false ); // hide console
 #endif
 

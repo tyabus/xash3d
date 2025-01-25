@@ -24,7 +24,6 @@ GNU General Public License for more details.
 #include "SDL.h"
 #endif
 
-
 char szGameDir[128]; // safe place to keep gamedir
 int g_iArgc;
 
@@ -41,25 +40,44 @@ void Launcher_ChangeGame( const char *progname )
 	Host_Shutdown( );
 	exit( Host_Main( g_iArgc, g_pszArgv, szGameDir, 1, &Launcher_ChangeGame ) );
 }
-#ifdef XASH_NOCONHOST
+#ifdef _WIN32
 #include <windows.h>
 int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR cmdLine, int nShow)
 {
 	int szArgc;
+	LPWSTR *lpArgv;
 	char **szArgv;
-	LPWSTR* lpArgv = CommandLineToArgvW(GetCommandLineW(), &szArgc);
-	int size, i = 0;
+	int i;
+	char gamedir_buf[65] = "";
+	const char *gamedir = getenv( "XASH3D_GAMEDIR" );
+
+	lpArgv = CommandLineToArgvW(GetCommandLineW(), &szArgc);
 	szArgv = (char**)calloc(szArgc + 1,sizeof(char*));
-	for (; i < szArgc; ++i)
+
+	for(i = 0; i < szArgc; ++i)
 	{
-		size = wcslen(lpArgv[i]) + 1;
+		size_t size = wcslen(lpArgv[i]) + 1;
+
 		szArgv[i] = (char*)malloc(size);
 		wcstombs(szArgv[i], lpArgv[i], size);
 	}
+
 	LocalFree(lpArgv);
-	main( szArgc, szArgv );
+
+	g_iArgc   = szArgc;
+	g_pszArgv = szArgv;
+
+	if( !gamedir )
+		gamedir = "valve";
+	else
+	{
+		strncpy( gamedir_buf, gamedir, sizeof( gamedir_buf ) - 1 );
+		gamedir = gamedir_buf;
+	}
+
+	return Host_Main( g_iArgc, g_pszArgv, gamedir, 0, &Launcher_ChangeGame );
 }
-#endif
+#else
 int main( int argc, char** argv )
 {
 	char gamedir_buf[65] = "";
@@ -86,5 +104,5 @@ int main( int argc, char** argv )
 
 	return Host_Main( g_iArgc, g_pszArgv, gamedir, 0, &Launcher_ChangeGame );
 }
-
-#endif
+#endif // _WIN32
+#endif // SINGLE_BINARY

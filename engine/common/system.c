@@ -616,10 +616,6 @@ void Sys_WaitForQuit( void )
 #ifdef _WIN32
 	MSG	msg;
 
-#ifdef XASH_W32CON
-	Wcon_RegisterHotkeys();
-#endif
-
 	msg.message = 0;
 
 	// wait for the user to quit
@@ -695,7 +691,7 @@ void Sys_Error( const char *format, ... )
 
 	if( host_developer->integer > 0 || host.state != HOST_FRAME )
 	{
-#ifdef XASH_W32CON
+#ifdef _WIN32
 		Wcon_ShowConsole( true );
 		Wcon_DisableInput();	// disable input line for dedicated server
 #endif
@@ -705,7 +701,7 @@ void Sys_Error( const char *format, ... )
 	}
 	else
 	{
-#ifdef XASH_W32CON
+#ifdef _WIN32
 		Wcon_ShowConsole( false );
 #endif
 		MSGBOX( text );
@@ -744,7 +740,7 @@ void Sys_Break( const char *format, ... )
 
 	if( Host_IsDedicated( ) || host_developer->integer > 0 )
 	{
-#ifdef XASH_W32CON
+#ifdef _WIN32
 		Wcon_ShowConsole( true );
 		Wcon_DisableInput();	// disable input line for dedicated server
 #endif
@@ -754,7 +750,7 @@ void Sys_Break( const char *format, ... )
 	}
 	else
 	{
-#ifdef XASH_W32CON
+#ifdef _WIN32
 		Wcon_ShowConsole( false );
 #endif
 		MSGBOX( text );
@@ -786,11 +782,12 @@ print into window console
 */
 void Sys_Print( const char *pMsg )
 {
+#if !defined( XASH_DEDICATED )
 	if( !Host_IsDedicated() )
 		Con_Print( pMsg );
+#endif
 
-#ifdef XASH_W32CON
-
+#ifdef _WIN32
 	{
 		const char	*msg;
 		char		buffer[32768];
@@ -831,10 +828,6 @@ void Sys_Print( const char *pMsg )
 			{
 				i++; // skip console pseudo graph
 			}
-			else if( IsColorString( &msg[i] ))
-			{
-				i++; // skip color prefix
-			}
 			else
 			{
 				*b = *c = msg[i];
@@ -845,12 +838,11 @@ void Sys_Print( const char *pMsg )
 
 		*b = *c = 0; // cutoff garbage
 
-		Sys_PrintLog( logbuf );
-		Wcon_Print( buffer );
+		Wcon_WinPrint( buffer );
 	}
-#else
-	Sys_PrintLog( pMsg );
 #endif
+
+	Sys_PrintLog( pMsg );
 	Rcon_Print( pMsg );
 }
 
