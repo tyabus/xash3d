@@ -13,187 +13,426 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 
-#ifdef XASH_W32CON
-
 #include "common.h"
 
-#define SYSCONSOLE		"XashConsole"
-#define COMMAND_HISTORY	64	// system console keep more commands than game console
+/*
+===============================================================================
+
+WIN32 CONSOLE
+
+===============================================================================
+*/
 
 // console defines
-#define SUBMIT_ID		1	// "submit" button
-#define QUIT_ON_ESCAPE_ID	2	// escape event
-#define EDIT_ID		110
-#define INPUT_ID		109
-#define IDI_ICON1		101
+#define COMMAND_HISTORY	64	// system console keep more commands than game console
 
 typedef struct
 {
-
-	char		title[64];
-
+	string		title;
+	string		previousTitle;
+	UINT		previousCodePage;
+	UINT		previousOutputCodePage;
 	HWND		hWnd;
-	HWND		hwndBuffer;
-	HWND		hwndButtonSubmit;
-	HBRUSH		hbrEditBackground;
-	HFONT		hfBufferFont;
-	HWND		hwndInputLine;
-	WNDPROC		SysInputLineWndProc;
-
+	HANDLE		hInput;
+	HANDLE		hOutput;
+	int			inputLine;
+	int			browseLine;
+	int			cursorPosition;
+	int			totalLines;
+	int			savedConsoleTextLen;
+	int			consoleTextLen;
 	string		consoleText;
-	string		returnedText;
-	string		historyLines[COMMAND_HISTORY];
-	int		nextHistoryLine;
-	int		historyLine;
-	int		status;
-	int		windowWidth, windowHeight;
-	size_t		outLen;
+	string		savedConsoleText;
+	string		lineBuffer[COMMAND_HISTORY];
+	qboolean	inputEnabled;
+	qboolean	consoleVisible;
+	qboolean	attached;
+
 	// log stuff
-
-
+	qboolean	log_active;
+	char		log_path[MAX_SYSPATH];
 } WinConData;
 
 static WinConData	s_wcd;
+static WORD g_color_table[8] =
+{
+FOREGROUND_INTENSITY,									// black
+FOREGROUND_RED,											// red
+FOREGROUND_GREEN,										// green
+FOREGROUND_RED | FOREGROUND_GREEN,						// yellow
+FOREGROUND_BLUE | FOREGROUND_INTENSITY,					// blue
+FOREGROUND_GREEN | FOREGROUND_BLUE,						// cyan
+FOREGROUND_RED | FOREGROUND_BLUE,						// magenta
+FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,	// default color (white)
+};
+
+static BOOL WINAPI Wcon_HandleConsole(DWORD CtrlType)
+{
+	return TRUE;
+}
+
+static void Wcon_PrintInternal( const char *msg, int length )
+{
+	char *pTemp;
+	DWORD cbWritten;
+	const char *pMsgString;
+	static char tmpBuf[2048];
+	static char szOutput[2048];
+
+	Q_strncpy( szOutput, msg, length ? (length + 1) : ( sizeof( szOutput ) - 1 ));
+	if( length )
+		szOutput[length + 1] = '\0';
+	else
+		szOutput[sizeof( szOutput ) - 1] = '\0';
+
+	pTemp = tmpBuf;
+	pMsgString = szOutput;
+	while( pMsgString && *pMsgString )
+	{
+		if( IsColorString( pMsgString ))
+		{
+			if (( pTemp - tmpBuf ) > 0 )
+			{
+				// dump accumulated text before change color
+				*pTemp = 0; // terminate string
+				WriteFile( s_wcd.hOutput, tmpBuf, Q_strlen(tmpBuf), &cbWritten, 0 );
+				pTemp = tmpBuf;
+			}
+
+			// set new color
+			SetConsoleTextAttribute( s_wcd.hOutput, g_color_table[ColorIndex(*(pMsgString + 1))] );
+			pMsgString += 2; // skip color info
+		}
+		else if(( pTemp - tmpBuf ) < sizeof( tmpBuf ) - 1 )
+		{
+			*pTemp++ = *pMsgString++;
+		}
+		else
+		{
+			// temp buffer is full, dump it now
+			*pTemp = 0; // terminate string
+			WriteFile( s_wcd.hOutput, tmpBuf, Q_strlen(tmpBuf), &cbWritten, 0 );
+			pTemp = tmpBuf;
+		}
+	}
+
+	// check for last portion
+	if (( pTemp - tmpBuf ) > 0 )
+	{
+		// dump accumulated text
+		*pTemp = 0; // terminate string
+		WriteFile( s_wcd.hOutput, tmpBuf, Q_strlen(tmpBuf), &cbWritten, 0 );
+		pTemp = tmpBuf;
+	}
+
+	// restore white color
+	SetConsoleTextAttribute( s_wcd.hOutput, g_color_table[7] );
+}
+
+void Wcon_ShowConsole( qboolean show )
+{
+	if( !s_wcd.hWnd || show == s_wcd.consoleVisible || s_wcd.attached )
+		return;
+
+	s_wcd.consoleVisible = show;
+	if( show )
+		ShowWindow( s_wcd.hWnd, SW_SHOW );
+	else
+		ShowWindow( s_wcd.hWnd, SW_HIDE );
+}
 
 void Wcon_DisableInput( void )
 {
-	if( host.type != HOST_DEDICATED ) return;
-	SendMessage( s_wcd.hwndButtonSubmit, WM_ENABLE, 0, 0 );
-	SendMessage( s_wcd.hwndInputLine, WM_ENABLE, 0, 0 );
+	if( host.type != HOST_DEDICATED )
+		return;
+
+	s_wcd.inputEnabled = false;
 }
 
-void Wcon_SetInputText( const char *inputText )
+static void Wcon_SetInputText( const char *inputText )
 {
-	SetWindowText( s_wcd.hwndInputLine, inputText );
-	SendMessage( s_wcd.hwndInputLine, EM_SETSEL, Q_strlen( inputText ), -1 );
+	if( host.type != HOST_DEDICATED )
+		return;
+
+	while( s_wcd.consoleTextLen-- )
+	{
+		Wcon_PrintInternal( "\b \b", 0 );
+	}
+	Wcon_PrintInternal( inputText, 0 );
+	Q_strncpy( s_wcd.consoleText, inputText, sizeof(s_wcd.consoleText) - 1 );
+	s_wcd.consoleTextLen = Q_strlen( inputText );
+	s_wcd.cursorPosition = s_wcd.consoleTextLen;
+	s_wcd.browseLine = s_wcd.inputLine;
 }
 
 void Wcon_Clear( void )
 {
-	if( host.type != HOST_DEDICATED ) return;
-	SendMessage( s_wcd.hwndBuffer, EM_SETSEL, 0, -1 );
-	SendMessage( s_wcd.hwndBuffer, EM_REPLACESEL, FALSE, (LPARAM)"" );
-	UpdateWindow( s_wcd.hwndBuffer );
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	SMALL_RECT scrollRect;
+	COORD scrollTarget;
+	CHAR_INFO fill;
+
+	if( host.type != HOST_DEDICATED )
+		return;
+
+	if( !GetConsoleScreenBufferInfo( s_wcd.hOutput, &csbi ))
+	{
+		return;
+	}
+
+	scrollRect.Left = 0;
+	scrollRect.Top = 0;
+	scrollRect.Right = csbi.dwSize.X;
+	scrollRect.Bottom = csbi.dwSize.Y;
+	scrollTarget.X = 0;
+	scrollTarget.Y = (SHORT)(0 - csbi.dwSize.Y);
+	fill.Char.UnicodeChar = TEXT(' ');
+	fill.Attributes = csbi.wAttributes;
+	ScrollConsoleScreenBuffer( s_wcd.hOutput, &scrollRect, NULL, scrollTarget, &fill );
+
+	csbi.dwCursorPosition.X = 0;
+	csbi.dwCursorPosition.Y = 0;
+	SetConsoleCursorPosition( s_wcd.hOutput, csbi.dwCursorPosition );
+
+	s_wcd.consoleText[0] = '\0';
+	s_wcd.consoleTextLen = 0;
+	s_wcd.cursorPosition = 0;
+	s_wcd.inputLine = 0;
+	s_wcd.browseLine = 0;
+	s_wcd.totalLines = 0;
+	Wcon_PrintInternal( "\n", 0 );
 }
 
-static int Wcon_KeyEvent( int key, qboolean down )
+static void Wcon_EventUpArrow()
 {
-	char	inputBuffer[1024];
+	int nLastCommandInHistory = s_wcd.inputLine + 1;
+	if( nLastCommandInHistory > s_wcd.totalLines )
+		nLastCommandInHistory = 0;
 
-	if( !down )
-		return 0;
+	if( s_wcd.browseLine == nLastCommandInHistory )
+		return;
+
+	if( s_wcd.browseLine == s_wcd.inputLine )
+	{
+		if( s_wcd.consoleTextLen > 0 )
+		{
+			Q_strncpy( s_wcd.savedConsoleText, s_wcd.consoleText, s_wcd.consoleTextLen );
+		}
+		s_wcd.savedConsoleTextLen = s_wcd.consoleTextLen;
+	}
+
+	s_wcd.browseLine--;
+	if( s_wcd.browseLine < 0 )
+	{
+		s_wcd.browseLine = s_wcd.totalLines - 1;
+	}
+
+	while( s_wcd.consoleTextLen-- )
+	{
+		Wcon_PrintInternal( "\b \b", 0 );
+	}
+
+	Wcon_PrintInternal( s_wcd.lineBuffer[s_wcd.browseLine], 0 );
+	Q_strncpy( s_wcd.consoleText, s_wcd.lineBuffer[s_wcd.browseLine], sizeof( s_wcd.consoleText ));
+	s_wcd.consoleTextLen = Q_strlen( s_wcd.lineBuffer[s_wcd.browseLine] );
+	s_wcd.cursorPosition = s_wcd.consoleTextLen;
+}
+
+static void Wcon_EventDownArrow()
+{
+	if( s_wcd.browseLine == s_wcd.inputLine )
+		return;
+
+	if( ++s_wcd.browseLine > s_wcd.totalLines )
+		s_wcd.browseLine = 0;
+
+	while( s_wcd.consoleTextLen-- )
+	{
+		Wcon_PrintInternal( "\b \b", 0 );
+	}
+
+	if( s_wcd.browseLine == s_wcd.inputLine )
+	{
+		if( s_wcd.savedConsoleTextLen > 0 )
+		{
+			Q_strncpy( s_wcd.consoleText, s_wcd.savedConsoleText, s_wcd.savedConsoleTextLen );
+			Wcon_PrintInternal( s_wcd.consoleText, s_wcd.savedConsoleTextLen );
+		}
+		s_wcd.consoleTextLen = s_wcd.savedConsoleTextLen;
+	}
+	else
+	{
+		Wcon_PrintInternal( s_wcd.lineBuffer[s_wcd.browseLine], 0 );
+		Q_strncpy( s_wcd.consoleText, s_wcd.lineBuffer[s_wcd.browseLine], sizeof( s_wcd.consoleText ));
+		s_wcd.consoleTextLen = Q_strlen( s_wcd.lineBuffer[s_wcd.browseLine] );
+	}
+	s_wcd.cursorPosition = s_wcd.consoleTextLen;
+}
+
+static void Wcon_EventLeftArrow()
+{
+	if( s_wcd.cursorPosition == 0 )
+		return;
+
+	Wcon_PrintInternal( "\b", 0 );
+	s_wcd.cursorPosition--;
+}
+
+static void Wcon_EventRightArrow()
+{
+	if( s_wcd.cursorPosition == s_wcd.consoleTextLen )
+		return;
+
+	Wcon_PrintInternal( s_wcd.consoleText + s_wcd.cursorPosition, 1 );
+	s_wcd.cursorPosition++;
+}
+
+static int Wcon_EventNewline()
+{
+	int nLen;
+
+	nLen = 0;
+	Wcon_PrintInternal( "\n", 0 );
+	if( s_wcd.consoleTextLen )
+	{
+		nLen = s_wcd.consoleTextLen;
+
+		s_wcd.consoleText[s_wcd.consoleTextLen] = '\0';
+		s_wcd.consoleTextLen = 0;
+		s_wcd.cursorPosition = 0;
+
+		if (( s_wcd.inputLine == 0 ) || ( Q_strcmp( s_wcd.lineBuffer[s_wcd.inputLine - 1], s_wcd.consoleText )))
+		{
+			Q_strncpy( s_wcd.lineBuffer[s_wcd.inputLine], s_wcd.consoleText, sizeof( s_wcd.consoleText ));
+			s_wcd.inputLine++;
+
+			if( s_wcd.inputLine > s_wcd.totalLines )
+				s_wcd.totalLines = s_wcd.inputLine;
+
+			if( s_wcd.inputLine >= COMMAND_HISTORY )
+				s_wcd.inputLine = 0;
+		}
+		s_wcd.browseLine = s_wcd.inputLine;
+	}
+	return nLen;
+}
+
+static void Wcon_EventBackspace()
+{
+	int nCount;
+
+	if( s_wcd.cursorPosition < 1 )
+	{
+		return;
+	}
+
+	s_wcd.consoleTextLen--;
+	s_wcd.cursorPosition--;
+
+	Wcon_PrintInternal( "\b", 0 );
+
+	for( nCount = s_wcd.cursorPosition; nCount < s_wcd.consoleTextLen; ++nCount )
+	{
+		s_wcd.consoleText[nCount] = s_wcd.consoleText[nCount + 1];
+		Wcon_PrintInternal( s_wcd.consoleText + nCount, 1 );
+	}
+
+	Wcon_PrintInternal( " ", 0 );
+
+	nCount = s_wcd.consoleTextLen;
+	while( nCount >= s_wcd.cursorPosition )
+	{
+		Wcon_PrintInternal( "\b", 0 );
+		nCount--;
+	}
+
+	s_wcd.browseLine = s_wcd.inputLine;
+}
+
+static void Wcon_EventTab()
+{
+	s_wcd.consoleText[s_wcd.consoleTextLen] = '\0';
+	Cmd_AutoComplete( s_wcd.consoleText );
+	Wcon_SetInputText( s_wcd.consoleText );
+}
+
+static void Wcon_EventCharacter(char c)
+{
+	int nCount;
+
+	if( s_wcd.consoleTextLen >= ( sizeof( s_wcd.consoleText ) - 2 ))
+	{
+		return;
+	}
+
+	nCount = s_wcd.consoleTextLen;
+	while( nCount > s_wcd.cursorPosition )
+	{
+		s_wcd.consoleText[nCount] = s_wcd.consoleText[nCount - 1];
+		nCount--;
+	}
+
+	s_wcd.consoleText[s_wcd.cursorPosition] = c;
+	Wcon_PrintInternal( s_wcd.consoleText + s_wcd.cursorPosition, s_wcd.consoleTextLen - s_wcd.cursorPosition + 1 );
+	s_wcd.consoleTextLen++;
+	s_wcd.cursorPosition++;
+
+	nCount = s_wcd.consoleTextLen;
+	while( nCount > s_wcd.cursorPosition )
+	{
+		Wcon_PrintInternal( "\b", 0 );
+		nCount--;
+	}
+
+	s_wcd.browseLine = s_wcd.inputLine;
+}
+
+static char *Wcon_KeyEvent( int key, WCHAR character )
+{
+	int nLen;
+	char inputBuffer[1024];
 
 	switch( key )
 	{
-	case VK_TAB:
-		GetWindowText( s_wcd.hwndInputLine, inputBuffer, sizeof( inputBuffer ));
-		Cmd_AutoComplete( inputBuffer );
-		Wcon_SetInputText( inputBuffer );
-		return 1;
-	case VK_DOWN:
-		if( s_wcd.historyLine == s_wcd.nextHistoryLine )
-			return 0;
-		s_wcd.historyLine++;
-		Wcon_SetInputText( s_wcd.historyLines[s_wcd.historyLine % COMMAND_HISTORY] );
-		return 1;
 	case VK_UP:
-		if( s_wcd.nextHistoryLine - s_wcd.historyLine < COMMAND_HISTORY && s_wcd.historyLine > 0 )
-			s_wcd.historyLine--;
-		Wcon_SetInputText( s_wcd.historyLines[s_wcd.historyLine % COMMAND_HISTORY] );
-		return 1;
+		Wcon_EventUpArrow();
+		return NULL;
+	case VK_DOWN:
+		Wcon_EventDownArrow();
+		return NULL;
+	case VK_LEFT:
+		Wcon_EventLeftArrow();
+		return NULL;
+	case VK_RIGHT:
+		Wcon_EventRightArrow();
+		return NULL;
 	}
-	return 0;
-}
 
-static long _stdcall Wcon_WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch( uMsg )
+	switch( character )
 	{
-	case WM_ACTIVATE:
-		if( LOWORD( wParam ) != WA_INACTIVE )
-			SetFocus( s_wcd.hwndInputLine );
-		break;
-	case WM_CLOSE:
-		if( host.state == HOST_ERR_FATAL )
-		{
-			// send windows message
-			PostQuitMessage( 0 );
-		}
-		else Sys_Quit(); // otherwise
-		return 0;
-	case WM_CTLCOLORSTATIC:
-		if((HWND)lParam == s_wcd.hwndBuffer )
-		{
-			SetBkColor((HDC)wParam, RGB( 0x90, 0x90, 0x90 ));
-			SetTextColor((HDC)wParam, RGB( 0xff, 0xff, 0xff ));
-			return (long)s_wcd.hbrEditBackground;
-		}
-		break;
-	case WM_COMMAND:
-		if( wParam == SUBMIT_ID )
-		{
-			SendMessage( s_wcd.hwndInputLine, WM_CHAR, 13, 0L );
-			SetFocus( s_wcd.hwndInputLine );
-		}
-		break;
-	case WM_HOTKEY:
-		switch( LOWORD( wParam ))
-		{
-		case QUIT_ON_ESCAPE_ID:
-			PostQuitMessage( 0 );
+		case '\r':	// Enter
+			nLen = Wcon_EventNewline();
+			if (nLen)
+			{
+				return s_wcd.consoleText;
+			}
 			break;
-		}
-		break;
-	case WM_CREATE:
-		s_wcd.hbrEditBackground = CreateSolidBrush( RGB( 0x90, 0x90, 0x90 ));
-		break;
+		case '\b':	// Backspace
+			Wcon_EventBackspace();
+			break;
+		case '\t':	// TAB
+			Wcon_EventTab();
+			break;
+		default:
+			// TODO implement converting wide chars to UTF-8 and properly handling it
+			if (( character >= ' ' ) && ( character <= '~' ))
+			{
+				Wcon_EventCharacter(character);
+			}
+			break;
 	}
-	return DefWindowProc( hWnd, uMsg, wParam, lParam );
-}
 
-long _stdcall Wcon_InputLineProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
-{
-	char	inputBuffer[1024];
-
-	switch( uMsg )
-	{
-	case WM_KILLFOCUS:
-		if(( HWND )wParam == s_wcd.hWnd )
-		{
-			SetFocus( hWnd );
-			return 0;
-		}
-		break;
-	case WM_SYSKEYDOWN:
-	case WM_KEYDOWN:
-		if( Wcon_KeyEvent( LOWORD( wParam ), true ))
-			return 0;
-		break;
-	case WM_SYSKEYUP:
-	case WM_KEYUP:
-		if( Wcon_KeyEvent( LOWORD( wParam ), false ))
-			return 0;
-		break;
-	case WM_CHAR:
-		if( Wcon_KeyEvent( wParam, true ))
-			return 0;
-		if( wParam == 13 && host.state != HOST_ERR_FATAL )
-		{
-			GetWindowText( s_wcd.hwndInputLine, inputBuffer, sizeof( inputBuffer ));
-			Q_strncat( s_wcd.consoleText, inputBuffer, sizeof( s_wcd.consoleText ) - Q_strlen( s_wcd.consoleText ) - 5 );
-			Q_strcat( s_wcd.consoleText, "\n" );
-			SetWindowText( s_wcd.hwndInputLine, "" );
-			Msg( ">%s\n", inputBuffer );
-
-			// copy line to history buffer
-			Q_strncpy( s_wcd.historyLines[s_wcd.nextHistoryLine % COMMAND_HISTORY], inputBuffer, MAX_STRING );
-			s_wcd.nextHistoryLine++;
-			s_wcd.historyLine = s_wcd.nextHistoryLine;
-			return 0;
-		}
-		break;
-	}
-	return CallWindowProc( s_wcd.SysInputLineWndProc, hWnd, uMsg, wParam, lParam );
+	return NULL;
 }
 
 /*
@@ -203,6 +442,7 @@ WIN32 IO
 
 ===============================================================================
 */
+
 /*
 ================
 Con_WinPrint
@@ -210,25 +450,25 @@ Con_WinPrint
 print into window console
 ================
 */
-void Wcon_Print( const char *pMsg )
+void Wcon_WinPrint( const char *pMsg )
 {
-	size_t	len = Q_strlen( pMsg );
-
-	// replace selection instead of appending if we're overflowing
-	s_wcd.outLen += len;
-	if( s_wcd.outLen >= 0x7fff )
+	int nLen;
+	if( s_wcd.consoleTextLen )
 	{
-		SendMessage( s_wcd.hwndBuffer, EM_SETSEL, 0, -1 );
-		s_wcd.outLen = len;
+		nLen = s_wcd.consoleTextLen;
+		while (nLen--)
+		{
+			Wcon_PrintInternal( "\b \b", 0 );
+		}
 	}
 
-	SendMessage( s_wcd.hwndBuffer, EM_REPLACESEL, 0, (LPARAM)pMsg );
+	Wcon_PrintInternal( pMsg, 0 );
 
-	// put this text into the windows console
-	SendMessage( s_wcd.hwndBuffer, EM_LINESCROLL, 0, 0xffff );
-	SendMessage( s_wcd.hwndBuffer, EM_SCROLLCARET, 0, 0 );
+	if( s_wcd.consoleTextLen )
+	{
+		Wcon_PrintInternal( s_wcd.consoleText, s_wcd.consoleTextLen );
+	}
 }
-
 
 /*
 ================
@@ -239,119 +479,68 @@ create win32 console
 */
 void Wcon_CreateConsole( void )
 {
-	HDC	hDC;
-	WNDCLASS	wc;
-	RECT	rect;
-	int	nHeight;
-	int	swidth, sheight, fontsize;
-	int	DEDSTYLE = WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX;
-	int	CONSTYLE = WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER | WS_EX_CLIENTEDGE |ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY;
-	string	FontName;
-
-	if( Sys_CheckParm( "-nowcon" ) )
-		return;
-
-	wc.style         = 0;
-	wc.lpfnWndProc   = (WNDPROC)Wcon_WndProc;
-	wc.cbClsExtra    = 0;
-	wc.cbWndExtra    = 0;
-	wc.hInstance     = host.hInst;
-	wc.hIcon         = LoadIcon( host.hInst, MAKEINTRESOURCE( IDI_ICON1 ));
-	wc.hCursor       = LoadCursor( NULL, IDC_ARROW );
-	wc.hbrBackground = (void *)COLOR_3DSHADOW;
-	wc.lpszClassName = SYSCONSOLE;
-	wc.lpszMenuName  = 0;
-
-	rect.left = 0;
-	rect.right = 640;
-	rect.top = 0;
-	rect.bottom = 392;
+	if( Sys_CheckParm( "-log" ))
+		s_wcd.log_active = true;
 
 	if( host.type == HOST_NORMAL )
-		Q_strncpy( s_wcd.title, va( "Xash3D-NG %s-%s", XASH_VERSION, XASH_BUILD_COMMIT ), sizeof( s_wcd.title ) );
+	{
+		Q_strncpy( s_wcd.title, "Xash3D-NG " XASH_VERSION, sizeof( s_wcd.title ));
+		Q_strncpy( s_wcd.log_path, "engine.log", sizeof( s_wcd.log_path ));
+	}
+	else // dedicated console
+	{
+		Q_strncpy( s_wcd.title, "XashDS-NG " XASH_VERSION, sizeof( s_wcd.title ));
+		Q_strncpy( s_wcd.log_path, "dedicated.log", sizeof( s_wcd.log_path ));
+		s_wcd.log_active = true; // always make log
+	}
+
+	s_wcd.attached = ( AttachConsole( ATTACH_PARENT_PROCESS ) != 0 );
+	if( s_wcd.attached )
+	{
+		GetConsoleTitle( &s_wcd.previousTitle, sizeof( s_wcd.previousTitle ));
+		s_wcd.previousCodePage = GetConsoleCP();
+		s_wcd.previousOutputCodePage = GetConsoleOutputCP();
+	}
 	else
-		Q_strncpy( s_wcd.title, va( "Xash3D-NG %s-%s Dedicated Server", XASH_VERSION, XASH_BUILD_COMMIT ), sizeof( s_wcd.title ) );
-
-	Q_strncpy( FontName, "Arial", sizeof( FontName ) );
-	fontsize = 12;
-
-	if( !RegisterClass( &wc ))
 	{
-		// print into log
-		MsgDev( D_ERROR, "Can't register window class '%s'\n", SYSCONSOLE );
+		AllocConsole();
+	}
+
+	SetConsoleTitle( s_wcd.title );
+	SetConsoleCP( CP_UTF8 );
+	SetConsoleOutputCP( CP_UTF8 );
+
+	s_wcd.hWnd = GetConsoleWindow();
+	s_wcd.hInput = GetStdHandle( STD_INPUT_HANDLE );
+	s_wcd.hOutput = GetStdHandle( STD_OUTPUT_HANDLE );
+	s_wcd.inputEnabled = true;
+	
+	if( !SetConsoleCtrlHandler( &Wcon_HandleConsole, TRUE ))
+	{
+		MsgDev( D_WARN, "Couldn't attach console handler function\n" );
 		return;
 	}
 
-	AdjustWindowRect( &rect, DEDSTYLE, FALSE );
+	if( !s_wcd.attached )
+	{ 
+		SetWindowPos( s_wcd.hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOREPOSITION | SWP_SHOWWINDOW );
 
-	hDC = GetDC( GetDesktopWindow() );
-	swidth = GetDeviceCaps( hDC, HORZRES );
-	sheight = GetDeviceCaps( hDC, VERTRES );
-	ReleaseDC( GetDesktopWindow(), hDC );
-
-	s_wcd.windowWidth = rect.right - rect.left;
-	s_wcd.windowHeight = rect.bottom - rect.top;
-
-	s_wcd.hWnd = CreateWindowEx( WS_EX_DLGMODALFRAME, SYSCONSOLE, s_wcd.title, DEDSTYLE, ( swidth - 600 ) / 2, ( sheight - 450 ) / 2 , rect.right - rect.left + 1, rect.bottom - rect.top + 1, NULL, NULL, host.hInst, NULL );
-	if( s_wcd.hWnd == NULL )
-	{
-		MsgDev( D_ERROR, "Can't create window '%s'\n", s_wcd.title );
-		return;
-	}
-
-	// create fonts
-	hDC = GetDC( s_wcd.hWnd );
-	nHeight = -MulDiv( fontsize, GetDeviceCaps( hDC, LOGPIXELSY ), 72 );
-	s_wcd.hfBufferFont = CreateFont( nHeight, 0, 0, 0, FW_LIGHT, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_MODERN|FIXED_PITCH, FontName );
-	ReleaseDC( s_wcd.hWnd, hDC );
-
-	if( Host_IsDedicated() )
-	{
-		// create the input line
-		s_wcd.hwndInputLine = CreateWindowEx( WS_EX_CLIENTEDGE, "edit", NULL, WS_CHILD|WS_VISIBLE|WS_BORDER|ES_LEFT|ES_AUTOHSCROLL, 0, 366, 550, 25, s_wcd.hWnd, (HMENU)INPUT_ID, host.hInst, NULL );
-
-		s_wcd.hwndButtonSubmit = CreateWindow( "button", NULL, BS_PUSHBUTTON|WS_VISIBLE|WS_CHILD|BS_DEFPUSHBUTTON, 552, 367, 87, 25, s_wcd.hWnd, (HMENU)SUBMIT_ID, host.hInst, NULL );
-		SendMessage( s_wcd.hwndButtonSubmit, WM_SETTEXT, 0, ( LPARAM ) "submit" );
-	}
-
-	// create the scrollbuffer
-	GetClientRect( s_wcd.hWnd, &rect );
-
-	s_wcd.hwndBuffer = CreateWindowEx( WS_EX_DLGMODALFRAME|WS_EX_CLIENTEDGE, "edit", NULL, CONSTYLE, 0, 0, rect.right - rect.left, min(365, rect.bottom), s_wcd.hWnd, (HMENU)EDIT_ID, host.hInst, NULL );
-	SendMessage( s_wcd.hwndBuffer, WM_SETFONT, (WPARAM)s_wcd.hfBufferFont, 0 );
-
-	if( Host_IsDedicated() )
-	{
-		s_wcd.SysInputLineWndProc = (WNDPROC)SetWindowLong( s_wcd.hwndInputLine, GWL_WNDPROC, (size_t)Wcon_InputLineProc );
-		SendMessage( s_wcd.hwndInputLine, WM_SETFONT, ( WPARAM )s_wcd.hfBufferFont, 0 );
-	}
-
-	// show console if needed
-	if( host.con_showalways )
-	{
-		// make console visible
-		ShowWindow( s_wcd.hWnd, SW_SHOWDEFAULT );
-		UpdateWindow( s_wcd.hWnd );
-		SetForegroundWindow( s_wcd.hWnd );
-
-		if( host.type != HOST_DEDICATED )
+		// show console if needed
+		if( host.con_showalways )
+		{
+			// make console visible
+			ShowWindow( s_wcd.hWnd, SW_SHOWDEFAULT );
+			UpdateWindow( s_wcd.hWnd );
+			SetForegroundWindow( s_wcd.hWnd );
 			SetFocus( s_wcd.hWnd );
-		else SetFocus( s_wcd.hwndInputLine );
-		s_wcd.status = true;
+			s_wcd.consoleVisible = true;
+		}
+		else
+		{
+			s_wcd.consoleVisible = false;
+			ShowWindow( s_wcd.hWnd, SW_HIDE );
+		}
 	}
-	else s_wcd.status = false;
-}
-
-/*
-================
-Wcon_Init
-
-register console commands (dedicated only)
-================
-*/
-void Wcon_Init( void )
-{
-
 }
 
 /*
@@ -363,33 +552,28 @@ destroy win32 console
 */
 void Wcon_DestroyConsole( void )
 {
-
-	if( s_wcd.hWnd )
-	{
-		DeleteObject( s_wcd.hbrEditBackground );
-					DeleteObject( s_wcd.hfBufferFont );
-
-		if( Host_IsDedicated() )
+	if( !s_wcd.attached )
+	{ 
+		if( s_wcd.hWnd )
 		{
-			ShowWindow( s_wcd.hwndButtonSubmit, SW_HIDE );
-			DestroyWindow( s_wcd.hwndButtonSubmit );
-			s_wcd.hwndButtonSubmit = 0;
-
-			ShowWindow( s_wcd.hwndInputLine, SW_HIDE );
-			DestroyWindow( s_wcd.hwndInputLine );
-			s_wcd.hwndInputLine = 0;
+			ShowWindow( s_wcd.hWnd, SW_HIDE );
+			s_wcd.hWnd = 0;
 		}
-
-		ShowWindow( s_wcd.hwndBuffer, SW_HIDE );
-		DestroyWindow( s_wcd.hwndBuffer );
-		s_wcd.hwndBuffer = 0;
-
-		ShowWindow( s_wcd.hWnd, SW_HIDE );
-		DestroyWindow( s_wcd.hWnd );
-		s_wcd.hWnd = 0;
+	}
+	else
+	{
+		// reverts title & code page for console window that was before starting Xash3D
+		SetConsoleCP( s_wcd.previousCodePage );
+		SetConsoleOutputCP( s_wcd.previousOutputCodePage );
+		SetConsoleTitle( &s_wcd.previousTitle );
+		Con_Printf( "Press Enter to continue...\n" );
 	}
 
-	UnregisterClass( SYSCONSOLE, host.hInst );
+	FreeConsole();
+
+	// place it here in case Sys_Crash working properly
+	if( host.hMutex )
+		CloseHandle( host.hMutex );
 }
 
 /*
@@ -401,36 +585,40 @@ returned input text
 */
 char *Wcon_Input( void )
 {
-	if( s_wcd.consoleText[0] == 0 )
+	DWORD i;
+	DWORD eventsCount;
+	static INPUT_RECORD events[1024];
+	
+	if( !s_wcd.inputEnabled )
 		return NULL;
 
-	Q_strncpy( s_wcd.returnedText, s_wcd.consoleText, sizeof( s_wcd.returnedText ));
-	s_wcd.consoleText[0] = 0;
+	while( true )
+	{
+		if( !GetNumberOfConsoleInputEvents( s_wcd.hInput, &eventsCount ))
+		{
+			return NULL;
+		}
 
-	return s_wcd.returnedText;
+		if( eventsCount <= 0 )
+			break;
 
+		if( !ReadConsoleInputW( s_wcd.hInput, events, ARRAYSIZE( events ), &eventsCount ))
+		{
+			return NULL;
+		}
+
+		if( eventsCount == 0 )
+			return NULL;
+
+		for( i = 0; i < eventsCount; i++ )
+		{
+			INPUT_RECORD *pRec = &events[i];
+			if( pRec->EventType != KEY_EVENT )
+				continue;
+
+			if( pRec->Event.KeyEvent.bKeyDown )
+				return Wcon_KeyEvent( pRec->Event.KeyEvent.wVirtualKeyCode, pRec->Event.KeyEvent.uChar.UnicodeChar );
+		}
+	}
 	return NULL;
 }
-
-void Wcon_ShowConsole( qboolean show )
-{
-	if( !s_wcd.hWnd || show == s_wcd.status )
-		return;
-
-	s_wcd.status = show;
-	if( show )
-	{
-		ShowWindow( s_wcd.hWnd, SW_SHOWNORMAL );
-		SendMessage( s_wcd.hwndBuffer, EM_LINESCROLL, 0, 0xffff );
-	}
-	else ShowWindow( s_wcd.hWnd, SW_HIDE );
-}
-
-void Wcon_RegisterHotkeys( void )
-{
-	SetFocus( s_wcd.hWnd );
-	// user can hit escape for quit
-	RegisterHotKey( s_wcd.hWnd, QUIT_ON_ESCAPE_ID, 0, VK_ESCAPE );
-}
-
-#endif

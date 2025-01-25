@@ -110,6 +110,9 @@ endif()
 if(XASH_SINGLE_BINARY) # Set executable or library
 	add_definitions(-DSINGLE_BINARY)
 	add_executable(${XASH_ENGINE} ${XASH_ENGINE_SOURCES})
+	if(MSVC)
+		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
+	endif()
 else()
 	add_library(${XASH_ENGINE} SHARED ${XASH_ENGINE_SOURCES})
 endif()
@@ -123,7 +126,7 @@ if(MSVC)
 endif()
 
 if(WIN32 AND NOT XASH_64BIT)
-	add_definitions( -DDBGHELP -DXASH_W32CON) # dbghelp crashhandler
+	add_definitions(-DDBGHELP) # dbghelp crashhandler
 	if(MINGW)
 		target_link_libraries(${XASH_ENGINE} -luser32 -lkernel32 -lgdi32 -lws2_32 -ldbghelp -lpsapi)
 	elseif(MSVC)

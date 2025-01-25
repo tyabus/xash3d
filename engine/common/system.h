@@ -129,14 +129,12 @@ int Sys_LogFileNo( void );
 // con_win.c
 //
 void Wcon_ShowConsole( qboolean show );
-void Wcon_RegisterHotkeys( void );
-void Wcon_Print( const char *pMsg );
-void Wcon_Init( void );
 void Wcon_CreateConsole( void );
 void Wcon_DestroyConsole( void );
 void Wcon_DisableInput( void );
 void Wcon_Clear( void );
 char *Wcon_Input( void );
+void Wcon_WinPrint( const char *pMsg );
 
 // text messages
 void Msg( const char *pMsg, ... ) _format(1);

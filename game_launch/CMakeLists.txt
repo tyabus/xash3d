@@ -42,6 +42,7 @@ if(XASH_SDL AND NOT WIN32)
 endif()
 
 if(MSVC)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS")
         add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
