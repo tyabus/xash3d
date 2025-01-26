@@ -1148,7 +1148,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	else
 		Sys_Error( "Changing working directory to %s failed.\n", host.rootdir );
 
-	if ( developer > 0 )
+	if ( developer > 0 || Host_IsDedicated() )
 	{
 		Sys_InitLog( );
 
