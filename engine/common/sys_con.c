@@ -39,7 +39,7 @@ char *Sys_Input( void )
 {
 #ifdef _WIN32
 	return Wcon_Input();
-#elif defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __NetBSD__ ) || defined( __OpenBSD__ )
+#elif defined( __linux__ ) && !defined( __ANDROID__ ) || defined( __FreeBSD__ ) || defined( __NetBSD__ ) || defined( __OpenBSD__ )
 	return Posix_Input();
 #else
 	return NULL;
