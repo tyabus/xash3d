@@ -28,7 +28,7 @@ fwgs_fix_default_msvc_settings()
 file(GLOB_RECURSE XASH_ENGINE_SOURCES         common/*.c server/*.c ) # Minimal sources
 file(GLOB_RECURSE XASH_ENGINE_WIN32_SOURCES   ../game_launch/game.rc platform/win32/*.c) # Win32 only sources
 file(GLOB_RECURSE XASH_ENGINE_SDL_SOURCES     platform/sdl/*.c) # SDL version sources
-#file(GLOB_RECURSE XASH_ENGINE_POSIX_SOURCES     platform/posix/*.c) # Posix sources
+file(GLOB_RECURSE XASH_ENGINE_POSIX_SOURCES    platform/posix/con_posix.c) # Posix sources
 file(GLOB_RECURSE XASH_ENGINE_STUB_SOURCES     platform/stub/*.c) # Stub sources
 file(GLOB_RECURSE XASH_ENGINE_ANDROID_SOURCES platform/android/*.c) # Android sources
 file(GLOB_RECURSE XASH_ENGINE_CLIENT_SOURCES  client/*.c) # Client sources
@@ -40,10 +40,10 @@ endif()
 if(LIBUNWIND_FOUND AND UNIX AND NOT APPLE)
 	message(STATUS "libunwind found")
 	include_directories(${LIBUNWIND_INCLUDE_DIRS})
-	file(GLOB XASH_ENGINE_POSIX_SOURCES platform/posix/crashhandler_libunwind.c)
+	list(APPEND XASH_ENGINE_POSIX_SOURCES platform/posix/crashhandler_libunwind.c)
 elseif(UNIX)
 	message(STATUS "libunwind not found")
-	file(GLOB XASH_ENGINE_POSIX_SOURCES platform/posix/crashhandler.c)
+	list(APPEND XASH_ENGINE_POSIX_SOURCES platform/posix/crashhandler.c)
 	set(LIBUNWIND_INCLUDE_DIR "")
 	set(LIBUNWIND_LIBRARIES "")
 elseif(NOT WIN32)

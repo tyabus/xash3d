@@ -25,11 +25,6 @@ GNU General Public License for more details.
 #define COLORIZE_CONSOLE 0
 #endif
 
-#ifdef USE_SELECT
-// non-blocking console input
-#include <sys/select.h>
-#endif
-
 typedef struct {
 	char		title[64];
 	qboolean		log_active;
@@ -42,32 +37,10 @@ static LogData s_ld;
 
 char *Sys_Input( void )
 {
-#ifdef USE_SELECT
-	fd_set rfds;
-	static char line[1024];
-	static int len;
-	struct timeval tv;
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
-	FD_ZERO(&rfds);
-	FD_SET(0, &rfds); // stdin
-	while( select(1, &rfds, NULL, NULL, &tv ) > 0 )
-	{
-		if( read( 0, &line[len], 1 ) != 1 )
-			return NULL;
-		if( line[len] == '\n' || len > 1022 )
-		{
-			line[ ++len ] = 0;
-			len = 0;
-			return line;
-		}
-		len++;
-		tv.tv_sec = 0;
-		tv.tv_usec = 0;
-	}
-	return NULL;
-#elif _WIN32
+#ifdef _WIN32
 	return Wcon_Input();
+#elif defined( __linux__ ) || defined( __FreeBSD__ ) || defined( __NetBSD__ ) || defined( __OpenBSD__ )
+	return Posix_Input();
 #else
 	return NULL;
 #endif

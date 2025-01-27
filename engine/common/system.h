@@ -125,6 +125,7 @@ void Sys_InitLog( void );
 void Sys_PrintLog( const char *pMsg );
 int Sys_LogFileNo( void );
 
+#ifdef _WIN32
 //
 // con_win.c
 //
@@ -135,6 +136,12 @@ void Wcon_DisableInput( void );
 void Wcon_Clear( void );
 char *Wcon_Input( void );
 void Wcon_WinPrint( const char *pMsg );
+#else
+//
+// con_posix.c
+//
+char *Posix_Input( void );
+#endif
 
 // text messages
 void Msg( const char *pMsg, ... ) _format(1);
