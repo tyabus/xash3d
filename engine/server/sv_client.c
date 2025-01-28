@@ -2980,6 +2980,7 @@ void SV_EntInfo_f( sv_client_t *cl )
 	if( ent->v.solid )
 		SV_ClientPrintf( cl, PRINT_LOW, "solid: %d\n", ent->v.solid );
 
+	SV_ClientPrintf( cl, PRINT_LOW, "effects: 0x%x\n", ent->v.effects );
 	SV_ClientPrintf( cl, PRINT_LOW, "flags: 0x%x\n", ent->v.flags );
 	SV_ClientPrintf( cl, PRINT_LOW, "spawnflags: 0x%x\n", ent->v.spawnflags );
 }
