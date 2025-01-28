@@ -29,7 +29,7 @@ char *Posix_Input( void )
 	tv.tv_usec = 0;
 	FD_ZERO(&rfds);
 	FD_SET(0, &rfds); // stdin
-    while( select(1, &rfds, NULL, NULL, &tv ) > 0 )
+	while( select(1, &rfds, NULL, NULL, &tv ) > 0 )
 	{
 		if( read( 0, &line[len], 1 ) != 1 )
 			return NULL;
@@ -43,6 +43,7 @@ char *Posix_Input( void )
 		tv.tv_sec = 0;
 		tv.tv_usec = 0;
 	}
+	return NULL;
 }
 
 #endif // !XASH_MOBILE_PLATFORM
