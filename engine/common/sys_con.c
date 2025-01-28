@@ -17,6 +17,8 @@ GNU General Public License for more details.
 #ifdef __ANDROID__
 #include <android/log.h>
 #endif
+#include <string.h>
+#include <errno.h>
 
 // Don't enable colorized console on win32 and mobile devices
 #if !defined( _WIN32 ) && !defined( XASH_MOBILE_PLATFORM )
@@ -125,8 +127,7 @@ void Sys_InitLog( void )
 		if( !s_ld.logfile )
 		{
 				s_ld.log_active = false;
-				MsgDev( D_ERROR, "Sys_InitLog: can't create log file %s\n", s_ld.log_path );
-				Sys_Warn( "Failed to open log file %s!\nAre you sure you have write access?", s_ld.log_path );
+				MsgDev( D_ERROR, "Sys_InitLog: can't create log file %s: %s\n", s_ld.log_path, strerror( errno ) );
 				return;
 		}
 		else s_ld.logfileno = fileno( s_ld.logfile );
