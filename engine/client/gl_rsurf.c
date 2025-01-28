@@ -49,6 +49,8 @@ static void LM_UploadBlock( qboolean dynamic );
 static qboolean R_AddSurfToVBO( msurface_t *surf, qboolean buildlightmaps );
 static void R_DrawVBO( qboolean drawlightmaps, qboolean drawtextures );
 
+float pfnTime( void );
+
 byte *Mod_GetCurrentVis( void )
 {
 	return Mod_LeafPVS( r_viewleaf, cl.worldmodel );
@@ -1896,6 +1898,7 @@ void R_GenerateVBO()
 	int k, len = 0;
 	vboarray_t *vbo;
 	uint32_t maxindex = 0;
+	double t1, t2, t3;
 
 	R_ClearVBO();
 
@@ -1910,6 +1913,8 @@ void R_GenerateVBO()
 	// cannot do bump mapping without dot3, but still can use VBO
 	if( !GL_Support( GL_DOT3_ARB_EXT ) || glConfig.max_texture_units < 4 )
 		Cvar_FullSet( "r_bump", "0", CVAR_READ_ONLY );
+
+	t1 = pfnTime();
 
 	// save in config if enabled manually
 	if( r_vbo->integer && host_developer->integer > 3 )
@@ -1987,7 +1992,9 @@ void R_GenerateVBO()
 
 	// allocate last array
 	vbo->array = Mem_Alloc( vbos.mempool, sizeof( vbovertex_t ) * vbo->array_len );
-	MsgDev( D_NOTE, "R_GenerateVBOs: allocated array of %d verts\n", vbo->array_len );
+
+	t2 = pfnTime();
+	MsgDev( D_NOTE, "R_GenerateVBOs: allocated array of %d verts in %.3g seconds\n", vbo->array_len, t2 - t1 );
 
 	// switch to list begin
 	vbo = vbos.arraylist;
@@ -2101,6 +2108,9 @@ void R_GenerateVBO()
 
 	// reset state
 	pglBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );
+
+	t3 = pfnTime();
+	MsgDev( D_NOTE, "R_GenerateVBOs: uploaded VBOs in %.3g seconds, %.3g seconds total\n", t3 - t2, t3 - t1 );
 }
 
 /*
