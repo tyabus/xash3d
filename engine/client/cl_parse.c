@@ -1629,7 +1629,11 @@ void CL_ParseServerMessage( sizebuf_t *msg )
 			{
 				// if it's local client, do not clean states on serverdata packet
 				if( Host_IsLocalClient() )
+				{
 					cls.changelevel = true;
+				}
+				else
+					Key_ClearStates();
 
 				S_StopAllSounds();
 
@@ -1638,7 +1642,6 @@ void CL_ParseServerMessage( sizebuf_t *msg )
 					SCR_BeginLoadingPlaque( cl.background );
 					cls.changedemo = true;
 				}
-				else Key_ClearStates();
 			}
 			else MsgDev( D_INFO, "Server disconnected, reconnecting\n" );
 

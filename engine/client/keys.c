@@ -829,6 +829,10 @@ void Key_ClearStates( void )
 {
 	int	i;
 
+	// don't clear keys during changelevel
+	if( cls.changelevel )
+		return;
+
 	for( i = 0; i < 256; i++ )
 	{
 		if( keys[i].down )
