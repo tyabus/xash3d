@@ -1103,6 +1103,12 @@ void CL_CheckingResFile( char *pResFileName )
 	if( FS_FileExists( pResFileName, false ))
 		return;	// already exists
 
+	if( !cl_allow_download->integer )
+	{
+		MsgDev( D_NOTE, "Download refused, cl_allow_download is 0\n" );
+		return; // disabled downloads
+	}
+
 	if( !HTTP_IsSafeFileToDownload( pResFileName ) )
 	{
 		MsgDev( D_WARN, "Refusing to download %s\n", pResFileName );

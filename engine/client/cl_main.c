@@ -56,6 +56,7 @@ convar_t	*cl_solid_players;
 convar_t	*cl_draw_beams;
 convar_t	*cl_cmdrate;
 convar_t	*cl_interp;
+convar_t	*cl_allow_download;
 convar_t	*cl_allow_fragment;
 convar_t	*cl_lw;
 convar_t	*cl_trace_events;
@@ -580,6 +581,7 @@ void CL_CreateCmd( void )
 	// never let client.dll calc frametime for player
 	// because is potential backdoor for cheating
 	pcmd->cmd.msec = ms;
+
 	CL_ComputeClientInterpAmount( &pcmd->cmd );
 
 	input_override |= CL_ProcessOverviewCmds( &pcmd->cmd );
@@ -2298,6 +2300,7 @@ void CL_InitLocal( void )
 	cl_solid_players = Cvar_Get( "cl_solid_players", "1", 0, "make all players non-solid (can't traceline them)" );
 	cl_interp = Cvar_Get( "ex_interp", "0.01", 0, "interpolate object positions starting this many seconds in past" );
 	//Cvar_Get( "ex_maxerrordistance", "0", 0, "" );
+	cl_allow_download = Cvar_Get( "cl_allow_download", "1", CVAR_ARCHIVE|CVAR_PROTECTED, "allow downloading files from game server" );
 	cl_allow_fragment = Cvar_Get( "cl_allow_fragment", "0", CVAR_ARCHIVE|CVAR_PROTECTED, "allow downloading files directly from game server (unstable & unsafe)" );
 	cl_timeout = Cvar_Get( "cl_timeout", "60", 0, "connect timeout (in seconds)" );
 	cl_charset = Cvar_Get( "cl_charset", "utf-8", CVAR_ARCHIVE, "1-byte charset to use (iconv style)" );
