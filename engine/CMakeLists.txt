@@ -168,6 +168,12 @@ if(XASH_SDL)
 	add_definitions(-DXASH_SDL)
 	if(MSVC)
 		string(REGEX REPLACE "lib$" "dll" SDL2_DLL "${SDL2_LIBRARY}")
+		foreach(path IN LISTS SDL2_DLL)
+			# Keep the path that ends with .dll
+			if(path MATCHES ".*\\.dll$")
+				set(SDL2_DLL "${path}")
+			endif()
+		endforeach()
 		install(FILES ${SDL2_DLL}
 			CONFIGURATIONS Debug
 			DESTINATION ${LIB_INSTALL_DIR}/Debug/)
