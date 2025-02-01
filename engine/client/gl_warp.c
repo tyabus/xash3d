@@ -244,7 +244,7 @@ loc1:
 	ClipSkyPolygon( newc[1], newv[1][0], stage + 1 );
 }
 
-void MakeSkyVec( float s, float t, int axis )
+static void MakeSkyVec( float s, float t, int axis )
 {
 	int	j, k, farclip;
 	vec3_t	v, b;
@@ -266,14 +266,16 @@ void MakeSkyVec( float s, float t, int axis )
 	s = (s + 1.0f) * 0.5f;
 	t = (t + 1.0f) * 0.5f;
 
-	if( s < 1.0f / 512.0f )
-		s = 1.0f / 512.0f;
-	else if( s > 511.0f / 512.0f )
-		s = 511.0f / 512.0f;
-	if( t < 1.0f / 512.0f )
-		t = 1.0f / 512.0f;
-	else if( t > 511.0f / 512.0f )
-		t = 511.0f / 512.0f;
+	if( GL_Support( GL_CLAMPTOEDGE_EXT ))
+	{
+		s = bound( 0.0f, s, 1.0f );
+		t = bound( 0.0f, t, 1.0f );
+	}
+	else
+	{
+		s = bound( 1.0f / 512.0f, s, 511.0f / 512.0f );
+		t = bound( 1.0f / 512.0f, t, 511.0f / 512.0f );
+	}
 
 	t = 1.0f - t;
 
