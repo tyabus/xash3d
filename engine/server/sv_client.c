@@ -3801,7 +3801,6 @@ static void SV_ParseClientMove( sv_client_t *cl, sizebuf_t *msg )
 	}
 
 	cl->lastcmd = cmds[0];
-	cl->lastcmd.buttons = 0; // avoid multiple fires on lag
 
 	// adjust latency time by 1/2 last client frame since
 	// the message probably arrived 1/2 through client's frame loop
