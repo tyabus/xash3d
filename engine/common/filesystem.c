@@ -1973,8 +1973,15 @@ void FS_Shutdown( void )
 	int	i;
 
 	// release gamedirs
-	for( i = 0; i < SI.numgames; i++ )
-		if( SI.games[i] ) Mem_Free( SI.games[i] );
+	for ( i = 0; i < SI.numgames; i++ )
+	{
+		if ( SI.games[i] )
+		{
+			Mem_Free( SI.games[i] );
+			SI.games[i] = NULL;
+		}
+	}
+	SI.numgames = 0;
 
 	Q_memset( &SI, 0, sizeof( sysinfo_t ));
 
