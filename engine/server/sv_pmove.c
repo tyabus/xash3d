@@ -1212,11 +1212,6 @@ void SV_RunCmd( sv_client_t *cl, usercmd_t *ucmd, int random_seed )
 	if( ucmd->impulse )
 	{
 		clent->v.impulse = ucmd->impulse;
-		if( ucmd->impulse == 204 )
-		{
-			// force client.dll update
-			SV_RefreshUserinfo();
-		}
 	}
 
 	svgame.globals->time = cl->timebase;
