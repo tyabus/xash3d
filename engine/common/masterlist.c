@@ -436,7 +436,9 @@ void NET_InitMasters()
 
 	// keep main master always there
 	NET_AddMaster( DEFAULT_PRIMARY_MASTER, false );
-	NET_AddMaster( FWGS_PRIMARY_MASTER, false );
+	NET_AddMaster( "mentality.rip:27010", false ); // FWGS PRIMARY
+	NET_AddMaster( "ms2.mentality.rip:27010", false );
+	NET_AddMaster( "ms3.mentality.rip:27010", false );
 
 	NET_LoadMasters( );
 }
