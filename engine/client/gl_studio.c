@@ -2831,18 +2831,18 @@ static model_t *GAME_EXPORT R_StudioSetupPlayerModel( int index )
 	player_info_t	*info;
 	string		modelpath;
 
-	if( cls.key_dest == key_menu && !index )
+	if( index < 0 || index > cl.maxclients )
+		return NULL; // bad client ?
+
+	if( !RI.drawWorld )
 	{
 		// we are in menu.
 		info = &menu.playerinfo;
 	}
 	else
 	{
-		if( index < 0 || index > cl.maxclients )
-			return NULL; // bad client ?
 		info = &cl.players[index];
 	}
-
 
 	// set to invisible, skip
 	if( !info->model[0] ) return NULL;
