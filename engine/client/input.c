@@ -477,8 +477,7 @@ void IN_ToggleClientMouse( int newstate, int oldstate )
 
 	if( oldstate == key_game )
 	{
-		if( cls.initialized )
-			clgame.dllFuncs.IN_DeactivateMouse();
+			IN_DeactivateMouse();
 	}
 	else if( newstate == key_game )
 	{
@@ -497,8 +496,7 @@ void IN_ToggleClientMouse( int newstate, int oldstate )
 				SDL_SetRelativeMouseMode( SDL_TRUE );
 		}
 #endif
-		if( cls.initialized )
-			clgame.dllFuncs.IN_ActivateMouse();
+		IN_ActivateMouse( true );
 	}
 
 	if( ( newstate == key_menu || newstate == key_console ) )
@@ -556,7 +554,6 @@ void IN_ActivateMouse( qboolean force )
 #ifdef XASH_SDL
 				SDL_ShowCursor( false );
 #endif
-				UI_ShowCursor( false );
 			}
 		}
 
@@ -566,7 +563,9 @@ void IN_ActivateMouse( qboolean force )
 		{
 			in_mouse_suspended = false;
 			in_mouseactive = false; // re-initialize mouse
-			UI_ShowCursor( true );
+#ifdef XASH_SDL
+			SDL_ShowCursor( true );
+#endif
 		}
 	}
 
