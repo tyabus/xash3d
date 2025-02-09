@@ -479,7 +479,7 @@ void IN_ToggleClientMouse( int newstate, int oldstate )
 	{
 			IN_DeactivateMouse();
 	}
-	else if( newstate == key_game )
+	else if( newstate == key_game || newstate == key_console )
 	{
 		// reset mouse pos, so cancel effect in game
 #ifdef XASH_SDL
