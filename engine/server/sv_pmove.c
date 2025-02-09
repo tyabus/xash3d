@@ -476,7 +476,7 @@ static void GAME_EXPORT pfnPlaySound( int channel, const char *sample, float vol
 	if( !SV_IsValidEdict( ent )) return;
 
 	// exclude current player, because he played this sound locally during prediction
-	if( cl->movement_prediction || cl->local_weapons )
+	if( ( cl->movement_prediction || cl->local_weapons ) && !Host_IsLocalClient() )
 		fFlags |= SND_FILTER_CLIENT;
 
 	SV_StartSound( ent, channel, sample, volume, attenuation, fFlags, pitch );
