@@ -748,7 +748,7 @@ void Cmd_TokenizeString( const char *text )
 Cmd_AddCommandEx
 ============
 */
-static void Cmd_AddCommandEx( const char *funcname, const char *cmd_name, xcommand_t function, 
+void Cmd_AddCommandEx( const char *funcname, const char *cmd_name, xcommand_t function,
 	const char *cmd_desc, int iFlags )
 {
 	cmd_t	*cmd;
@@ -835,16 +835,6 @@ Cmd_AddClientCommand
 void GAME_EXPORT Cmd_AddClientCommand( const char *cmd_name, xcommand_t function )
 {
 	Cmd_AddCommandEx( "Cmd_AddClientCommand", cmd_name, function, "client command", CMD_CLIENTDLL );
-}
-
-/*
-============
-Cmd_AddGameUICommand
-============
-*/
-void Cmd_AddGameUICommand( const char *cmd_name, xcommand_t function )
-{
-	Cmd_AddCommandEx( "Cmd_AddGameUICommand", cmd_name, function, "menu command", CMD_GAMEUIDLL );
 }
 
 /*

@@ -958,6 +958,17 @@ static void pfnWriteGameConfig( const char *name )
 	FS_Delete( "game.cfg" );
 }
 
+/*
+============
+Cmd_AddGameUICommand
+============
+*/
+static int Cmd_AddGameUICommand( const char *cmd_name, xcommand_t function )
+{
+	Cmd_AddCommandEx( "Cmd_AddGameUICommand", cmd_name, function, "menu command", CMD_GAMEUIDLL );
+	return 1;
+}
+
 // engine callbacks
 static ui_enginefuncs_t gEngfuncs = 
 {

@@ -2945,7 +2945,7 @@ pfnPvAllocEntPrivateData
 
 =============
 */
-void *GAME_EXPORT pfnPvAllocEntPrivateData( edict_t *pEdict, long cb )
+void *GAME_EXPORT pfnPvAllocEntPrivateData( edict_t *pEdict, int cb )
 {
 	ASSERT( pEdict );
 
