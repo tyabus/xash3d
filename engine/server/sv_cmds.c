@@ -1283,6 +1283,12 @@ Reconnect all clients (useful when adding resources)
 */
 void SV_SendReconnect_f( void )
 {
+	if( !SV_Active() )
+	{
+		Msg( "^3No server running.\n" );
+		return;
+	}
+
 	char *message = "Reconnect by console request!\n";
 
 	if( Cmd_Argc() > 1 )
@@ -1295,6 +1301,12 @@ void SV_DumpPrecache_f( void )
 {
 	int index;
 	file_t *f = FS_Open( "precache-dump.txt", "w", false );
+
+	if( !SV_Active() )
+	{
+		Msg( "^3No server running.\n" );
+		return;
+	}
 
 	if( !f )
 	{
@@ -1331,6 +1343,12 @@ void SV_DumpResList_f( void )
 {
 	int index;
 	file_t *f = FS_Open( "reslist-dump.txt", "w", false );
+
+	if( !SV_Active() )
+	{
+		Msg( "^3No server running.\n" );
+		return;
+	}
 
 	if( !f )
 	{
