@@ -1,8 +1,6 @@
 stages:
-  - linux_dedicated
-  - linux_desktop
-  - android
-  - coverity_scan
+  - build
+  - test
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -15,7 +13,7 @@ cache:
 linux_dedicated:
 #  image: ubuntu:bionic
   image: registry.gitlab.com/mr0maks/gitlab_ci_images:bionic_dedicated
-  stage: linux_dedicated
+  stage: build
   before_script:
 #  - dpkg --add-architecture i386
 #  - apt update
@@ -44,7 +42,7 @@ linux_dedicated:
 linux_desktop:
 #  image: ubuntu:bionic
   image: registry.gitlab.com/mr0maks/gitlab_ci_images:bionic_desktop
-  stage: linux_desktop
+  stage: build
   before_script:
 #  - dpkg --add-architecture i386
 #  - apt update
@@ -88,7 +86,7 @@ linux_desktop:
 android:
 #  image: ubuntu:xenial
   image: registry.gitlab.com/mr0maks/gitlab_ci_images:xenial_android
-  stage: android
+  stage: build
   before_script:
 #  - dpkg --add-architecture i386
 #  - apt update
@@ -132,7 +130,7 @@ android:
 android_64bit:
 # image: ubuntu:xenial
   image: registry.gitlab.com/mr0maks/gitlab_ci_images:xenial_android
-  stage: android
+  stage: build
   before_script:
 #  - dpkg --add-architecture i386
 #  - apt update
@@ -176,7 +174,7 @@ android_64bit:
 coverity_scan:
 #  image: ubuntu:bionic
   image: registry.gitlab.com/mr0maks/gitlab_ci_images:bionic_desktop
-  stage: coverity_scan
+  stage: test
   only:
     refs:
       - master
