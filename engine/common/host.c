@@ -138,7 +138,9 @@ void Sys_PrintUsage( void )
 	;
 #undef O
 
-	Sys_Error( "%s", usage_str );
+	fprintf( stdout, "%s", usage_str );
+	MSGBOX( usage_str );
+	Sys_Quit();
 }
 
 // these cvars will be duplicated on each client across network
