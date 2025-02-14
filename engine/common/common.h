@@ -242,6 +242,8 @@ void DBG_AssertFunction( qboolean fExpr, const char* szExpr, const char* szFile,
 #define Assert( f )
 #endif
 
+extern int g_developer; // developer value before cvars are accessable
+
 extern convar_t	*scr_width;
 extern convar_t	*scr_height;
 extern convar_t	*scr_loading;

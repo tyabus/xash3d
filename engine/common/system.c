@@ -665,6 +665,7 @@ void Sys_Error( const char *format, ... )
 {
 	va_list	argptr;
 	char text[4096];
+	int devlevel = host_developer != NULL ? host_developer->integer : g_developer;
 
 	DEBUG_BREAK;
 
@@ -689,7 +690,7 @@ void Sys_Error( const char *format, ... )
 #endif
 	}
 
-	if( host_developer->integer > 0 || host.state != HOST_FRAME )
+	if( devlevel > 0 || host.state != HOST_FRAME )
 	{
 #ifdef _WIN32
 		Wcon_ShowConsole( true );
@@ -721,6 +722,8 @@ void Sys_Break( const char *format, ... )
 {
 	va_list	argptr;
 	char	text[MAX_SYSPATH];
+	int devlevel = host_developer != NULL ? host_developer->integer : g_developer;
+
 	DEBUG_BREAK;
 	if( host.state == HOST_ERR_FATAL )
 		return; // don't multiple executes
@@ -738,7 +741,7 @@ void Sys_Break( const char *format, ... )
 #endif
 	}
 
-	if( Host_IsDedicated( ) || host_developer->integer > 0 )
+	if( Host_IsDedicated() || devlevel > 0 )
 	{
 #ifdef _WIN32
 		Wcon_ShowConsole( true );
@@ -878,8 +881,9 @@ void MsgDev( int level, const char *pMsg, ... )
 {
 	va_list	argptr;
 	char	text[8192];
+	int devlevel = host_developer != NULL ? host_developer->integer : g_developer;
 
-	if( host_developer->integer < level ) return;
+	if( devlevel < level ) return;
 
 	va_start( argptr, pMsg );
 	Q_vsnprintf( text, sizeof( text ), pMsg, argptr );

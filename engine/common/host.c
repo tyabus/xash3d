@@ -69,6 +69,8 @@ convar_t	*host_mapdesign_fatal;
 convar_t	*host_developer = NULL;
 convar_t 	*cmd_scripting = NULL;
 
+int g_developer = DEFAULT_DEV;
+
 static int num_decals;
 
 void Sys_PrintUsage( void )
@@ -962,7 +964,6 @@ Host_InitCommon
 void Host_InitCommon( int argc, const char** argv, const char *progname, qboolean bChangeGame )
 {
 	char		dev_level[4];
-	int		developer = DEFAULT_DEV;
 	char		*baseDir;
 	int		retval_stdin, retval_stderr, retval_stdout;
 
@@ -1095,16 +1096,16 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 
 	host.mempool = Mem_AllocPool( "Zone Engine" );
 
-	if( Sys_CheckParm( "-console" )) developer = 1;
+	if( Sys_CheckParm( "-console" )) g_developer = 1;
 	if( Sys_CheckParm( "-dev" ))
 	{
 		if( Sys_GetParmFromCmdLine( "-dev", dev_level ))
 		{
 			if( Q_isdigit( dev_level ))
-				developer = abs( Q_atoi( dev_level ));
-			else developer++; // -dev == 1, -dev -console == 2
+				g_developer = abs( Q_atoi( dev_level ));
+			else g_developer++; // -dev == 1, -dev -console == 2
 		}
-		else developer++; // -dev == 1, -dev -console == 2
+		else g_developer++; // -dev == 1, -dev -console == 2
 	}
 
 #ifdef XASH_DEDICATED
@@ -1142,18 +1143,18 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	if ( !host.rootdir[0] || SetCurrentDirectory( host.rootdir ) != 0 )
 	{
 		// tyabus: We don't have host_developer yet
-		if( developer >= D_INFO )
+		if( g_developer >= D_INFO )
 			Msg( "%s is working directory now\n", host.rootdir );
 	}
 	else
 		Sys_Error( "Changing working directory to %s failed.\n", host.rootdir );
 
-	if ( developer > 0 || Host_IsDedicated() )
+	if ( g_developer > 0 || Host_IsDedicated() )
 	{
 		Sys_InitLog( );
 
 		// print current developer level to simplify processing users feedback
-		Msg( "Developer level: ^3%i\n", developer );
+		Msg( "Developer level: ^3%i\n", g_developer );
 	}
 
 	// set default gamedir
@@ -1164,12 +1165,12 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	{
 		Sys_MergeCommandLine( );
 
-		if( developer < 3 ) developer = 3; // otherwise we see empty console
+		if( g_developer < 3 ) g_developer = 3; // otherwise we see empty console
 	}
 	else
 	{
 		// don't show console as default
-		if( developer < D_WARN ) host.con_showalways = false;
+		if( g_developer < D_WARN ) host.con_showalways = false;
 	}
 
 	BaseCmd_Init();
@@ -1191,7 +1192,7 @@ void Host_InitCommon( int argc, const char** argv, const char *progname, qboolea
 	Cmd_AddRestrictedCommand( "clear", Host_Clear_f, "clear console history" );
 
 	// share developer level across all dlls
-	Q_snprintf( dev_level, sizeof( dev_level ), "%i", developer );
+	Q_snprintf( dev_level, sizeof( dev_level ), "%i", g_developer );
 	Cvar_SetFloat( host_developer->name, Q_atoi( dev_level ) );
 
 	Cmd_AddRestrictedCommand( "exec", Host_Exec_f, "execute a script file" );
