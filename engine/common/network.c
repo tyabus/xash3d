@@ -244,7 +244,7 @@ static void NET_ResolveThread( void );
 #define mutex_lock pthread_mutex_lock
 #define mutex_unlock pthread_mutex_unlock
 #define exit_thread( x ) pthread_exit(x)
-#define create_thread( pfn ) !pthread_create( &nsthread.thread, NULL, (pfn), NULL )
+#define create_thread( pfn ) pthread_create( &nsthread.thread, NULL, (pfn), NULL )
 #define detach_thread( x ) pthread_detach(x)
 #define mutex_t  pthread_mutex_t
 #define thread_t pthread_t
@@ -476,12 +476,20 @@ int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean nonbloc
 						Q_strncpy( nsthread.hostname, copy, MAX_STRING );
 						nsthread.busy = true;
 						mutex_unlock( &nsthread.mutexres );
-
+#ifdef _WIN32
 						if( create_thread( Net_ThreadStart ) )
+#else
+						int result = create_thread( Net_ThreadStart );
+						if( !result )
+#endif
 							return 2;
 						else // failed to create thread
 						{
+#ifdef _WIN32
 							MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread!\n");
+#else
+							MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread! (%s)\n", strerror( result ));
+#endif
 							nsthread.busy = false;
 							asyncfailed = true;
 						}
