@@ -2061,6 +2061,7 @@ int SV_SaveGameSlot( const char *pSaveName, const char *pSaveComment )
 	if( !FS_Write( pFile, SaveRestore_GetBuffer( pSaveData ), SaveRestore_GetCurPos( pSaveData ) ) )
 	{
 		MsgDev( D_ERROR, "SV_SaveGameSlot: Unable to write file %s\n", name );
+		if( pFile ) FS_Close( pFile );
 		return 0;
 	}
 
