@@ -2038,6 +2038,12 @@ int SV_SaveGameSlot( const char *pSaveName, const char *pSaveComment )
 
 	pFile = FS_Open( name, "wb", true );
 
+	if( !pFile )
+	{
+		MsgDev( D_ERROR, "SV_SaveGameSlot: Can't open file %s\n", name );
+		return 0;
+	}
+
 	tag = SAVEGAME_HEADER;
 	FS_Write( pFile, &tag, sizeof( int ));
 	tag = SAVEGAME_VERSION;
@@ -2052,7 +2058,11 @@ int SV_SaveGameSlot( const char *pSaveName, const char *pSaveComment )
 	FS_Write( pFile, pTokenData, tokenSize );
 
 	// save gamestate
-	FS_Write( pFile, SaveRestore_GetBuffer( pSaveData ), SaveRestore_GetCurPos( pSaveData ));
+	if( !FS_Write( pFile, SaveRestore_GetBuffer( pSaveData ), SaveRestore_GetCurPos( pSaveData ) ) )
+	{
+		MsgDev( D_ERROR, "SV_SaveGameSlot: Unable to write file %s\n", name );
+		return 0;
+	}
 
 	SV_DirectoryCopy( hlPath, pFile );
 	FS_Close( pFile );
