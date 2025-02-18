@@ -99,9 +99,9 @@ static void Sys_Crash( int signal, siginfo_t *si, void *context)
 #error "Unknown arch!!!"
 #endif
 
-	len += Q_snprintf( message, sizeof( message ), "Ver: Xash3D-NG " XASH_VERSION " (build %i-%s, %s-%s)\n", Q_buildnum(), Q_buildcommit(), Q_buildos(), Q_buildarch() );
-
 	// Safe actions first, stack and memory may be corrupted
+	len = Q_snprintf( message, sizeof( message ), "Ver: Xash3D-NG " XASH_VERSION " (build %i-%s, %s-%s)\n", Q_buildnum(), Q_buildcommit(), Q_buildos(), Q_buildarch() );
+
 	#if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined (__APPLE__)
 		len += Q_snprintf( message, 4096, "Sys_Crash: signal %d, err %d with code %d at %p\n", signal, si->si_errno, si->si_code, si->si_addr );
 	#else
