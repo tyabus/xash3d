@@ -126,6 +126,9 @@ static void stack_trace( PEXCEPTION_POINTERS pInfo )
 	stackframe.AddrStack.Offset = context.IntSp;
 	stackframe.AddrStack.Mode = AddrModeFlat;
 #endif
+
+	len += Q_snprintf( message, sizeof( message ), "Ver: Xash3D-NG " XASH_VERSION " (build %i-%s, %s-%s)\n", Q_buildnum(), Q_buildcommit(), Q_buildos(), Q_buildarch() );
+
 	len += Q_snprintf( message + len, 4096 - len, "Sys_Crash: address %p, code %p\n", pInfo->ExceptionRecord->ExceptionAddress, (void*)pInfo->ExceptionRecord->ExceptionCode );
 	if( SymGetLineFromAddr64( process, (DWORD64)pInfo->ExceptionRecord->ExceptionAddress, &dline, &line ) )
 	{
