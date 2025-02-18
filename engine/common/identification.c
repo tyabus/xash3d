@@ -617,8 +617,9 @@ void ID_Check()
 
 const char *ID_GetMD5()
 {
-	if( id_customid[0] )
-		return id_customid;
+	// tyabus: Used by some malicious actors, disabling.
+	/*if ( id_customid[0] )
+		return id_customid;*/
 	return id_md5;
 }
 
