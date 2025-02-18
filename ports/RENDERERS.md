@@ -33,10 +33,6 @@ git clone https://github.com/FWGS/nanogl
 make -f Makefile.linux WES=1
 ```
 
-### Emscrepten
-
-look add README.emscripten.md
-
 ## regal
 
 ### Linux
