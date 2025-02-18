@@ -999,9 +999,19 @@ As Cvar_Set, but also flags it as renderinfo
 */
 void Cvar_SetR_f( void )
 {
+	convar_t *var;
+
 	if( Cmd_Argc() != 3 )
 	{
 		Msg( "Usage: setr <variable> <value>\n" );
+		return;
+	}
+
+	var = Cvar_FindVar( Cmd_Argv( 1 ) );
+
+	if( var && !( var->flags & CVAR_RENDERINFO ) )
+	{
+		MsgDev( D_ERROR, "Can't set non-renderer cvar %s to %s\n", Cmd_Argv( 1 ), Cmd_Argv( 2 ) );
 		return;
 	}
 
@@ -1017,9 +1027,19 @@ As Cvar_Set, but also flags it as glconfig
 */
 void Cvar_SetGL_f( void )
 {
+	convar_t *var;
+
 	if( Cmd_Argc() != 3 )
 	{
 		Msg( "Usage: setgl <variable> <value>\n" );
+		return;
+	}
+
+	var = Cvar_FindVar( Cmd_Argv( 1 ) );
+
+	if( var && !( var->flags & CVAR_GLCONFIG ) )
+	{
+		MsgDev( D_ERROR, "Can't set non-GL cvar %s to %s\n", Cmd_Argv( 1 ), Cmd_Argv( 2 ) );
 		return;
 	}
 
