@@ -843,8 +843,6 @@ void R_RenderInfo_f( void )
 
 void GL_InitCommands( void )
 {
-	Cbuf_AddText( "vidlatch\n" );
-	Cbuf_Execute();
 
 	// system screen width and height (don't suppose for change from console at all)
 	renderinfo = Cvar_Get( "@renderinfo", "0", CVAR_READ_ONLY, "" ); // use ->modified value only
@@ -918,6 +916,14 @@ void GL_InitCommands( void )
 
 	Cmd_AddCommand( "r_info", R_RenderInfo_f, "display renderer info" );
 	Cmd_AddRestrictedCommand( "texturelist", R_TextureList_f, "display loaded textures list" );
+
+	// give initial OpenGL configuration
+	Cbuf_AddText( "exec opengl.cfg\n" );
+	Cbuf_Execute();
+
+	// Apply the video configuration
+	Cbuf_AddText( "vidlatch\n" );
+	Cbuf_Execute();
 }
 
 void GL_RemoveCommands( void )
@@ -1084,9 +1090,6 @@ qboolean R_Init( void )
 {
 	if( glw_state.initialized )
 		return true;
-
-	// give initial OpenGL configuration
-	Cbuf_AddText( "exec opengl.cfg\n" );
 
 	GL_InitCommands();
 	
