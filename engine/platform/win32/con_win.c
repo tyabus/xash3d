@@ -566,7 +566,7 @@ void Wcon_DestroyConsole( void )
 		SetConsoleCP( s_wcd.previousCodePage );
 		SetConsoleOutputCP( s_wcd.previousOutputCodePage );
 		SetConsoleTitle( &s_wcd.previousTitle );
-		Con_Printf( "Press Enter to continue...\n" );
+		Msg( "Press Enter to continue...\n" );
 	}
 
 	FreeConsole();
