@@ -508,9 +508,6 @@ void GAME_EXPORT Con_Printf( char *szFmt, ... )
 	static char	buffer[16384];	// must support > 1k messages
 	va_list		args;
 
-	if( host_developer->value <= 0 )
-		return;
-
 	va_start( args, szFmt );
 	Q_vsnprintf( buffer, sizeof( buffer ), szFmt, args );
 	va_end( args );
@@ -528,8 +525,9 @@ void GAME_EXPORT Con_DPrintf( char *szFmt, ... )
 {
 	static char	buffer[16384];	// must support > 1k messages
 	va_list		args;
+	int devlevel = host_developer != NULL ? host_developer->integer : g_developer;
 
-	if( host_developer->value < D_INFO )
+	if( devlevel <= D_INFO )
 		return;
 
 	va_start( args, szFmt );
