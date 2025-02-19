@@ -286,14 +286,15 @@ void SV_DirectConnect( netadr_t from )
 	// quick reject
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
 	{
-		if( cl->state == cs_free || cl->state == cs_zombie || cl->fakeclient )
+		if( cl->state == cs_free || cl->state == cs_zombie || cl->fakeclient || NET_IsLocalAddress( from ) )
 			continue;
 
 		if( NET_CompareBaseAdr( from, cl->netchan.remote_address ) && ( cl->netchan.qport == qport || from.port == cl->netchan.remote_address.port ))
 		{
-			if( !NET_IsLocalAddress( from ) && ( host.realtime - cl->lastconnect ) < sv_reconnect_limit->value )
+			if( ( host.realtime - cl->lastconnect ) < sv_reconnect_limit->value )
 			{
 				MsgDev( D_INFO, "%s:reconnect rejected : too soon\n", NET_AdrToString( from ));
+				Netchan_OutOfBandPrint( NS_SERVER, from, "%s\nYou are trying to reconnect too quickly!\nPlease try again in a few seconds.\n", errorpacket );
 				Netchan_OutOfBandPrint( NS_SERVER, from, "disconnect\n" );
 				return;
 			}
