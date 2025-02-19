@@ -362,8 +362,11 @@ byte* GAME_EXPORT COM_LoadFileForMe( const char *filename, int *pLength )
 	if( pfile )
 	{
 		file = malloc( iLength + 1 );
-		Q_memcpy( file, pfile, iLength );
-		file[iLength] = '\0';
+		if( file != NULL )
+		{
+			Q_memcpy( file, pfile, iLength );
+			file[iLength] = '\0';
+		}
 		Mem_Free( pfile );
 		pfile = file;
 	}
