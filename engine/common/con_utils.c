@@ -443,6 +443,10 @@ qboolean Cmd_GetMapList( const char *s, char *completedname, int length )
 			if( gearbox ) Q_strncpy( (char *)buf, "Blue-Shift", sizeof( buf ));
 			else Q_strncpy( (char *)buf, "Half-Life", sizeof( buf ));
 			break;
+		case HLBSP_VERSION+1: // BSP31
+			Q_strncpy( (char *)buf, "Paranoia 2/Old XashXT", sizeof( buf ));
+			Q_strncpy( (char *)message, "^1Not Supported^7", sizeof( message ) );
+			break;
 		default:
 			Q_strncpy( (char *)buf, "??", sizeof( buf ));
 			break;
