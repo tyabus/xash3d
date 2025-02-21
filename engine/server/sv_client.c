@@ -286,10 +286,10 @@ void SV_DirectConnect( netadr_t from )
 	// quick reject
 	for( i = 0, cl = svs.clients; i < sv_maxclients->integer; i++, cl++ )
 	{
-		if( cl->state == cs_free || cl->state == cs_zombie || cl->fakeclient || NET_IsLocalAddress( from ) )
+		if( cl->state == cs_free || cl->state == cs_zombie || cl->fakeclient )
 			continue;
 
-		if( NET_CompareBaseAdr( from, cl->netchan.remote_address ) && ( cl->netchan.qport == qport || from.port == cl->netchan.remote_address.port ))
+		if( !NET_IsLocalAddress( from ) && NET_CompareBaseAdr( from, cl->netchan.remote_address ) && ( cl->netchan.qport == qport || from.port == cl->netchan.remote_address.port ) )
 		{
 			if( ( host.realtime - cl->lastconnect ) < sv_reconnect_limit->value )
 			{
@@ -1089,6 +1089,10 @@ void SV_RemoteCommand( netadr_t from, sizebuf_t *msg )
 	char		remaining[1024];
 	static char	outputbuf[2048];
 	int		i;
+
+	// Empty password, do nothing.
+	if( !rcon_password->string[0] )
+		return;
 
 	MsgDev( D_INFO, "Rcon from %s:\n%s\n", NET_AdrToString( from ), BF_GetData( msg ) + 4 );
 	SV_BeginRedirect( from, RD_PACKET, outputbuf, sizeof( outputbuf ), SV_FlushRedirect );
