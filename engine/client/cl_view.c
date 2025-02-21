@@ -300,9 +300,6 @@ qboolean V_PreRender( void )
 	if( !glw_state.initialized )
 		return false;
 
-	if( host.state == HOST_NOFOCUS && !( host.force_draw_version && ( host.force_draw_version_time > host.realtime ) ) )
-		return false;
-
 	if( host.state == HOST_SLEEP )
 		return false;
 
