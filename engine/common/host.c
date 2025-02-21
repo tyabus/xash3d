@@ -769,8 +769,6 @@ void Host_Frame( float time )
 	if( !Host_FilterTime( time ))
 		return;
 
-	rand (); // keep the random time dependent
-
 	Sys_SendKeyEvents (); // call WndProc on WIN32
 
 	Host_InputFrame ();	// input frame
