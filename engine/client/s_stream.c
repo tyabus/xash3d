@@ -65,6 +65,9 @@ float S_GetMusicVolume( void )
 {
 	float	scale = 1.0f;
 
+	if( host.state == HOST_NOFOCUS && snd_mute_losefocus->integer )
+		return 0.0f;
+
 	if( !s_listener.inmenu && musicfade.percent != 0 )
 	{
 		scale = bound( 0.0f, musicfade.percent / 100.0f, 1.0f );

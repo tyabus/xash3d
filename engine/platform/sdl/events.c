@@ -28,7 +28,6 @@ GNU General Public License for more details.
 #include "gl_vidnt.h"
 
 extern convar_t *vid_fullscreen;
-extern convar_t *snd_mute_losefocus;
 static int wheelbutton;
 static SDL_Joystick *joy;
 static SDL_GameController *gamecontroller;
@@ -461,10 +460,6 @@ static void SDLash_EventFilter( SDL_Event *event )
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
 			host.state = HOST_FRAME;
 			IN_ActivateMouse(true);
-			if( snd_mute_losefocus->integer )
-			{
-				S_Activate( true );
-			}
 			host.force_draw_version = true;
 			host.force_draw_version_time = host.realtime + 2;
 			if( vid_fullscreen->integer )
@@ -478,10 +473,6 @@ static void SDLash_EventFilter( SDL_Event *event )
 			host.state = HOST_NOFOCUS;
 			Key_ClearStates();
 			IN_DeactivateMouse();
-			if( snd_mute_losefocus->integer )
-			{
-				S_Activate( false );
-			}
 			host.force_draw_version = true;
 			host.force_draw_version_time = host.realtime + 1;
 			VID_RestoreScreenResolution();
