@@ -906,6 +906,9 @@ void S_StartSound( const vec3_t pos, int ent, int chan, sound_t handle, float fv
 	// spatialize
 	Q_memset( target_chan, 0, sizeof( *target_chan ));
 
+	if( Host_IsDedicated() || Host_IsLocalClient() )
+		pitch *= ( sys_timescale->value + 1 ) / 2;
+
 	VectorCopy( pos, target_chan->origin );
 	target_chan->staticsound = ( ent == 0 ) ? true : false;
 	target_chan->use_loop = (flags & SND_STOP_LOOPING) ? false : true;
@@ -1178,6 +1181,9 @@ void S_AmbientSound( const vec3_t pos, int ent, sound_t handle, float fvol, floa
 		S_FreeChannel( ch );
 		return;
 	}
+
+	if( Host_IsDedicated() || Host_IsLocalClient() )
+		pitch *= ( sys_timescale->value + 1 ) / 2;
 
 	// never update positions if source entity is 0
 	ch->staticsound = ( ent == 0 ) ? true : false;

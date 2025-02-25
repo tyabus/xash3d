@@ -61,6 +61,7 @@ convar_t	*host_maxfps;
 convar_t	*host_framerate;
 convar_t	*host_sleeptime;
 convar_t	*host_xashds_hacks;
+convar_t	*sys_timescale;
 convar_t	*con_gamemaps;
 convar_t	*download_types;
 convar_t	*build, *ver; // original xash3d info
@@ -669,8 +670,12 @@ qboolean Host_FilterTime( float time )
 {
 	static double	oldtime;
 	float		fps;
+	double scale = 1.0f;
 
-	host.realtime += time;
+	if( Host_IsDedicated() || Host_IsLocalClient() )
+		scale = sys_timescale->value;
+
+	host.realtime += time * scale;
 
 	// dedicated's tic_rate regulates server frame rate.  Don't apply fps filter here.
 	fps = host_maxfps->value;
@@ -682,7 +687,7 @@ qboolean Host_FilterTime( float time )
 		// limit fps to within tolerable range
 		fps = bound( MIN_FPS, fps, MAX_FPS );
 
-		minframetime = 1.0f / fps;
+		minframetime = 1.0f / fps * scale;
 
 		if(( host.realtime - oldtime ) < minframetime )
 		{
@@ -698,7 +703,7 @@ qboolean Host_FilterTime( float time )
 
 	if( host_framerate->value > 0 && ( Host_IsLocalGame()))
 	{
-		fps = host_framerate->value;
+		fps = host_framerate->value * scale;
 		if( fps > 1 ) fps = 1.0f / fps;
 		host.frametime = fps;
 	}
@@ -1284,6 +1289,7 @@ int EXPORT Host_Main( int argc, const char **argv, const char *progname, int bCh
 	host_ver = Cvar_Get( "host_ver", va("%i %s %s %s %s", Q_buildnum(), XASH_VERSION, Q_buildos(), Q_buildarch(), Q_buildcommit() ), CVAR_INIT, "detailed info about this build" );
 	host_mapdesign_fatal = Cvar_Get( "host_mapdesign_fatal", "1", CVAR_ARCHIVE, "make map design errors fatal" );
 	host_xashds_hacks = Cvar_Get( "xashds_hacks", "0", 0, "hacks for xashds in singleplayer" );
+	sys_timescale = Cvar_Get( "sys_timescale", "1.0", CVAR_LOCALONLY, "scale frame time" );
 
 	if( Q_stricmp( GI->gamefolder, "tfc" ) )
 		build = Cvar_Get( "build", "3366", CVAR_INIT, "left for compatibility reasons" );
