@@ -1355,6 +1355,7 @@ void CL_InternetServers_f( void )
 
 	// let master know about client version
 	Info_SetValueForKey( info, "clver", XASH_VERSION, remaining );
+	Info_SetValueForKey( info, "buildnum", va( "%i", Q_buildnum() ), remaining );
 
 	NET_Config( true, true ); // allow remote
 
