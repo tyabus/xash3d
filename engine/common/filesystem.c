@@ -3183,6 +3183,10 @@ qboolean FS_Rename( const char *oldname, const char *newname )
 	if( !oldname || !newname || !*oldname || !*newname )
 		return false;
 
+	// a1ba: disallow path traversal
+	if( FS_CheckNastyPath( oldname, false ) || FS_CheckNastyPath( newname, false ) )
+		return false;
+
 	Q_snprintf( oldpath, sizeof( oldpath ), "%s%s", fs_gamedir, oldname );
 	Q_snprintf( newpath, sizeof( newpath ), "%s%s", fs_gamedir, newname );
 
@@ -3207,6 +3211,10 @@ qboolean FS_Delete( const char *path )
 	qboolean	iRet;
 
 	if( !path || !*path )
+		return false;
+
+	// a1ba: disallow path traversal
+	if( FS_CheckNastyPath( path, false ) )
 		return false;
 
 	Q_snprintf( real_path, sizeof( real_path ), "%s%s", fs_gamedir, path );
