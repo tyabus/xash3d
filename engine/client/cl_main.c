@@ -1283,7 +1283,7 @@ void CL_Disconnect( void )
 
 void CL_Disconnect_f( void )
 {
-	if( cls.state >= ca_connected && cls.state != ca_cinematic )
+	if( cls.state >= ca_connecting && cls.state != ca_cinematic )
 	{
 		if( Host_ServerState() )
 		{
