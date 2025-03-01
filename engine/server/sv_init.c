@@ -606,6 +606,9 @@ qboolean SV_SpawnServer( const char *mapname, const char *startspot )
 	// clear physics interaction links
 	SV_ClearWorld();
 
+	// heartbeats will always be sent to the id master
+	NET_ForceHeartbeat();
+
 	// unused in GoldSrc
 #if 0
 	// tell dlls about new level started
@@ -713,9 +716,6 @@ void SV_InitGame( void )
 	svgame.globals->deathmatch = Cvar_VariableInteger( "deathmatch" );
 	svgame.globals->teamplay = Cvar_VariableInteger( "teamplay" );
 	svgame.globals->coop = ( sv_maxclients->integer > 1 ) ? Cvar_VariableInteger( "coop" ):0;
-
-	// heartbeats will always be sent to the id master
-	NET_ForceHeartbeat();
 
 	// set client fields on player ents
 	for( i = 0; i < svgame.globals->maxClients; i++ )
