@@ -407,63 +407,49 @@ int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean nonbloc
 		{
 #ifdef CAN_ASYNC_NS_RESOLVE
 			qboolean asyncfailed = false;
-#ifdef _WIN32
-			if ( InitializeCriticalSection )
-#endif // _WIN32
+			if( nonblocking )
 			{
-				if( !nonblocking )
+				mutex_lock( &nsthread.mutexres );
+
+				if( nsthread.busy )
 				{
-					ip = NET_GetHostByName( copy );
+					mutex_unlock( &nsthread.mutexres );
+					return 2;
+				}
+
+				if( !Q_strcmp( copy, nsthread.hostname ) )
+				{
+					ip = nsthread.result;
+					nsthread.hostname[0] = 0;
+					detach_thread( nsthread.thread );
 				}
 				else
 				{
-					mutex_lock( &nsthread.mutexres );
-
-					if( nsthread.busy )
-					{
-						mutex_unlock( &nsthread.mutexres );
-						return 2;
-					}
-
-					if( !Q_strcmp( copy, nsthread.hostname ) )
-					{
-						ip = nsthread.result;
-						nsthread.hostname[0] = 0;
-						detach_thread( nsthread.thread );
-					}
-					else
-					{
-						Q_strncpy( nsthread.hostname, copy, MAX_STRING );
-						nsthread.busy = true;
-						mutex_unlock( &nsthread.mutexres );
-#ifdef _WIN32
-						if( create_thread( Net_ThreadStart ) )
-#else
-						int result = create_thread( Net_ThreadStart );
-						if( !result )
-#endif
-							return 2;
-						else // failed to create thread
-						{
-#ifdef _WIN32
-							MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread!\n");
-#else
-							MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread! (%s)\n", strerror( result ));
-#endif
-							nsthread.busy = false;
-							asyncfailed = true;
-						}
-					}
-
+					Q_strncpy( nsthread.hostname, copy, MAX_STRING );
+					nsthread.busy = true;
 					mutex_unlock( &nsthread.mutexres );
-				}
-			}
 #ifdef _WIN32
-			else
-				asyncfailed = true;
+					if( create_thread( Net_ThreadStart ) )
 #else
+					int result = create_thread( Net_ThreadStart );
+					if( !result )
+#endif
+						return 2;
+					else // failed to create thread
+					{
+#ifdef _WIN32
+						MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread!\n");
+#else
+						MsgDev( D_ERROR, "NET_StringToSockaddr: failed to create thread! (%s)\n", strerror( result ));
+#endif
+						nsthread.busy = false;
+						asyncfailed = true;
+					}
+				}
+
+				mutex_unlock( &nsthread.mutexres );
+			}
 			if( asyncfailed )
-#endif // _WIN32
 #endif // CAN_ASYNC_NS_RESOLVE
 			{
 				ip = NET_GetHostByName( copy );
