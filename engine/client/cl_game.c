@@ -895,7 +895,7 @@ void CL_DrawCrosshair( void )
 	int		x, y, width, height;
 	cl_entity_t	*pPlayer;
 
-	if( !crosshair_state.pCrosshair || cl.refdef.crosshairangle[2] || !cl_crosshair->integer )
+	if( !crosshair_state.pCrosshair || !cl_crosshair->integer )
 		return;
 
 	pPlayer = CL_GetLocalPlayer();
