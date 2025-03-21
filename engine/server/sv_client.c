@@ -2596,6 +2596,9 @@ void SV_Fullupdate_f( sv_client_t *cl )
 		return;
 	}
 
+	// custom client commands
+	svgame.dllFuncs.pfnClientCommand( cl->edict );
+
 	// resend the ambient sounds for demo recording
 	Host_RestartAmbientSounds();
 	// resend all the decals for demo recording
