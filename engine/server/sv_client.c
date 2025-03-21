@@ -3805,15 +3805,16 @@ static void SV_ParseClientMove( sv_client_t *cl, sizebuf_t *msg )
 		SV_RunCmd( cl, &cmds[i], cl->netchan.incoming_sequence - i );
 	}
 
+	// was player kicked? stop here
+	if( cl->state <= cs_zombie )
+		return;
+
 	cl->lastcmd = cmds[0];
 
 	// adjust latency time by 1/2 last client frame since
 	// the message probably arrived 1/2 through client's frame loop
-	if( cl->frames )
-	{
-		frame->latency -= cl->lastcmd.msec * 0.5f / 1000.0f;
-		frame->latency = max( 0.0f, frame->latency );
-	}
+	frame->latency -= cl->lastcmd.msec * 0.5f / 1000.0f;
+	frame->latency = max( 0.0f, frame->latency );
 
 	if( player->v.animtime > svgame.globals->time + host.frametime )
 		player->v.animtime = svgame.globals->time + host.frametime;

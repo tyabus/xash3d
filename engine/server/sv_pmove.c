@@ -1148,6 +1148,10 @@ void SV_RunCmd( sv_client_t *cl, usercmd_t *ucmd, int random_seed )
 	pmtrace_t	*pmtrace;
 	trace_t	trace;
 	vec3_t	oldvel;
+
+	// if the player got kicked, do not process commands
+	if( cl->state <= cs_zombie )
+		return;
    
 	if( cl->next_movetime > host.realtime )
 	{
