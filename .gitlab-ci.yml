@@ -182,8 +182,8 @@ coverity_scan:
       - master
   before_script:
 #  - dpkg --add-architecture i386
-#  - apt update
-#  - apt install -y wget curl git ccache cmake p7zip-full gcc-multilib g++-multilib build-essential libx11-dev:i386 libxext-dev:i386 libgl1-mesa-dev libasound-dev zlib1g:i386 libstdc++6:i386
+  - apt update
+  - apt install -y file
   - mkdir -p ccache
   #- curl -o /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64 --form project=$COVERITY_SCAN_PROJECT_NAME --form token=$COVERITY_SCAN_TOKEN
   - wget -nv -O /tmp/cov-analysis-linux64.tgz https://scan.coverity.com/download/linux64 --post-data "token=$COVERITY_SCAN_TOKEN&project=tyabus%2Fxash3d"
