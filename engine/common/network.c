@@ -407,6 +407,7 @@ int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean nonbloc
 					ip = nsthread.result;
 					nsthread.hostname[0] = 0;
 					detach_thread( nsthread.thread );
+					mutex_unlock( &nsthread.mutexres );
 				}
 				else
 				{
@@ -431,8 +432,6 @@ int NET_StringToSockaddr( const char *s, struct sockaddr *sadr, qboolean nonbloc
 						asyncfailed = true;
 					}
 				}
-
-				mutex_unlock( &nsthread.mutexres );
 			}
 			if( asyncfailed )
 #endif // CAN_ASYNC_NS_RESOLVE
