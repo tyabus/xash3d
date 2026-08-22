@@ -490,7 +490,7 @@ void IN_ToggleClientMouse( int newstate, int oldstate )
 		}
 		else
 		{
-			SDL_WarpMouseInWindow( host.hWnd, host.window_center_x, host.window_center_y );
+			//SDL_WarpMouseInWindow( host.hWnd, host.window_center_x, host.window_center_y );
 			SDL_SetWindowGrab( host.hWnd, SDL_TRUE );
 			if( clgame.dllFuncs.pfnLookEvent )
 				SDL_SetRelativeMouseMode( SDL_TRUE );
@@ -499,7 +499,7 @@ void IN_ToggleClientMouse( int newstate, int oldstate )
 		IN_ActivateMouse( true );
 	}
 
-	if( ( newstate == key_menu || newstate == key_console ) && ( CL_IsBackgroundMap() || CL_IsBackgroundDemo()))
+	if( ( newstate == key_menu || newstate == key_console ) )
 	{
 #ifdef XASH_SDL
 		SDL_SetWindowGrab(host.hWnd, SDL_FALSE);
@@ -691,7 +691,7 @@ void IN_MouseEvent( int mstate )
 	}
 	else
 	{
-#if defined(XASH_SDL) && !defined(_WIN32)
+#if defined(XASH_SDL) //&& !defined(_WIN32)
 		SDL_SetRelativeMouseMode( SDL_FALSE );
 		SDL_ShowCursor( SDL_TRUE );
 #endif
