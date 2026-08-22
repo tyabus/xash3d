@@ -499,7 +499,7 @@ void IN_ToggleClientMouse( int newstate, int oldstate )
 		IN_ActivateMouse( true );
 	}
 
-	if( ( newstate == key_menu || newstate == key_console ) )
+	if( ( newstate == key_menu || newstate == key_console ) && ( CL_IsBackgroundMap() || CL_IsBackgroundDemo()))
 	{
 #ifdef XASH_SDL
 		SDL_SetWindowGrab(host.hWnd, SDL_FALSE);
