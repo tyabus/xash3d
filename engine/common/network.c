@@ -37,8 +37,6 @@ GNU General Public License for more details.
 #define MAX_LOOPBACK	4
 #define MASK_LOOPBACK	(MAX_LOOPBACK - 1)
 
-#define HAVE_GETADDRINFO
-
 #ifdef _WIN32
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
@@ -60,7 +58,6 @@ GNU General Public License for more details.
 #define pSend send
 #define pInet_Ntoa inet_ntoa
 #define pNtohs ntohs
-#define pGetHostByName gethostbyname
 #define pSelect select
 #define pGetAddrInfo getaddrinfo
 
@@ -85,7 +82,6 @@ static void NET_InitializeCriticalSections( void );
 #define pSend send
 #define pInet_Ntoa inet_ntoa
 #define pNtohs ntohs
-#define pGetHostByName gethostbyname
 #define pSelect select
 #define pGetAddrInfo getaddrinfo
 #define SOCKET int
@@ -210,7 +206,6 @@ NET_GetHostByName
 */
 static int NET_GetHostByName( const char *hostname )
 {
-#ifdef HAVE_GETADDRINFO
 	struct addrinfo *ai = NULL, *cur;
 	struct addrinfo hints;
 	int ip = 0;
@@ -234,12 +229,6 @@ static int NET_GetHostByName( const char *hostname )
 	}
 
 	return ip;
-#else
-	struct hostent *h;
-	if(!( h = gethostbyname( hostname )))
-		return 0;
-	return *(int *)h->h_addr_list[0];
-#endif
 }
 
 static void NET_NetadrToSockadr( netadr_t *a, struct sockaddr *s )
@@ -342,11 +331,7 @@ void NET_ResolveThread( void )
 
 	RESOLVE_DBG( "[resolve thread] starting resolve for " );
 	RESOLVE_DBG( nsthread.hostname );
-#ifdef HAVE_GETADDRINFO
 	RESOLVE_DBG( " with getaddrinfo\n" );
-#else
-	RESOLVE_DBG( " with gethostbyname\n" );
-#endif
 
 	sin_addr = NET_GetHostByName( nsthread.hostname );
 
@@ -1256,35 +1241,6 @@ void NET_Config( qboolean multiplayer, qboolean changeport )
 }
 
 /*
-=================
-NET_ShowIP_f
-=================
-*/
-void NET_ShowIP_f( void )
-{
-	string		s;
-	int		i;
-	struct hostent	*h;
-	struct in_addr	in;
-
-	pGetHostName( s, sizeof( s ));
-
-	if( !( h = pGetHostByName( s )))
-	{
-		Msg( "Can't get host\n" );
-		return;
-	}
-
-	Msg( "HostName: %s\n", h->h_name );
-
-	for( i = 0; h->h_addr_list[i]; i++ )
-	{
-		in.s_addr = *(int *)h->h_addr_list[i];
-		Msg( "IP: %s\n", pInet_Ntoa( in ));
-	}
-}
-
-/*
 ====================
 NET_Init
 ====================
@@ -1310,7 +1266,6 @@ void NET_Init( void )
 	net_port = Cvar_Get( "port", "27015", 0, "server tcp/ip port" );
 	net_ip = Cvar_Get( "ip", "localhost", 0, "local server ip" );
 
-	Cmd_AddCommand( "net_showip", NET_ShowIP_f,  "show hostname and IPs" );
 	Cmd_AddCommand( "net_restart", NET_Restart_f, "restart the network subsystem" );
 
 	net_fakelag = Cvar_Get( "net_fakelag", "0", 0, "lag all incoming network data (including loopback) by xxx ms." );
@@ -1341,7 +1296,6 @@ void NET_Shutdown( void )
 	if( !winsockInitialized )
 		return;
 
-	Cmd_RemoveCommand( "net_showip" );
 	Cmd_RemoveCommand( "net_restart" );
 
 	NET_ClearLagData( true, true );
