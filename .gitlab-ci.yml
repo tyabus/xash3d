@@ -86,21 +86,22 @@ linux_desktop:
     - $CI_JOB_STAGE/artifacts/
 
 android:
-#  image: ubuntu:xenial
-  image: registry.gitlab.com/mr0maks/gitlab_ci_images:xenial_android
+  image: eclipse-temurin:17-jdk-focal
   stage: android
   before_script:
-#  - dpkg --add-architecture i386
-#  - apt update
-#  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
-  - curl -s http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz | tar xzf -
-  - curl https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.9-bin.tar.xz | tar xJ
+  - apt-get update -qq
+  - apt-get install -y curl wget unzip git python3 build-essential gcc-multilib g++-multilib libc6-i386 lib32stdc++6 lib32z1 libncurses5 libtinfo5 ccache
   - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=${PATH}:$PWD/apache-ant-1.10.9/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk
-  - sleep 3s; echo y | android update sdk -u --filter platform-tools,build-tools-23.0.1,android-23 --force --all > /dev/null
-  - sed -e 's/1\.5/1\.7/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
+  - export ANDROID_SDK_ROOT=$ANDROID_HOME
+  - mkdir -p $ANDROID_HOME/cmdline-tools
+  - wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+  - unzip -q commandlinetools-linux-11076708_latest.zip -d $ANDROID_HOME/cmdline-tools
+  - mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
+  - export PATH=${PATH}:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PWD/android-ndk
+  - yes | sdkmanager --licenses > /dev/null || true
+  - sdkmanager "platform-tools" "build-tools;33.0.1" "platforms;android-24"
   - wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip >/dev/null 2>/dev/null
-  - 7z x ./android-ndk-r11c-linux-x86_64.zip > /dev/null
+  - unzip -q android-ndk-r11c-linux-x86_64.zip
   - mv android-ndk-r11c android-ndk
   - mkdir -p ccache
   - export PATH="/usr/lib/ccache:$PATH"
@@ -110,41 +111,44 @@ android:
   - ccache --zero-stats || true
   - ccache --show-stats || true
   after_script:
-  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_DIR="$CI_PROJECT_DIR/ccache"
   - ccache --show-stats
   script:
   - mkdir android && cd android
   - git clone --depth 1 https://github.com/tyabus/xash3d-android-project
   - cd xash3d-android-project
+  - mkdir -p ~/.android
   - cp debug.keystore ~/.android/debug.keystore
   - git submodule update --init jni/src/NanoGL/nanogl xash-extras
   - git clone --depth 1 https://github.com/tyabus/hlsdk-xash3d jni/src/hlsdk-xash3d -b master
   - ln -s $CI_PROJECT_DIR jni/src/Xash3D/xash3d
   - bash ./gen-version.sh
-  - python2 scripts/makepak.py xash-extras assets/extras.pak
+  - python3 scripts/makepak.py xash-extras assets/extras.pak
   - ndk-build -j$(nproc --all) APP_CFLAGS="-w" NDK_CCACHE=ccache
-  - ant debug -Dtest.version=1
-  - cp bin/xash3d-debug.apk $CI_PROJECT_DIR/xash3d-debug.apk
+  - chmod +x gradlew
+  - ./gradlew --no-daemon assembleDebug
+  - cp build/outputs/apk/debug/*-debug.apk $CI_PROJECT_DIR/xash3d-debug.apk
   artifacts:
     paths:
     - $CI_PROJECT_DIR/xash3d-debug.apk
 
 android_64bit:
-# image: ubuntu:xenial
-  image: registry.gitlab.com/mr0maks/gitlab_ci_images:xenial_android
+  image: eclipse-temurin:17-jdk-focal
   stage: android
   before_script:
-#  - dpkg --add-architecture i386
-#  - apt update
-#  - apt install -y curl wget cmake ccache p7zip-full gcc-multilib g++-multilib build-essential zlib1g:i386 libstdc++6:i386 openjdk-8-jdk xz-utils git python2.7 python-minimal
-  - curl -s http://dl.google.com/android/android-sdk_r23.0.2-linux.tgz | tar xzf -
-  - curl https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.9-bin.tar.xz | tar xJ
+  - apt-get update -qq
+  - apt-get install -y curl wget unzip git python3 build-essential gcc-multilib g++-multilib libc6-i386 lib32stdc++6 lib32z1 libncurses5 libtinfo5 ccache
   - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=${PATH}:$PWD/apache-ant-1.10.9/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:$PWD/android-ndk
-  - sleep 3s; echo y | android update sdk -u --filter platform-tools,build-tools-23.0.1,android-23 --force --all > /dev/null
-  - sed -e 's/1\.5/1\.7/g' -i $PWD/android-sdk-linux/tools/ant/build.xml
+  - export ANDROID_SDK_ROOT=$ANDROID_HOME
+  - mkdir -p $ANDROID_HOME/cmdline-tools
+  - wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+  - unzip -q commandlinetools-linux-11076708_latest.zip -d $ANDROID_HOME/cmdline-tools
+  - mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
+  - export PATH=${PATH}:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PWD/android-ndk
+  - yes | sdkmanager --licenses > /dev/null || true
+  - sdkmanager "platform-tools" "build-tools;33.0.1" "platforms;android-24"
   - wget https://dl.google.com/android/repository/android-ndk-r11c-linux-x86_64.zip >/dev/null 2>/dev/null
-  - 7z x ./android-ndk-r11c-linux-x86_64.zip > /dev/null
+  - unzip -q android-ndk-r11c-linux-x86_64.zip
   - mv android-ndk-r11c android-ndk
   - mkdir -p ccache
   - export PATH="/usr/lib/ccache:$PATH"
@@ -154,21 +158,23 @@ android_64bit:
   - ccache --zero-stats || true
   - ccache --show-stats || true
   after_script:
-  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_DIR="$CI_PROJECT_DIR/ccache"
   - ccache --show-stats
   script:
   - mkdir android && cd android
   - git clone --depth 1 https://github.com/tyabus/xash3d-android-project
   - cd xash3d-android-project
+  - mkdir -p ~/.android
   - cp debug.keystore ~/.android/debug.keystore
   - git submodule update --init jni/src/NanoGL/nanogl xash-extras
   - git clone --depth 1 https://github.com/tyabus/hlsdk-xash3d jni/src/hlsdk-xash3d -b master
   - ln -s $CI_PROJECT_DIR jni/src/Xash3D/xash3d
   - bash ./gen-version.sh
-  - python2 scripts/makepak.py xash-extras assets/extras.pak
+  - python3 scripts/makepak.py xash-extras assets/extras.pak
   - NDK_TOOLCHAIN_VERSION=clang ndk-build -j$(nproc --all) XASH_64BIT="1" APP_CFLAGS="-w" NDK_CCACHE=ccache
-  - ant debug -Dtest.version=1
-  - cp bin/xash3d-debug.apk $CI_PROJECT_DIR/xash3d-debug.apk
+  - chmod +x gradlew
+  - ./gradlew --no-daemon assembleDebug
+  - cp build/outputs/apk/debug/*-debug.apk $CI_PROJECT_DIR/xash3d-debug.apk
   artifacts:
     paths:
     - $CI_PROJECT_DIR/xash3d-debug.apk
